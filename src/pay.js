@@ -6,7 +6,8 @@ const PAY_CONFIG = {
   productId: 'reading_1000',                                  // 플레이 콘솔의 소모성 인앱 상품 ID
   priceLabel: '1,000원',                                      // 스토어 가격을 못 불러왔을 때와 웹 미리보기에서 쓰는 표시
   termsUrl: 'https://parksang-jun.github.io/deungbul/terms.html',                      // 출시 전 실제 주소로 교체
-  privacyUrl: 'https://parksang-jun.github.io/deungbul/privacy.html'
+  privacyUrl: 'https://parksang-jun.github.io/deungbul/privacy.html',
+  reviewHash: '85d166ec3e32d01143550c4cbdb5c5c2845811751f675361905c9a30c18cfea5'   // 스토어 검토용 열람 코드의 SHA-256. 코드 자체는 저장소에 두지 않는다. 바꾸려면: printf '%s' '새코드' | shasum -a 256
 };
 const NATIVE = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 const RC = NATIVE ? window.RCPurchases : null;
@@ -18,7 +19,7 @@ const Access = {
   list: store.get('mw-unlocked') || [],
   has(k) { return Access.list.includes(k); },
   add(k) { if (!Access.has(k)) { Access.list.push(k); store.set('mw-unlocked', Access.list); } },
-  refresh() { S.premium = Access.has('s:' + profileKey(S.user)); S.matchOpen = Access.has('m:' + pairKey()); }
+  refresh() { const all = store.get('mw-review') === true; S.premium = all || Access.has('s:' + profileKey(S.user)); S.matchOpen = all || Access.has('m:' + pairKey()); }
 };
 const Pay = {
   pkg: null, state: NATIVE ? 'loading' : 'demo',
@@ -61,3 +62,14 @@ $('payGo').onclick = async () => {
   go.disabled = false;
 };
 $('payTerms').href = PAY_CONFIG.termsUrl; $('payPrivacy').href = PAY_CONFIG.privacyUrl;
+
+/* ===== 열람 코드: 스토어 검토자가 결제 없이 유료 풀이를 볼 수 있게 한다 ===== */
+async function sha256Hex(t) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''); }
+$('codeBtn').onclick = () => { $('codeMsg').textContent = ''; $('codeIn').value = ''; const d = $('codeDlg'); if (d.showModal) d.showModal(); else d.setAttribute('open', ''); };
+$('codeCancel').onclick = () => $('codeDlg').close();
+$('codeForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  let ok = false; try { ok = await sha256Hex($('codeIn').value.trim().toUpperCase()) === PAY_CONFIG.reviewHash; } catch (err) {}
+  if (!ok) { $('codeMsg').textContent = '코드가 맞지 않습니다.'; return; }
+  store.set('mw-review', true); $('codeDlg').close(); renderAll(); fx.burst($('editBtn'), 90);
+});

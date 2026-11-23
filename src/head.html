@@ -286,7 +286,7 @@ ul.ftips{margin:0;padding-left:18px;display:grid;gap:4px}
 <section class="view" id="v-reading"></section>
 
 <p class="note" style="margin-top:28px">사주와 타로 풀이는 오락·참고용입니다. 건강, 법률, 투자 결정의 근거로 쓰지 마세요.</p>
-<p style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"><button class="ghost" id="guideBtn" type="button">사용 방법</button><button class="ghost" id="resetBtn" type="button">저장된 정보 전부 지우기</button></p>
+<p style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"><button class="ghost" id="guideBtn" type="button">사용 방법</button><button class="ghost" id="resetBtn" type="button">저장된 정보 전부 지우기</button><button class="ghost" id="codeBtn" type="button">열람 코드</button></p>
 </div>
 
 <dialog id="guideDlg">
@@ -304,6 +304,16 @@ ul.ftips{margin:0;padding-left:18px;display:grid;gap:4px}
     <button class="primary" id="guideStart" type="button">내 정보 입력하고 시작</button>
     <button class="ghost" id="guideClose" type="button">예시 먼저 둘러보기</button>
   </div>
+</dialog>
+<dialog id="codeDlg">
+  <form class="sheet" id="codeForm">
+    <h2>열람 코드</h2>
+    <p class="note">열람 코드가 있으면 입력하세요. 이 기기에서 상세 풀이가 열립니다.</p>
+    <label>코드<input id="codeIn" autocomplete="off" autocapitalize="characters" maxlength="24"></label>
+    <p class="note warn" id="codeMsg" role="alert"></p>
+    <button class="primary" type="submit">확인</button>
+    <button class="ghost" id="codeCancel" type="button">취소</button>
+  </form>
 </dialog>
 <dialog id="resetDlg">
   <div class="sheet">

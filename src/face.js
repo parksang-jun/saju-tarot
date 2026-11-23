@@ -353,6 +353,8 @@ function faceRoute() {
 }
 window.addEventListener('hashchange', faceRoute);
 const pay = $('pay'); if (pay) pay.addEventListener('close', () => setTimeout(() => { if (location.hash === '#face') refresh(); }, 0));
-window.FaceRead = { measure, read, state: F };
+window.FaceRead = { measure, read, state: F,
+  /* 기준점 68개와 그림(canvas)을 직접 넣어 결과 화면을 띄운다. 스토어 스크린샷처럼 실제 얼굴 사진 없이 화면을 만들 때 쓴다. */
+  show(P, src) { const m = measure(P), r = read(m); F.res = { m, r, P, src }; F.cv = draw(src, P, m, r); F.msg = ''; F.err = false; renderFace(); } };
 setTimeout(() => { renderFace(); faceRoute(); }, 0);
 })();

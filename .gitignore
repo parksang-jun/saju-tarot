@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+*.keystore
+*.jks
+android/app/release/
+android/keystore.properties
+android/upload-keystore.jks

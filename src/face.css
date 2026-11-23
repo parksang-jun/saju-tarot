@@ -1,0 +1,24 @@
+/* 관상 탭 */
+nav{grid-template-columns:repeat(5,1fr)}
+nav a{font-size:13px;padding:12px 1px;white-space:nowrap}
+.fstage{padding:0;overflow:hidden}
+.fstage svg,.fstage canvas{display:block;width:100%;height:auto}
+.fstage svg text{font-family:var(--serif);fill:var(--mute);font-size:13px}
+.fstage .ax{stroke:var(--gold);stroke-width:1;stroke-dasharray:4 4;fill:none}
+.fstage .ft{stroke:var(--paper);stroke-width:1.4;fill:none;stroke-linecap:round}
+.flbl{display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;position:relative;min-height:46px;font-size:15px;color:var(--paper)}
+.flbl.primary{color:#fff5e9}
+.flbl.ghost{border-radius:12px}
+.flbl input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;padding:0;border:0}
+.flbl:focus-within{outline:2px solid var(--gold);outline-offset:2px}
+.flbl[aria-disabled="true"]{opacity:.5;pointer-events:none}
+ul.ftips{margin:0;padding-left:18px;display:grid;gap:4px}
+#v-face .read .it small{display:block;color:var(--mute);font-size:11px;margin-top:2px}
+.fyear{display:grid;gap:6px}
+.fyear div{display:grid;grid-template-columns:96px 1fr auto;gap:8px;align-items:center;font-size:13px}
+.fyear div span:first-child{color:var(--mute);font-variant-numeric:tabular-nums}
+.ftbl{overflow-x:auto}
+.ftbl table{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}
+.ftbl td,.ftbl th{text-align:right;padding:4px 6px 4px 0;border-bottom:1px solid var(--line);font-weight:400;white-space:nowrap}
+.ftbl td:first-child,.ftbl th:first-child{text-align:left}
+#v-face details summary{cursor:pointer}

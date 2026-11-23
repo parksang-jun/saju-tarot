@@ -5,8 +5,8 @@ const PAY_CONFIG = {
   iosKey: 'REPLACE_WITH_REVENUECAT_IOS_PUBLIC_KEY',
   productId: 'reading_1000',                                  // 플레이 콘솔의 소모성 인앱 상품 ID
   priceLabel: '1,000원',                                      // 스토어 가격을 못 불러왔을 때와 웹 미리보기에서 쓰는 표시
-  termsUrl: 'https://example.com/terms',                      // 출시 전 실제 주소로 교체
-  privacyUrl: 'https://example.com/privacy'
+  termsUrl: 'https://parksang-jun.github.io/deungbul/terms.html',                      // 출시 전 실제 주소로 교체
+  privacyUrl: 'https://parksang-jun.github.io/deungbul/privacy.html'
 };
 const NATIVE = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 const RC = NATIVE ? window.RCPurchases : null;

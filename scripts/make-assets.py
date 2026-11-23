@@ -36,6 +36,14 @@ for f in glob.glob(f'{RES}/drawable*/splash.png'):
     w, h = Image.open(f).size; im = Image.new('RGB', (w, h), INK); s = seal(int(min(w, h) * 0.28))
     im.paste(s, ((w - s.width) // 2, (h - s.height) // 2), s); im.save(f)
 
+# iOS: 앱 아이콘(1024, 투명도 없음)과 스플래시
+IOS = 'ios/App/App/Assets.xcassets'
+if os.path.isdir(IOS):
+    on_bg(1024, 0.74).convert('RGB').save(f'{IOS}/AppIcon.appiconset/AppIcon-512@2x.png')
+    for f in glob.glob(f'{IOS}/Splash.imageset/*.png'):
+        w, h = Image.open(f).size; im = Image.new('RGB', (w, h), INK); s = seal(int(min(w, h) * 0.2))
+        im.paste(s, ((w - s.width) // 2, (h - s.height) // 2), s); im.save(f)
+
 os.makedirs('store', exist_ok=True)
 on_bg(512, 0.74).convert('RGB').save('store/icon-512.png')
 fg = Image.new('RGB', (1024, 500), INK); d = ImageDraw.Draw(fg); s = seal(260); fg.paste(s, (70, 120), s)

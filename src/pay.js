@@ -73,3 +73,5 @@ $('codeForm').addEventListener('submit', async e => {
   if (!ok) { $('codeMsg').textContent = '코드가 맞지 않습니다.'; return; }
   store.set('mw-review', true); $('codeDlg').close(); renderAll(); fx.burst($('editBtn'), 90);
 });
+/* iOS에서는 열람 코드를 쓰지 않는다: 애플 심사는 샌드박스 결제로 유료 기능을 확인한다 */
+if (NATIVE && window.Capacitor.getPlatform() === 'ios') $('codeBtn').hidden = true;

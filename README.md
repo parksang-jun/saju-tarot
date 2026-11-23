@@ -16,6 +16,7 @@
 | `src/pay.js` | 결제(앱: RevenueCat 인앱결제, 웹: 테스트 모드) |
 | `src/ui2.js` | 점수, 인생 그래프, 입력 폼, 연도 선택, 안내, 초기화 |
 | `scripts/build.mjs` | 위 파일을 `dist/index.html` 하나로 합침 |
+| `ios/` | Capacitor iOS 프로젝트(Swift Package Manager). 출시 절차는 `docs/RELEASE-iOS.md` |
 | `android/` | Capacitor 안드로이드 프로젝트 |
 | `docs/` | 출시 절차, 스토어 등록정보, 개인정보처리방침·이용약관 초안 |
 | `store/` | 스토어용 아이콘, 그래픽 이미지, 스크린샷 |

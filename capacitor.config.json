@@ -2,5 +2,10 @@
   "appId": "com.parksangjun.sajutarot",
   "appName": "등불사주",
   "webDir": "dist",
-  "android": { "backgroundColor": "#12152a" }
+  "android": {
+    "backgroundColor": "#12152a"
+  },
+  "ios": {
+    "backgroundColor": "#12152a"
+  }
 }

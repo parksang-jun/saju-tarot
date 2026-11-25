@@ -82,7 +82,7 @@ App Store Connect에 그대로 붙여 넣는 값. 구글플레이용은 `store-l
 - 지원 URL: https://parksang-jun.github.io/deungbul/privacy.html (문의 이메일이 적혀 있다. 지원 전용 페이지를 따로 만들면 그 주소로 바꾼다)
 - 개인정보처리방침 URL: https://parksang-jun.github.io/deungbul/privacy.html
 - 저작권: `2026 Martin park`
-- 스크린샷: `store/ios-screenshots`의 8장(1320x2868, 6.9인치 칸). 6.5인치 칸은 비워도 6.9인치 것을 줄여 쓴다
+- 스크린샷: `store/ios-screenshots`의 8장(1206x2622, "Dynamic Island 지원 iPhone" 칸)
 
 ## 앱 내 구입
 

@@ -1,9 +1,9 @@
 # 스토어용 휴대전화 스크린샷을 만든다. 실행: npm run build && python3 scripts/make-screenshots.py (playwright 필요)
 #   인자 없음: 안드로이드용 1080x1920 -> store/screenshots
-#   ios      : 애플 6.9인치용 1320x2868 -> store/ios-screenshots
+#   ios      : 애플 아이폰용 1206x2622(App Store Connect의 Dynamic Island 지원 iPhone 칸) -> store/ios-screenshots
 import asyncio, os, shutil, sys
 IOS = len(sys.argv) > 1 and sys.argv[1] == 'ios'
-W, H, OUT = (440, 956, 'store/ios-screenshots/') if IOS else (360, 640, 'store/screenshots/')
+W, H, OUT = (402, 874, 'store/ios-screenshots/') if IOS else (360, 640, 'store/screenshots/')
 os.makedirs(OUT, exist_ok=True)
 from playwright.async_api import async_playwright
 CHROME = shutil.which('google-chrome') or shutil.which('chromium')

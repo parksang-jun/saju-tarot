@@ -1,6 +1,6 @@
 /* ===== 심화 명리: 지장간, 십이운성, 격국, 신살, 합충, 조후 ===== */
-const US_NAME = ['장생', '목욕', '관대', '건록', '제왕', '쇠', '병', '사', '묘', '절', '태', '양'];
-const US_TXT = ['새로 시작하는 기운이라 배우고 뻗어 나가기 좋습니다', '감정과 유행에 흔들리기 쉬워 시행착오가 따릅니다', '자신감이 붙고 사회로 나서는 기운입니다', '제 힘으로 서는 기운이라 자립과 실속이 따릅니다', '기세가 정점이라 주도권을 쥐지만 꺾이지 않게 조절이 필요합니다', '기세가 한풀 꺾여 지키고 다듬는 쪽이 맞습니다', '기운이 약해져 무리하면 탈이 나니 속도를 늦춰야 합니다', '한 흐름이 멈추는 자리라 정리와 마무리에 맞습니다', '안으로 갈무리하는 기운이라 저축, 연구, 내실에 맞습니다', '끊기고 새로 이어지는 자리라 단절과 전환이 함께 옵니다', '씨앗이 잉태되는 기운이라 구상과 준비에 맞습니다', '보호받으며 자라는 기운이라 후원을 받는 준비 기간입니다'];
+const US_NAME = EN ? EN_P.US_NAME : ['장생', '목욕', '관대', '건록', '제왕', '쇠', '병', '사', '묘', '절', '태', '양'];
+const US_TXT = EN ? EN_P.US_TXT : ['새로 시작하는 기운이라 배우고 뻗어 나가기 좋습니다', '감정과 유행에 흔들리기 쉬워 시행착오가 따릅니다', '자신감이 붙고 사회로 나서는 기운입니다', '제 힘으로 서는 기운이라 자립과 실속이 따릅니다', '기세가 정점이라 주도권을 쥐지만 꺾이지 않게 조절이 필요합니다', '기세가 한풀 꺾여 지키고 다듬는 쪽이 맞습니다', '기운이 약해져 무리하면 탈이 나니 속도를 늦춰야 합니다', '한 흐름이 멈추는 자리라 정리와 마무리에 맞습니다', '안으로 갈무리하는 기운이라 저축, 연구, 내실에 맞습니다', '끊기고 새로 이어지는 자리라 단절과 전환이 함께 옵니다', '씨앗이 잉태되는 기운이라 구상과 준비에 맞습니다', '보호받으며 자라는 기운이라 후원을 받는 준비 기간입니다'];
 const US_START = [11, 6, 2, 9, 2, 9, 5, 0, 8, 3];
 const unseong = (stem, b) => stem % 2 === 0 ? mod(b - US_START[stem], 12) : mod(US_START[stem] - b, 12);
 const GUIIN = { 0: [1, 7], 4: [1, 7], 6: [1, 7], 1: [0, 8], 5: [0, 8], 2: [11, 9], 3: [11, 9], 7: [2, 6], 8: [5, 3], 9: [5, 3] };
@@ -9,7 +9,7 @@ const YANGIN = { 0: 3, 2: 6, 4: 6, 6: 9, 8: 0 };
 const MUNCHANG = [5, 6, 8, 9, 8, 9, 11, 0, 2, 3];
 const gongmang = (ds, db) => { const x = mod(db - ds, 12); return [mod(x + 10, 12), mod(x + 11, 12)]; };
 const GOEGANG = ['6-4', '6-10', '8-4', '4-10'], BAEKHO = ['0-4', '1-7', '2-10', '3-1', '4-4', '8-10', '9-1'];
-const SS_TXT = {
+const SS_TXT = EN ? EN_P.SS_TXT : {
   '천을귀인': '어려운 고비마다 돕는 사람이 나타나는 별입니다. 사람을 통해 일이 풀리니 인연을 가볍게 넘기지 마세요.',
   '도화': '사람을 끄는 매력과 인기의 별입니다. 대중 앞에 서는 일에 유리하고, 이성 문제와 구설은 선을 분명히 해야 합니다.',
   '역마': '이동과 변화의 별입니다. 출장, 이사, 해외와 인연이 깊고 한곳에 오래 묶이면 답답해합니다.',
@@ -20,15 +20,15 @@ const SS_TXT = {
   '괴강': '일주가 괴강이라 기세가 강하고 승부가 분명합니다. 지도자 기질이 있지만 굽히지 않아 굴곡이 큽니다.',
   '백호': '일주가 백호라 밀어붙이는 힘이 셉니다. 큰 성취의 동력이지만 사고, 수술, 과로를 평소에 조심하라고 봅니다.'
 };
-const GROUP_NAME = ['비견·겁재', '식신·상관', '재성', '관성', '인성'];
-const GROUP_TXT = [
+const GROUP_NAME = EN ? EN_P.GROUP_NAME : ['비견·겁재', '식신·상관', '재성', '관성', '인성'];
+const GROUP_TXT = EN ? EN_P.GROUP_TXT : [
   ['자존심과 독립심이 강합니다. 경쟁에 강하지만 재물이 사람을 따라 흩어지기 쉬워 동업과 돈거래에 선을 그어야 합니다.', '혼자 밀어붙이기보다 믿을 만한 동료와 조직의 힘을 빌릴 때 성과가 커집니다.'],
   ['재주와 표현력이 넘칩니다. 말과 아이디어가 앞서 윗사람, 규정과 부딪히기 쉬우니 끝맺음을 챙기세요.', '속에 든 것을 밖으로 내놓는 통로가 좁습니다. 글, 발표, 결과물로 드러내는 연습이 운을 엽니다.'],
   ['돈과 일의 기회가 많이 보입니다. 다 잡으려다 힘이 흩어지니 감당할 수 있는 것만 고르세요.', '돈 자체보다 기술, 명예, 사람을 따라갈 때 재물이 뒤따르는 구조입니다. 저축은 자동이체 같은 장치로 해 두세요.'],
   ['책임과 압박을 많이 지는 구조입니다. 조직에서 인정받지만 긴장이 쌓이니 쉬는 날을 일정에 넣으세요.', '틀에 매이지 않는 자유로운 기질입니다. 스스로 규칙과 마감을 만들어야 성과가 모입니다.'],
   ['생각이 깊고 배움이 빠릅니다. 준비만 하다 실행이 늦어지기 쉬우니 70%에서 시작하세요.', '기대기보다 부딪히며 배우는 편입니다. 자격, 문서, 멘토를 일부러 챙기면 시행착오가 줄어듭니다.']
 ];
-const GYEOK = {
+const GYEOK = EN ? EN_P.GYEOK : {
   '비견': ['건록격', '내 이름을 걸고 하는 일이 맞습니다. 전문직, 자영업, 프리랜서처럼 실력이 곧 간판이 되는 분야에서 힘을 씁니다.'],
   '겁재': ['양인격', '승부와 경쟁이 있는 분야가 맞습니다. 영업, 스포츠, 군경, 수술이나 위기 대응처럼 결단이 필요한 일에 강합니다.'],
   '식신': ['식신격', '꾸준히 만들고 가르치는 일이 맞습니다. 연구, 기술, 요리, 교육, 콘텐츠처럼 쌓일수록 값이 오르는 분야입니다.'],
@@ -40,7 +40,7 @@ const GYEOK = {
   '편인': ['편인격', '남다른 전문성으로 승부하는 일이 맞습니다. 연구, IT, 의약, 철학, 특수 기술처럼 깊이가 무기인 분야입니다.'],
   '정인': ['정인격', '배움과 자격이 바탕이 되는 일이 맞습니다. 교육, 학문, 문서와 인허가를 다루는 전문직에 어울립니다.']
 };
-const SPOUSE = {
+const SPOUSE = EN ? EN_P.SPOUSE : {
   '비견': '친구처럼 대등한 관계를 맺습니다. 서로 고집이 세서 양보의 순서를 정해 두면 오래갑니다.',
   '겁재': '정이 깊지만 주도권과 돈 문제로 다투기 쉽습니다. 통장과 역할을 분명히 나누세요.',
   '식신': '편안하게 챙겨 주고받는 관계입니다. 같이 먹고 쉬는 시간이 관계의 힘입니다.',
@@ -52,20 +52,20 @@ const SPOUSE = {
   '편인': '독특하고 생각이 깊은 상대와 인연이 있습니다. 속을 알기 어려우니 추측 대신 물어보세요.',
   '정인': '보살펴 주는 상대와 인연이 있습니다. 기대다 보면 의존이 되니 내 몫은 스스로 하세요.'
 };
-const SEASON_TXT = [
+const SEASON_TXT = EN ? EN_P.SEASON_TXT : [
   '태어난 달이 일간과 같은 기운이라 기세를 타고났습니다(득령). 자기 주장이 뚜렷하고 버티는 힘이 좋습니다.',
   '태어난 달로 일간의 기운이 빠져나가는 구조입니다(실령). 재주는 많지만 쉽게 지치니 체력 안배가 중요합니다.',
   '태어난 달이 일간이 다스려야 할 기운이라 일복과 재물 기회가 많은 대신 힘에 부치기 쉽습니다(실령).',
   '태어난 달이 일간을 누르는 기운이라 일찍부터 책임과 규율 속에서 단련되는 구조입니다(실령).',
   '태어난 달이 일간을 낳아 주는 기운이라 도움을 받으며 자라는 구조입니다(득령). 배움과 후원의 덕이 있습니다.'
 ];
-const ORGAN = ['간, 담, 눈, 근육', '심장, 혈관, 소장', '위장, 비장, 소화기', '폐, 대장, 피부, 호흡기', '신장, 방광, 귀, 생식기'];
+const ORGAN = EN ? EN_P.ORGAN : ['간, 담, 눈, 근육', '심장, 혈관, 소장', '위장, 비장, 소화기', '폐, 대장, 피부, 호흡기', '신장, 방광, 귀, 생식기'];
 const PNAME2 = { year: '년', month: '월', day: '일', hour: '시' };
 const STEM_HAP = (a, b) => mod(a - b, 10) === 5;
 
 /* ===== 나이대별 쉬운 풀이 ===== */
 const stageIdx = age => age < 13 ? 0 : age < 20 ? 1 : age < 35 ? 2 : age < 55 ? 3 : 4;
-const STAGE = {
+const STAGE = EN ? EN_P.STAGE : {
   '비견': ['또래 친구, 형제와 어울리며 자기 고집이 생기는 시기입니다. 제 것은 제가 하겠다는 아이로 자랍니다.', '친구가 가장 중요하고 경쟁심이 커지는 시기입니다. 남에게 지기 싫어 스스로 길을 정하려 합니다.', '내 힘으로 서려는 시기입니다. 독립, 창업, 혼자 내리는 결정이 많아집니다.', '내 이름을 걸고 판을 벌이는 시기입니다. 독립이나 내 사업에 힘이 실리지만 혼자 다 지려 하면 지칩니다.', '내 방식대로 살고 싶어지는 시기입니다. 친구, 동년배와 함께하는 활동이 삶의 중심이 됩니다.'],
   '겁재': ['형제나 친구와 나누고 다투며 크는 시기입니다. 집안 살림이나 환경에 변화가 있기 쉽습니다.', '경쟁이 치열하고 친구 따라 움직이는 시기입니다. 어울리는 사람에 따라 성적과 방향이 크게 달라집니다.', '사람도 많이 만나고 돈도 많이 나가는 시기입니다. 동업, 보증, 큰 지출은 조심해야 합니다.', '경쟁자와 동업자가 늘어나는 시기입니다. 사람을 얻는 대신 돈이 새기 쉬우니 한도를 정해 두세요.', '주변에 돈 쓸 일이 많아지는 시기입니다. 자녀나 지인에게 가는 돈은 줄 수 있는 만큼만 정하세요.'],
   '식신': ['잘 먹고 잘 놀며 손재주와 호기심이 자라는 시기입니다. 비교적 편안하게 보살핌을 받습니다.', '좋아하는 과목이나 취미에 푹 빠지는 시기입니다. 이때 익힌 재주가 나중에 직업의 바탕이 됩니다.', '기술과 실력을 꾸준히 쌓는 시기입니다. 손에 익힌 것이 수입으로 이어지기 시작합니다.', '내가 만든 것이 돈이 되는 시기입니다. 전문성, 콘텐츠, 좋은 생활 습관에 들인 만큼 남습니다.', '여유를 즐기며 취미와 재능을 살리는 시기입니다. 가르치거나 나누는 일이 잘 맞습니다.'],
@@ -77,14 +77,14 @@ const STAGE = {
   '편인': ['혼자 노는 시간이 많고 상상력이 풍부한 시기입니다. 낯을 가리거나 예민한 아이로 자라기 쉽습니다.', '학교 공부보다 내가 꽂힌 분야를 파는 시기입니다. 진로를 두고 고민이 많습니다.', '남다른 공부나 기술을 익히는 시기입니다. 방향을 여러 번 바꾸며 내 길을 찾습니다.', '전문 지식과 직감이 깊어지는 시기입니다. 연구, 자격, 새 분야 공부에 좋지만 생각만 하다 때를 놓치기 쉽습니다.', '혼자만의 공부, 종교, 취미에 깊이 빠지는 시기입니다. 사람과 너무 멀어지지 않게 하세요.'],
   '정인': ['어머니와 어른들의 보살핌을 듬뿍 받으며 자라는 시기입니다.', '공부할 여건이 좋고 선생님 복이 있는 시기입니다. 성적과 시험에서 덕을 봅니다.', '공부, 자격증, 윗사람의 도움이 따르는 시기입니다. 배운 것으로 자리를 잡습니다.', '문서, 자격, 도와주는 사람이 따르는 시기입니다. 배운 것을 실행으로 옮겨야 결과가 남습니다.', '마음이 편안하고 배우는 즐거움이 있는 시기입니다. 자녀나 주변의 보살핌을 받습니다.']
 };
-const BABY = { '비견': '고집이 생기고 제 뜻대로 하려는 때입니다.', '겁재': '동생이 생기거나 집안에 돈 쓸 일이 많은 때입니다.', '식신': '잘 먹고 잘 자라는 순한 때입니다.', '상관': '말이 트이고 떼가 느는 때입니다.', '편재': '집안의 일이나 사는 곳이 바뀌기 쉬운 때입니다.', '정재': '집안 살림이 안정되는 때입니다.', '편관': '잔병치레나 낯선 환경으로 손이 많이 가는 때입니다.', '정관': '규칙적인 생활이 잡히는 때입니다.', '편인': '낯가림이 있고 예민해 손이 가는 때입니다.', '정인': '어른들의 보살핌을 듬뿍 받는 때입니다.' };
-const stageText = (g, age) => age < 6 ? '아기 때는 집안 분위기와 아이의 기질로 봅니다. ' + BABY[g] : STAGE[g][stageIdx(age)];
-const THEME_KID = { '비견': '또래와 자기 고집', '겁재': '경쟁과 나눔', '식신': '재주와 호기심', '상관': '끼와 반항', '편재': '바깥 활동', '정재': '성실과 안정', '편관': '단련과 압박', '정관': '모범과 규칙', '편인': '상상과 몰두', '정인': '보살핌과 공부' };
-const KID_CAUTION = { '비견': '고집, 친구와의 다툼', '겁재': '친구 따라 하다 생기는 문제, 물건 잃어버리기', '식신': '과식과 늦잠, 놀다가 미루는 숙제', '상관': '말대꾸, 선생님이나 어른과의 충돌', '편재': '산만함, 공부보다 노는 데 쏠림', '정재': '지나친 소심함, 작은 것에 대한 집착', '편관': '잔병치레, 다치는 일, 지나친 긴장', '정관': '눈치와 부담감, 잘해야 한다는 압박', '편인': '외로움, 편식, 혼자 끙끙대기', '정인': '지나친 의존, 스스로 하지 않는 습관' };
-const PAL_KID = { year: '집안 어른과 주변 환경', month: '부모와 집안 사정', day: '사는 곳과 생활 리듬', hour: '형제나 또래 관계' };
-const PSHORT = { year: '집안·윗사람', month: '직장·부모', day: '나·배우자', hour: '자녀·미래' };
-const GROUP_PLAIN = ['내 편과 경쟁자', '표현과 재능', '돈과 기회', '책임과 직장', '공부와 도움'];
-const SS_PLAIN = { '천을귀인': '귀인 복', '도화': '매력과 인기', '역마': '이동과 변화', '화개': '몰입과 예술', '양인': '강한 추진력', '문창귀인': '공부와 글재주', '공망': '비어 있는 자리', '괴강': '강한 기세', '백호': '센 기운' };
+const BABY = EN ? EN_P.BABY : { '비견': '고집이 생기고 제 뜻대로 하려는 때입니다.', '겁재': '동생이 생기거나 집안에 돈 쓸 일이 많은 때입니다.', '식신': '잘 먹고 잘 자라는 순한 때입니다.', '상관': '말이 트이고 떼가 느는 때입니다.', '편재': '집안의 일이나 사는 곳이 바뀌기 쉬운 때입니다.', '정재': '집안 살림이 안정되는 때입니다.', '편관': '잔병치레나 낯선 환경으로 손이 많이 가는 때입니다.', '정관': '규칙적인 생활이 잡히는 때입니다.', '편인': '낯가림이 있고 예민해 손이 가는 때입니다.', '정인': '어른들의 보살핌을 듬뿍 받는 때입니다.' };
+const stageText = (g, age) => age < 6 ? T('아기 때는 집안 분위기와 아이의 기질로 봅니다. ', EN_P.BABY_PRE) + BABY[g] : STAGE[g][stageIdx(age)];
+const THEME_KID = EN ? EN_P.THEME_KID : { '비견': '또래와 자기 고집', '겁재': '경쟁과 나눔', '식신': '재주와 호기심', '상관': '끼와 반항', '편재': '바깥 활동', '정재': '성실과 안정', '편관': '단련과 압박', '정관': '모범과 규칙', '편인': '상상과 몰두', '정인': '보살핌과 공부' };
+const KID_CAUTION = EN ? EN_P.KID_CAUTION : { '비견': '고집, 친구와의 다툼', '겁재': '친구 따라 하다 생기는 문제, 물건 잃어버리기', '식신': '과식과 늦잠, 놀다가 미루는 숙제', '상관': '말대꾸, 선생님이나 어른과의 충돌', '편재': '산만함, 공부보다 노는 데 쏠림', '정재': '지나친 소심함, 작은 것에 대한 집착', '편관': '잔병치레, 다치는 일, 지나친 긴장', '정관': '눈치와 부담감, 잘해야 한다는 압박', '편인': '외로움, 편식, 혼자 끙끙대기', '정인': '지나친 의존, 스스로 하지 않는 습관' };
+const PAL_KID = EN ? EN_P.PAL_KID : { year: '집안 어른과 주변 환경', month: '부모와 집안 사정', day: '사는 곳과 생활 리듬', hour: '형제나 또래 관계' };
+const PSHORT = EN ? EN_P.PSHORT : { year: '집안·윗사람', month: '직장·부모', day: '나·배우자', hour: '자녀·미래' };
+const GROUP_PLAIN = EN ? EN_P.GROUP_PLAIN : ['내 편과 경쟁자', '표현과 재능', '돈과 기회', '책임과 직장', '공부와 도움'];
+const SS_PLAIN = EN ? EN_P.SS_PLAIN : { '천을귀인': '귀인 복', '도화': '매력과 인기', '역마': '이동과 변화', '화개': '몰입과 예술', '양인': '강한 추진력', '문창귀인': '공부와 글재주', '공망': '비어 있는 자리', '괴강': '강한 기세', '백호': '센 기운' };
 const theme = (g, age) => age != null && age < 20 ? THEME_KID[g] : DAEUN[g][0];
 const plainSeason = i => SEASON_TXT[i].replace(/\((득령|실령)\)/, '');
 
@@ -108,28 +108,28 @@ function natalInfo() {
   if (GOEGANG.includes(ds + '-' + db)) ss['괴강'] = ['일주'];
   if (BAEKHO.includes(ds + '-' + db)) ss['백호'] = ['일주'];
   // rel: [종류, 쉬운 제목, 풀이, 명리 근거]
-  const rel = [], pair = (i, j, verb) => PSHORT[keys[i]] + ' 자리와 ' + PSHORT[keys[j]] + ' 자리가 ' + verb;
+  const rel = [], pair = (i, j, verb) => T(PSHORT[keys[i]] + ' 자리와 ' + PSHORT[keys[j]] + ' 자리가 ' + verb, 'The ' + PSHORT[keys[i]] + ' seat and the ' + PSHORT[keys[j]] + ' seat ' + verb);
   for (let i = 0; i < keys.length; i++) for (let j = i + 1; j < keys.length; j++) {
     const a = P[keys[i]], b = P[keys[j]], na = PNAME[keys[i]] + ' ' + a.branchH, nb = PNAME[keys[j]] + ' ' + b.branchH;
-    const sa = PNAME2[keys[i]] + '간 ' + a.stemH, sb = PNAME2[keys[j]] + '간 ' + b.stemH, withMe = keys[i] === 'day' || keys[j] === 'day';
-    if (isClash(a.b, b.b)) rel.push(['충', pair(i, j, '부딪힘'), '두 영역 사이에 변동과 이동이 잦습니다. 한쪽을 택하기보다 일정과 거리를 조절하는 편이 낫습니다.', na + ' · ' + nb + ' 충']);
-    if (HAP[a.b] === b.b) rel.push(['합', pair(i, j, '서로 끌어당김'), '두 영역의 인연이 깊고 쉽게 떨어지지 않습니다.', na + ' · ' + nb + ' 합']);
-    if (isHyeong(a.b, b.b)) rel.push(['형', pair(i, j, '삐걱거림'), '두 영역 사이에 조정과 마찰이 반복됩니다. 약속과 서류를 분명히 해 두면 줄어듭니다.', na + ' · ' + nb + ' 형']);
-    if (STEM_HAP(a.s, b.s)) rel.push(['합', withMe ? '나와 ' + PSHORT[keys[i] === 'day' ? keys[j] : keys[i]] + ' 자리가 정으로 묶임' : pair(i, j, '서로를 따라감'), withMe ? '그 자리의 사람이나 일에 마음이 쏠립니다. 정이 깊은 대신 결단이 늦어질 수 있습니다.' : '두 기운이 묶여 본래 성질이 누그러집니다.', sa + ' · ' + sb + ' 합']);
-    if (['0-6', '1-7', '2-8', '3-9'].includes(Math.min(a.s, b.s) + '-' + Math.max(a.s, b.s))) rel.push(['충', pair(i, j, '생각이 엇갈림'), '방침과 생각이 자주 바뀝니다. 중요한 결정은 하루 묵혀서 하세요.', sa + ' · ' + sb + ' 충']);
-    if (a.b === b.b && [4, 6, 9, 11].includes(a.b)) rel.push(['형', '같은 기운이 겹쳐 스스로를 볶음', '혼자 끙끙대기 쉽습니다. 고민은 밖으로 꺼내 놓으세요.', PNAME[keys[i]] + ' · ' + PNAME[keys[j]] + ' ' + a.branchH + a.branchH + ' 자형']);
+    const sa = PW(PNAME2[keys[i]] + '간') + ' ' + a.stemH, sb = PW(PNAME2[keys[j]] + '간') + ' ' + b.stemH, withMe = keys[i] === 'day' || keys[j] === 'day';
+    if (isClash(a.b, b.b)) rel.push(['충', pair(i, j, T('부딪힘', 'collide')), T('두 영역 사이에 변동과 이동이 잦습니다. 한쪽을 택하기보다 일정과 거리를 조절하는 편이 낫습니다.', 'Change and movement are frequent between the two areas. Adjusting schedule and distance works better than choosing one side.'), na + ' · ' + nb + T(' 충', ' clash')]);
+    if (HAP[a.b] === b.b) rel.push(['합', pair(i, j, T('서로 끌어당김', 'pull toward each other')), T('두 영역의 인연이 깊고 쉽게 떨어지지 않습니다.', 'The tie between the two areas is deep and does not come apart easily.'), na + ' · ' + nb + T(' 합', ' bond')]);
+    if (isHyeong(a.b, b.b)) rel.push(['형', pair(i, j, T('삐걱거림', 'grate on each other')), T('두 영역 사이에 조정과 마찰이 반복됩니다. 약속과 서류를 분명히 해 두면 줄어듭니다.', 'Adjustment and friction repeat between the two areas. Clear promises and paperwork reduce it.'), na + ' · ' + nb + T(' 형', ' friction')]);
+    if (STEM_HAP(a.s, b.s)) rel.push(['합', withMe ? T('나와 ' + PSHORT[keys[i] === 'day' ? keys[j] : keys[i]] + ' 자리가 정으로 묶임', 'You and the ' + PSHORT[keys[i] === 'day' ? keys[j] : keys[i]] + ' seat are tied by affection') : pair(i, j, T('서로를 따라감', 'follow each other')), withMe ? T('그 자리의 사람이나 일에 마음이 쏠립니다. 정이 깊은 대신 결단이 늦어질 수 있습니다.', 'Your heart leans toward the people and matters of that seat. Affection is deep, but decisions may come late.') : T('두 기운이 묶여 본래 성질이 누그러집니다.', 'The two energies are tied together and their original nature softens.'), sa + ' · ' + sb + T(' 합', ' bond')]);
+    if (['0-6', '1-7', '2-8', '3-9'].includes(Math.min(a.s, b.s) + '-' + Math.max(a.s, b.s))) rel.push(['충', pair(i, j, T('생각이 엇갈림', 'think at cross purposes')), T('방침과 생각이 자주 바뀝니다. 중요한 결정은 하루 묵혀서 하세요.', 'Plans and thinking change often. Sleep on important decisions for a day.'), sa + ' · ' + sb + T(' 충', ' clash')]);
+    if (a.b === b.b && [4, 6, 9, 11].includes(a.b)) rel.push(['형', T('같은 기운이 겹쳐 스스로를 볶음', 'The same energy doubles up and you wear yourself down'), T('혼자 끙끙대기 쉽습니다. 고민은 밖으로 꺼내 놓으세요.', 'You tend to struggle alone. Bring your worries out into the open.'), PNAME[keys[i]] + ' · ' + PNAME[keys[j]] + ' ' + a.branchH + a.branchH + T(' 자형', ' self-friction')]);
   }
   const bs = keys.map(k => P[k].b);
   [[8, 0, 4, 4], [11, 3, 7, 0], [2, 6, 10, 1], [5, 9, 1, 3]].forEach(t => {
     const has = t.slice(0, 3).filter(b => bs.includes(b));
-    if (has.length === 3) rel.push(['합', EL[t[3]] + ' 기운이 하나로 뭉침', EL[t[3]] + ' 기운이 사주 전체를 이끕니다. 이 기운이 가리키는 분야에서 일이 크게 벌어집니다.', has.map(b => BRANCHES_H[b]).join('') + ' 삼합 ' + EL[t[3]] + '국']);
-    else if (has.length === 2 && bs.includes(t[1])) rel.push(['합', EL[t[3]] + ' 기운이 반쯤 뭉쳐 있음', '나머지 한 글자가 들어오는 해에 ' + EL[t[3]] + ' 기운이 크게 움직입니다.', has.map(b => BRANCHES_H[b]).join('') + ' 반합 ' + EL[t[3]] + '국']);
+    if (has.length === 3) rel.push(['합', T(EL[t[3]] + ' 기운이 하나로 뭉침', EL[t[3]] + ' energy gathers into one'), T(EL[t[3]] + ' 기운이 사주 전체를 이끕니다. 이 기운이 가리키는 분야에서 일이 크게 벌어집니다.', EL[t[3]] + ' energy leads the whole chart. Things happen on a large scale in the field this energy points to.'), has.map(b => BRANCHES_H[b]).join('') + T(' 삼합 ' + EL[t[3]] + '국', ' triple bond · ' + EL[t[3]])]);
+    else if (has.length === 2 && bs.includes(t[1])) rel.push(['합', T(EL[t[3]] + ' 기운이 반쯤 뭉쳐 있음', EL[t[3]] + ' energy is half gathered'), T('나머지 한 글자가 들어오는 해에 ' + EL[t[3]] + ' 기운이 크게 움직입니다.', 'In a year when the missing character arrives, ' + EL[t[3]] + ' energy moves strongly.'), has.map(b => BRANCHES_H[b]).join('') + T(' 반합 ' + EL[t[3]] + '국', ' half bond · ' + EL[t[3]])]);
   });
-  [[2, 3, 4, 0], [5, 6, 7, 1], [8, 9, 10, 3], [11, 0, 1, 4]].forEach(t => { if (t.slice(0, 3).every(b => bs.includes(b))) rel.push(['합', EL[t[3]] + ' 기운이 매우 강함', '한 계절의 글자가 모두 모여 있습니다.', t.slice(0, 3).map(b => BRANCHES_H[b]).join('') + ' 방합 ' + EL[t[3]] + '국']); });
+  [[2, 3, 4, 0], [5, 6, 7, 1], [8, 9, 10, 3], [11, 0, 1, 4]].forEach(t => { if (t.slice(0, 3).every(b => bs.includes(b))) rel.push(['합', T(EL[t[3]] + ' 기운이 매우 강함', EL[t[3]] + ' energy is very strong'), T('한 계절의 글자가 모두 모여 있습니다.', 'All the characters of one season are gathered.'), t.slice(0, 3).map(b => BRANCHES_H[b]).join('') + T(' 방합 ' + EL[t[3]] + '국', ' seasonal bond · ' + EL[t[3]])]); });
   const outs = [P.year.s, P.month.s].concat(P.hour ? [P.hour.s] : []), hid = HIDDEN[P.month.b].slice().reverse();
-  let gp = hid[0], how = '월지 ' + P.month.branchH + '의 정기 ' + STEMS_H[hid[0]];
-  for (const s of hid) if (outs.includes(s)) { gp = s; how = '월지 ' + P.month.branchH + '의 지장간 ' + STEMS_H[s] + '이 천간에 투출'; break; }
-  const gGod = tenGod(ds, gp), gg = GYEOK[gGod].slice(); if (gGod === '겁재' && ds % 2 === 1) gg[0] = '월겁격';
+  let gp = hid[0], how = T('월지 ' + P.month.branchH + '의 정기 ' + STEMS_H[hid[0]], 'main hidden stem ' + STEMS_H[hid[0]] + ' of the month branch ' + P.month.branchH);
+  for (const s of hid) if (outs.includes(s)) { gp = s; how = T('월지 ' + P.month.branchH + '의 지장간 ' + STEMS_H[s] + '이 천간에 투출', 'hidden stem ' + STEMS_H[s] + ' of the month branch ' + P.month.branchH + ' shows among the heavenly stems'); break; }
+  const gGod = tenGod(ds, gp), gg = GYEOK[gGod].slice(); if (gGod === '겁재' && ds % 2 === 1) gg[0] = T('월겁격', EN_P.GYEOK_ALT);
   const mb = P.month.b, season = [11, 0, 1].includes(mb) ? '겨울' : [5, 6, 7].includes(mb) ? '여름' : [2, 3, 4].includes(mb) ? '봄' : '가을';
   const johu = season === '겨울' ? 1 : season === '여름' ? 4 : -1;
   return { keys, grp, ss, rel, gm, season, johu, gyeok: { god: gGod, how, g: gg }, us: k => unseong(ds, P[k].b) };
@@ -141,31 +141,32 @@ function evalLuck(p, isYear, age) {
   const es = e => (e === need ? 1 : mod(e + 1, 5) === need ? 0.5 : mod(e + 2, 5) === need ? -1 : 0) + (e === ni.johu && e !== need ? 0.5 : 0);
   const help = es(p.sEl) + es(p.bEl);
   let score = help;
-  const c = [baby ? '잔병치레와 안전사고' : (kid ? KID_CAUTION : GOD_CAUTION)[p.sGod]], good = [], tech = [];
+  const c = [baby ? T('잔병치레와 안전사고', 'small illnesses and safety accidents') : (kid ? KID_CAUTION : GOD_CAUTION)[p.sGod]], good = [], tech = [];
   [['year', 0.5], ['month', 1], ['day', 1], ['hour', 0.5]].forEach(([k, w]) => {
     const n = P[k]; if (!n || !isClash(p.b, n.b)) return;
-    score -= w; c.push((kid ? PAL_KID : PALACE)[k] + ' 쪽의 변동'); tech.push(PNAME[k] + ' 충');
+    score -= w; c.push(T((kid ? PAL_KID : PALACE)[k] + ' 쪽의 변동', 'changes around ' + (kid ? PAL_KID : PALACE)[k])); tech.push(PNAME[k] + T(' 충', ' clash'));
   });
-  if (isHyeong(p.b, P.day.b)) { score -= 0.5; c.push(kid ? '다툼, 무리한 일정' : '다툼, 서류 문제, 무리한 일정'); tech.push('일지 형'); }
-  if (HAP[p.b] === P.day.b) { score += 0.5; good.push(kid ? '가까운 사람과의 정, 안정된 생활' : '가까운 사람과의 결속, 정착'); tech.push('일지 합'); }
-  if (GUIIN[ds].includes(p.b)) { score += 0.5; good.push('돕는 사람과 뜻밖의 연결'); tech.push('천을귀인'); }
-  if (MUNCHANG[ds] === p.b) { if (!baby) good.push(kid ? '공부, 시험, 글짓기와 발표' : '시험, 자격, 글과 발표'); tech.push('문창귀인'); }
+  if (isHyeong(p.b, P.day.b)) { score -= 0.5; c.push(kid ? T('다툼, 무리한 일정', 'quarrels, an overfull schedule') : T('다툼, 서류 문제, 무리한 일정', 'quarrels, paperwork trouble, an overfull schedule')); tech.push(T('일지 형', 'day-branch friction')); }
+  if (HAP[p.b] === P.day.b) { score += 0.5; good.push(kid ? T('가까운 사람과의 정, 안정된 생활', 'affection from those close, a settled life') : T('가까운 사람과의 결속, 정착', 'closeness with those near you, settling down')); tech.push(T('일지 합', 'day-branch bond')); }
+  if (GUIIN[ds].includes(p.b)) { score += 0.5; good.push(T('돕는 사람과 뜻밖의 연결', 'helpers and unexpected connections')); tech.push(SSN('천을귀인')); }
+  if (MUNCHANG[ds] === p.b) { if (!baby) good.push(kid ? T('공부, 시험, 글짓기와 발표', 'study, tests, writing and presenting') : T('시험, 자격, 글과 발표', 'exams, credentials, writing and presenting')); tech.push(SSN('문창귀인')); }
   const g = P.day.b % 4, gy = P.year.b % 4;
-  if (p.b === YEOKMA[g] || p.b === YEOKMA[gy]) { good.push(baby ? '이사, 여행' : kid ? '이사, 전학, 여행' : '이동, 출장, 이사, 해외 인연'); tech.push('역마'); }
-  if (p.b === DOHWA[g] || p.b === DOHWA[gy]) { if (!baby) good.push(kid ? '친구들 사이의 인기' : '인기와 새 인연'); if (!kid) c.push('이성 문제와 구설'); tech.push('도화'); }
-  if (YANGIN[ds] === p.b) { if (!baby) c.push(kid ? '다치는 일, 과격한 장난' : '과속, 다툼, 다치는 일'); tech.push('양인'); }
-  if (ni.gm.includes(p.b)) { score -= 0.25; if (!baby) c.push('기대만큼 결과가 따르지 않는 일'); tech.push('공망'); }
-  if (STEM_HAP(p.s, ds)) { if (!baby) good.push(kid ? '마음이 쏠리는 사람이나 관심사' : '사람이나 일과 깊게 묶이는 인연'); tech.push('일간 합'); }
-  if (isYear) { const sm = samjae(P.year.b, p.b); if (sm) { score -= 0.5; c.push(kid ? '삼재라 큰 환경 변화' : '삼재라 큰 변동과 무리한 확장'); tech.push(sm); } }
-  return { score, cautions: c, good, tech, help, us: unseong(ds, p.b), grade: score >= 1 ? ['up', '순풍'] : score <= -1 ? ['dn', '주의'] : ['mid', '평이'] };
+  if (p.b === YEOKMA[g] || p.b === YEOKMA[gy]) { good.push(baby ? T('이사, 여행', 'a move, travel') : kid ? T('이사, 전학, 여행', 'a move, a new school, travel') : T('이동, 출장, 이사, 해외 인연', 'movement, business trips, a move, ties abroad')); tech.push(SSN('역마')); }
+  if (p.b === DOHWA[g] || p.b === DOHWA[gy]) { if (!baby) good.push(kid ? T('친구들 사이의 인기', 'popularity among friends') : T('인기와 새 인연', 'popularity and new connections')); if (!kid) c.push(T('이성 문제와 구설', 'romantic trouble and gossip')); tech.push(SSN('도화')); }
+  if (YANGIN[ds] === p.b) { if (!baby) c.push(kid ? T('다치는 일, 과격한 장난', 'injuries, rough play') : T('과속, 다툼, 다치는 일', 'speeding, quarrels, injuries')); tech.push(SSN('양인')); }
+  if (ni.gm.includes(p.b)) { score -= 0.25; if (!baby) c.push(T('기대만큼 결과가 따르지 않는 일', 'results that fall short of expectations')); tech.push(SSN('공망')); }
+  if (STEM_HAP(p.s, ds)) { if (!baby) good.push(kid ? T('마음이 쏠리는 사람이나 관심사', 'a person or interest that captures their heart') : T('사람이나 일과 깊게 묶이는 인연', 'a deep tie to a person or to work')); tech.push(T('일간 합', 'Day Master bond')); }
+  if (isYear) { const sm = samjae(P.year.b, p.b); if (sm) { score -= 0.5; c.push(kid ? T('삼재라 큰 환경 변화', 'a big change of surroundings (three-year trial)') : T('삼재라 큰 변동과 무리한 확장', 'big upheaval and overexpansion (three-year trial)')); tech.push(sm); } }
+  return { score, cautions: c, good, tech, help, us: unseong(ds, p.b), grade: score >= 1 ? ['up', T('순풍', 'Fair wind')] : score <= -1 ? ['dn', T('주의', 'Caution')] : ['mid', T('평이', 'Even')] };
 }
 function monthPillars(yr, ds) {
   const ys = mod(yr - 4, 10);
-  return Array.from({ length: 12 }, (_, i) => { const p = pillar(mod((ys % 5) * 2 + 2 + i, 10), mod(i + 2, 12), ds); p.label = ((i + 1) % 12 + 1) + '월'; return p; });
+  return Array.from({ length: 12 }, (_, i) => { const p = pillar(mod((ys % 5) * 2 + 2 + i, 10), mod(i + 2, 12), ds); p.label = T(((i + 1) % 12 + 1) + '월', ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][(i + 1) % 12]); return p; });
 }
 
 /* ===== 분야별 풀이: [제목, 쉬운 풀이, 명리 근거] ===== */
 function fields() {
+  if (EN) return fieldsEN();
   const sj = S.saju, P = sj.P, ni = S.ni, g = ni.grp, male = S.user.gender === 'M';
   const dm = DAY_TXT[P.day.s], us = ni.us('day'), top = g.indexOf(Math.max.apply(null, g));
   const person = dm[1] + ' ' + plainSeason(mod(P.month.bEl - sj.me, 5)) + ' 타고난 기운의 결을 보면, ' + US_TXT[us] + '. ' + (g[top] >= 3 ? GROUP_PLAIN[top] + '의 기운이 많아 ' + GROUP_TXT[top][0] : '');
@@ -195,6 +196,7 @@ function fields() {
   return [['나는 어떤 사람인가', person, '일간 ' + P.day.stemH + ', 월지 ' + P.month.branchH + ', 일지 십이운성 ' + US_NAME[us]], ['일과 적성', work, workWhy], ['돈', money, moneyWhy], ['연애와 배우자', love, '일지 ' + P.day.branchH + ' ' + P.day.bGod + ', ' + spName + ' ' + sp + '개'], ['몸과 생활', care, '오행 ' + sj.count.join('/') + (ni.johu >= 0 ? ', 조후 ' + EL[ni.johu] : '')]];
 }
 function palaces() {
+  if (EN) return palacesEN();
   const P = S.saju.P, ni = S.ni, th = g => DAEUN[g][0], u = k => ' 분위기를 보면, ' + US_TXT[ni.us(k)] + '.', why = k => PNAME2[k] + '주 ' + P[k].stemH + P[k].branchH + ' · ' + P[k].sGod + '/' + P[k].bGod + ' · 십이운성 ' + US_NAME[ni.us(k)];
   const out = [
     ['조상과 어린 시절 자리', '집안 배경에는 ' + th(P.year.sGod) + '의 기운이 깔려 있고, 그 밑에는 ' + th(P.year.bGod) + '의 흐름이 있습니다. 어린 시절로 보면, ' + STAGE[P.year.bGod][0] + u('year'), why('year')],

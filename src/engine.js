@@ -1,10 +1,10 @@
 /* ===== 명리 엔진: 절기(태양 황경), 한국 표준시 변천·서머타임, 경도 보정(평균태양시), 음력 변환 ===== */
-const STEMS = ['갑','을','병','정','무','기','경','신','임','계'];
+const STEMS = T(['갑','을','병','정','무','기','경','신','임','계'], ['Gap','Eul','Byeong','Jeong','Mu','Gi','Gyeong','Sin','Im','Gye']);   // 화면 표시용
 const STEMS_H = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-const BRANCHES = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
+const BRANCHES = T(['자','축','인','묘','진','사','오','미','신','유','술','해'], ['Ja','Chuk','In','Myo','Jin','Sa','O','Mi','Sin','Yu','Sul','Hae']);
 const BRANCHES_H = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const ANIMALS = ['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'];
-const EL = ['목','화','토','금','수'];
+const ANIMALS = T(['쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지'], ['Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Sheep','Monkey','Rooster','Dog','Pig']);
+const EL = T(['목','화','토','금','수'], ['Wood','Fire','Earth','Metal','Water']);
 const EL_H = ['木','火','土','金','水'];
 const BRANCH_EL = [4,2,0,0,2,1,1,2,3,3,2,4];
 const BRANCH_MAIN = [9,5,0,1,4,2,3,5,6,7,4,8];
@@ -98,8 +98,8 @@ function pillar(s, b, dayStem, isDay) {
     sGod: isDay ? '일간' : tenGod(dayStem, s), bGod: tenGod(dayStem, BRANCH_MAIN[b]) };
 }
 
-const SI_LABEL = ['자시 子 · 00:00~01:30 (자정 이후)', '축시 丑 · 01:30~03:30', '인시 寅 · 03:30~05:30', '묘시 卯 · 05:30~07:30', '진시 辰 · 07:30~09:30', '사시 巳 · 09:30~11:30', '오시 午 · 11:30~13:30', '미시 未 · 13:30~15:30', '신시 申 · 15:30~17:30', '유시 酉 · 17:30~19:30', '술시 戌 · 19:30~21:30', '해시 亥 · 21:30~23:30', '야자시 子 · 23:30~24:00 (자정 이전)'];
-const SI_NAME = ['자시', '축시', '인시', '묘시', '진시', '사시', '오시', '미시', '신시', '유시', '술시', '해시', '야자시'];
+const SI_LABEL = EN ? ['Ja 子 · 00:00–01:30 (after midnight)', 'Chuk 丑 · 01:30–03:30', 'In 寅 · 03:30–05:30', 'Myo 卯 · 05:30–07:30', 'Jin 辰 · 07:30–09:30', 'Sa 巳 · 09:30–11:30', 'O 午 · 11:30–13:30', 'Mi 未 · 13:30–15:30', 'Sin 申 · 15:30–17:30', 'Yu 酉 · 17:30–19:30', 'Sul 戌 · 19:30–21:30', 'Hae 亥 · 21:30–23:30', 'Late Ja 子 · 23:30–24:00 (before midnight)'] : ['자시 子 · 00:00~01:30 (자정 이후)', '축시 丑 · 01:30~03:30', '인시 寅 · 03:30~05:30', '묘시 卯 · 05:30~07:30', '진시 辰 · 07:30~09:30', '사시 巳 · 09:30~11:30', '오시 午 · 11:30~13:30', '미시 未 · 13:30~15:30', '신시 申 · 15:30~17:30', '유시 酉 · 17:30~19:30', '술시 戌 · 19:30~21:30', '해시 亥 · 21:30~23:30', '야자시 子 · 23:30~24:00 (자정 이전)'];
+const SI_NAME = EN ? ['Ja hour', 'Chuk hour', 'In hour', 'Myo hour', 'Jin hour', 'Sa hour', 'O hour', 'Mi hour', 'Sin hour', 'Yu hour', 'Sul hour', 'Hae hour', 'late Ja hour'] : ['자시', '축시', '인시', '묘시', '진시', '사시', '오시', '미시', '신시', '유시', '술시', '해시', '야자시'];
 // 시 번호(0~11, 12=야자시, -1=모름). 예전에 시계 시각으로 저장된 정보는 30분 보정 구간으로 옮긴다.
 function siOf(u) {
   if (u.si != null) return u.si;
@@ -111,7 +111,7 @@ const siOptions = sel => SI_LABEL.map((l, i) => '<option value="' + i + '"' + (i
 /* user: {cal:'solar'|'lunar'|'leap', y,m,d, hh,mm (null=모름), lon, yaja:boolean, gender} */
 function calcSaju(u) {
   let sol = { y: u.y, m: u.m, d: u.d }, err = null;
-  if (u.cal !== 'solar') { const r = lunarToSolar(u.y, u.m, u.d, u.cal === 'leap'); if (r) sol = r; else err = '음력 날짜를 양력으로 바꾸지 못했습니다. 날짜와 윤달 여부를 확인하세요.'; }
+  if (u.cal !== 'solar') { const r = lunarToSolar(u.y, u.m, u.d, u.cal === 'leap'); if (r) sol = r; else err = T('음력 날짜를 양력으로 바꾸지 못했습니다. 날짜와 윤달 여부를 확인하세요.', 'Could not convert the lunar date to a solar date. Check the date and whether it is a leap month.'); }
   const si = siOf(u), known = si >= 0;                             // 시는 사주의 열두 시로 직접 받는다
   const LON = 127.5;
   const utc = known ? Date.UTC(sol.y, sol.m - 1, sol.d, si === 12 ? 23 : si * 2, si === 12 || si === 0 ? 30 : 0) - LON * 240000 : seoulToUTC(sol.y, sol.m, sol.d, 12, 0);
@@ -170,7 +170,7 @@ function calcSaju(u) {
   const info = {
     solar: sol.y + '.' + sol.m + '.' + sol.d, lunarInput: u.cal !== 'solar',
     siName: known ? SI_NAME[si] : null,
-    warn: nearMin < 90 ? '태어난 날이 절기가 바뀌는 날입니다. 절기 시각 전후로 월주(입춘이면 년주도)가 달라지니, 평소 보던 만세력과 월주를 비교해 보세요.' : '',
+    warn: nearMin < 90 ? T('태어난 날이 절기가 바뀌는 날입니다. 절기 시각 전후로 월주(입춘이면 년주도)가 달라지니, 평소 보던 만세력과 월주를 비교해 보세요.', 'You were born on a day when the solar term changes. The month pillar (and the year pillar, at the Start of Spring) differs before and after that moment, so compare the month pillar with a chart you trust.') : '',
     err
   };
   return { P, keys, count, me, strong, ratio, amt, tot, basis, need, forward, startAge, startExact, daeun, sajuYear: sy, by: sol.y, animal: ANIMALS[yb], lon, hourIdx, info };

@@ -1,5 +1,5 @@
 /* ===== 풀이 데이터 ===== */
-const DAY_TXT = [
+const DAY_TXT = EN ? EN_D.DAY_TXT : [
   ['큰 나무', '곧게 위로 뻗는 성장형입니다. 원칙과 방향이 분명해 앞에 서는 일에 강하고, 한번 정한 길은 잘 굽히지 않습니다. 굽혀야 할 때를 아는 것이 숙제입니다.'],
   ['덩굴과 화초', '환경을 읽고 휘어지며 자라는 적응형입니다. 사람 사이의 결을 잘 읽어 협업과 조율에 강합니다. 기댈 곳을 고르는 안목이 곧 운입니다.'],
   ['한낮의 태양', '숨김없이 드러내는 발산형입니다. 표현력과 추진력이 좋아 사람을 모읍니다. 열이 빨리 오르는 만큼 식히는 시간을 일정에 넣어야 합니다.'],
@@ -11,7 +11,7 @@ const DAY_TXT = [
   ['큰 바다', '넓게 받아들이고 흐르는 지략형입니다. 판 전체를 보는 눈과 융통성이 좋습니다. 벌여 놓은 일의 물길을 하나로 모으는 것이 관건입니다.'],
   ['비와 이슬', '조용히 스며드는 직관형입니다. 감수성과 통찰이 깊어 기획과 연구, 상담에 강합니다. 생각이 고이지 않게 밖으로 흘려보내는 습관이 필요합니다.']
 ];
-const GOD_YEAR = {
+const GOD_YEAR = EN ? EN_D.GOD_YEAR : {
   '비견': '내 힘으로 서는 해입니다. 독립, 창업, 홀로서기 같은 주제가 올라옵니다. 동업과 지분 문제는 문서로 분명히 해 두세요.',
   '겁재': '경쟁과 지출이 함께 커지는 해입니다. 사람을 얻는 대신 돈이 나가기 쉽습니다. 보증과 충동 투자는 피하는 편이 좋습니다.',
   '식신': '꾸준히 만든 것이 쌓여 먹거리가 되는 해입니다. 기술, 콘텐츠, 건강 관리에 들인 시간이 그대로 돌아옵니다.',
@@ -23,14 +23,14 @@ const GOD_YEAR = {
   '편인': '낯선 공부와 방향 전환이 들어오는 해입니다. 직관이 날카로워지는 대신 생각이 많아집니다. 하나를 골라 끝까지 파 보세요.',
   '정인': '배움과 후원이 따르는 해입니다. 문서, 자격, 윗사람의 도움에 유리합니다. 받기만 하다 실행이 늦어지지 않게 하세요.'
 };
-const EL_TIP = [
+const EL_TIP = EN ? EN_D.EL_TIP : [
   ['푸른색과 녹색, 동쪽', '아침 시간, 새 공부, 숲길 걷기처럼 자라나는 기운을 들이세요.'],
   ['붉은색, 남쪽', '사람 앞에 서는 일, 발표, 햇볕 아래 운동으로 밖으로 드러내세요.'],
   ['노란색과 흙빛, 중앙', '정해진 루틴, 정리 정돈, 약속 지키기로 중심을 잡으세요.'],
   ['흰색과 금속빛, 서쪽', '마감 정하기, 끊을 것 끊기, 규칙 세우기로 매듭을 지으세요.'],
   ['검정과 남색, 북쪽', '충분한 잠, 기록, 혼자 생각하는 시간으로 속을 채우세요.']
 ];
-const DAEUN = {
+const DAEUN = EN ? EN_D.DAEUN : {
   '비견': ['독립과 자립', '내 힘으로 서려는 마음이 강했던 시기입니다. 독립, 경쟁, 혼자 내린 결정이 많았을 수 있습니다.', '내 이름으로 판을 벌이게 되는 시기입니다. 독립과 자기 사업에 힘이 실리지만 혼자 다 지려 하면 지칩니다.'],
   '겁재': ['경쟁과 나눔', '사람과 돈이 함께 드나들던 시기입니다. 동료나 경쟁자 때문에 얻은 것도 잃은 것도 있었을 수 있습니다.', '사람을 얻고 돈이 나가는 시기입니다. 동업, 보증, 큰 지출은 문서와 한도를 먼저 정해야 합니다.'],
   '식신': ['기술과 생산', '좋아하는 일을 꾸준히 익히고 만들던 시기입니다. 먹고사는 기술의 바탕이 이때 쌓였을 가능성이 큽니다.', '손으로 만든 것이 수입으로 이어지는 시기입니다. 전문성, 콘텐츠, 생활 습관에 들인 만큼 남습니다.'],
@@ -42,23 +42,23 @@ const DAEUN = {
   '편인': ['탐구와 전환', '남다른 공부나 관심사에 빠졌던 시기입니다. 방향을 여러 번 바꾸며 고민이 많았을 수 있습니다.', '전문 지식과 직관이 깊어지는 시기입니다. 연구, 자격, 새 분야 공부에 좋지만 생각만 하다 때를 놓치기 쉽습니다.'],
   '정인': ['배움과 후원', '공부와 보살핌의 덕을 본 시기입니다. 부모, 스승, 윗사람의 도움이 컸을 수 있습니다.', '문서, 자격, 후원자의 도움이 따르는 시기입니다. 배운 것을 실행으로 옮겨야 결과가 남습니다.']
 };
-const GOD_CAUTION = {
+const GOD_CAUTION = EN ? EN_D.GOD_CAUTION : {
   '비견': '동업·지분 다툼, 고집 때문에 끊기는 관계', '겁재': '보증, 돈 빌려주기, 충동 투자와 과소비',
   '식신': '느슨함과 과식·과음, 벌여 놓고 끝내지 않는 일', '상관': '말실수와 구설, 상사·기관과의 충돌, 성급한 퇴사',
   '편재': '무리한 확장과 투기, 큰돈이 오가는 계약', '정재': '몸을 사리다 놓치는 기회, 작은 돈에 얽힌 다툼',
   '편관': '과로, 사고와 부상, 소송이나 강압적인 사람과의 마찰', '정관': '책임 과부하, 체면 때문에 떠안는 일, 규정 위반',
   '편인': '고립과 생각 과잉, 계약서 확인 소홀, 잦은 진로 변경', '정인': '의존과 미루기, 실행 없는 계획, 문서·보증 서명'
 };
-const PNAME = { year: '년지', month: '월지', day: '일지', hour: '시지' };
-const PALACE = { year: '윗사람과 대외 환경', month: '직장, 부모, 사회적 기반', day: '배우자, 거주, 생활 리듬', hour: '자녀, 아랫사람, 장기 계획' };
+const PNAME = EN ? EN_D.PNAME : { year: '년지', month: '월지', day: '일지', hour: '시지' };
+const PALACE = EN ? EN_D.PALACE : { year: '윗사람과 대외 환경', month: '직장, 부모, 사회적 기반', day: '배우자, 거주, 생활 리듬', hour: '자녀, 아랫사람, 장기 계획' };
 const HAP = { 0: 1, 1: 0, 2: 11, 11: 2, 3: 10, 10: 3, 4: 9, 9: 4, 5: 8, 8: 5, 6: 7, 7: 6 };
 const HYEONG = [[2, 5], [5, 8], [8, 2], [1, 10], [10, 7], [7, 1], [0, 3]];
 const isHyeong = (a, b) => HYEONG.some(p => (p[0] === a && p[1] === b) || (p[0] === b && p[1] === a));
 function samjae(natalYearBranch, b) {
   const k = mod(b - { 0: 2, 3: 5, 2: 8, 1: 11 }[natalYearBranch % 4], 12);
-  return k < 3 ? ['들삼재', '눌삼재', '날삼재'][k] : null;
+  return k < 3 ? T(['들삼재', '눌삼재', '날삼재'], EN_D.SAMJAE)[k] : null;
 }
-const GOD_DOMAIN = ['나 자신과 주도권', '표현과 결과물', '돈과 현실 성과', '책임과 자리', '배움과 후원'];
+const GOD_DOMAIN = EN ? EN_D.GOD_DOMAIN : ['나 자신과 주도권', '표현과 결과물', '돈과 현실 성과', '책임과 자리', '배움과 후원'];
 
 /* ===== 타로 덱 (78장) ===== */
 const ROMAN = ['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI'];
@@ -104,10 +104,12 @@ const RANKS = [
   ['왕','K','숙련된 솜씨로 판을 이끕니다.','독선에 빠지기 쉽습니다. 다른 의견을 들으세요.']
 ];
 const DECK = [];
-MAJOR.forEach((c, i) => DECK.push({ name: c[0], en: c[1], sym: c[2], el: c[3], up: c[4], rev: c[5], no: ROMAN[i], major: true }));
-SUITS.forEach(s => RANKS.forEach(r => DECK.push({ name: s[0] + ' ' + r[0], en: r[0] + ' of ' + s[1], sym: s[2], el: s[3], up: s[4] + '에서 ' + r[2], rev: s[4] + '에서 ' + r[3], no: r[1] })));
-const TOPICS = { all: '종합운', love: '연애·관계', money: '재물', work: '일·진로' };
-const POS = ['지나온 흐름', '지금', '다가올 흐름'];
+MAJOR.forEach((c, i) => DECK.push({ name: EN ? c[1] : c[0], en: c[1], sym: c[2], el: c[3], up: EN ? EN_D.MAJOR_TXT[i][0] : c[4], rev: EN ? EN_D.MAJOR_TXT[i][1] : c[5], no: ROMAN[i], major: true }));
+SUITS.forEach((s, si) => RANKS.forEach((r, ri) => DECK.push(EN
+  ? { name: EN_D.RANK_NAME[ri] + ' of ' + s[1], en: r[0] + ' of ' + s[1], sym: s[2], el: s[3], up: 'In ' + EN_D.SUIT_AREA[si] + ', ' + EN_D.RANK_TXT[ri][0], rev: 'In ' + EN_D.SUIT_AREA[si] + ', ' + EN_D.RANK_TXT[ri][1], no: r[1] }
+  : { name: s[0] + ' ' + r[0], en: r[0] + ' of ' + s[1], sym: s[2], el: s[3], up: s[4] + '에서 ' + r[2], rev: s[4] + '에서 ' + r[3], no: r[1] })));
+const TOPICS = EN ? EN_D.TOPICS : { all: '종합운', love: '연애·관계', money: '재물', work: '일·진로' };
+const POS = EN ? EN_D.POS : ['지나온 흐름', '지금', '다가올 흐름'];
 
 /* ===== 상태 ===== */
 const $ = id => document.getElementById(id);
@@ -116,7 +118,7 @@ const store = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 };
-const EXAMPLE = { name: '예시', gender: 'F', cal: 'solar', y: 1990, m: 5, d: 15, si: 3, example: true };
+const EXAMPLE = { name: T('예시', 'Example'), gender: 'F', cal: 'solar', y: 1990, m: 5, d: 15, si: 3, example: true };
 const S = { user: store.get('mw-user2') || EXAMPLE, premium: false, matchOpen: false, topic: 'all', deck: [], picks: [], rev: [false, false, false], saju: null, plan: 1, ai: null };
 
 function hash32(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
@@ -133,51 +135,51 @@ function shuffle() {
 function link(card, rev) {
   const sj = S.saju, e = card.el, need = sj.need;
   let score = 0, txt;
-  if (e === need) { score = 2; txt = '사주에서 보완이 필요한 ' + EL[need] + '(' + EL_H[need] + ') 기운을 이 카드가 그대로 가져옵니다. 카드가 말하는 방향으로 움직여도 좋습니다.'; }
-  else if (mod(e + 1, 5) === need) { score = 1; txt = '카드의 ' + EL[e] + ' 기운이 필요한 ' + EL[need] + ' 기운을 낳아 줍니다. 돌아가는 길이지만 도움이 됩니다.'; }
-  else if (mod(e + 2, 5) === need) { score = -1; txt = '카드의 ' + EL[e] + ' 기운이 필요한 ' + EL[need] + ' 기운을 누릅니다. 속도를 줄이고 한 번 더 확인하세요.'; }
-  else { txt = '카드의 ' + EL[e] + ' 기운은 사주의 균형을 크게 흔들지 않습니다. 카드 뜻 그대로 읽으면 됩니다.'; }
+  if (e === need) { score = 2; txt = T('사주에서 보완이 필요한 ' + EL[need] + '(' + EL_H[need] + ') 기운을 이 카드가 그대로 가져옵니다. 카드가 말하는 방향으로 움직여도 좋습니다.', 'This card brings exactly the ' + EL[need] + ' (' + EL_H[need] + ') energy your saju needs. You can move the way the card points.'); }
+  else if (mod(e + 1, 5) === need) { score = 1; txt = T('카드의 ' + EL[e] + ' 기운이 필요한 ' + EL[need] + ' 기운을 낳아 줍니다. 돌아가는 길이지만 도움이 됩니다.', 'The card\'s ' + EL[e] + ' energy feeds the ' + EL[need] + ' energy you need. It is the long way round, but it helps.'); }
+  else if (mod(e + 2, 5) === need) { score = -1; txt = T('카드의 ' + EL[e] + ' 기운이 필요한 ' + EL[need] + ' 기운을 누릅니다. 속도를 줄이고 한 번 더 확인하세요.', 'The card\'s ' + EL[e] + ' energy presses down the ' + EL[need] + ' energy you need. Slow down and check once more.'); }
+  else { txt = T('카드의 ' + EL[e] + ' 기운은 사주의 균형을 크게 흔들지 않습니다. 카드 뜻 그대로 읽으면 됩니다.', 'The card\'s ' + EL[e] + ' energy does not disturb the balance of your saju much. Read the card as it stands.'); }
   if (rev) score -= 1;
   const dom = GOD_DOMAIN[mod(e - sj.me, 5)];
   return { score, txt, dom };
 }
 function tone(total) {
-  if (total >= 3) return ['밀어도 되는 때', '사주가 필요로 하는 기운과 카드가 같은 쪽을 가리킵니다. 미뤄 둔 결정을 실행으로 옮기기 좋습니다.'];
-  if (total >= 0) return ['다듬으며 가는 때', '크게 막는 것은 없지만 저절로 풀리지도 않습니다. 범위를 좁혀 하나씩 끝내는 방식이 맞습니다.'];
-  return ['지키는 때', '카드와 사주가 서로 엇갈립니다. 새 판을 벌이기보다 가진 것을 점검하고 지키는 쪽이 낫습니다.'];
+  if (total >= 3) return T(['밀어도 되는 때', '사주가 필요로 하는 기운과 카드가 같은 쪽을 가리킵니다. 미뤄 둔 결정을 실행으로 옮기기 좋습니다.'], ['a time you can push', 'The energy your saju needs and the cards point the same way. A good time to act on a decision you have been putting off.']);
+  if (total >= 0) return T(['다듬으며 가는 때', '크게 막는 것은 없지만 저절로 풀리지도 않습니다. 범위를 좁혀 하나씩 끝내는 방식이 맞습니다.'], ['a time to refine as you go', 'Nothing blocks you badly, but nothing resolves by itself either. Narrow the scope and finish one thing at a time.']);
+  return T(['지키는 때', '카드와 사주가 서로 엇갈립니다. 새 판을 벌이기보다 가진 것을 점검하고 지키는 쪽이 낫습니다.'], ['a time to hold what you have', 'The cards and your saju pull in different directions. Checking and protecting what you have is better than starting something new.']);
 }
 
 /* ===== 렌더 ===== */
 const elSpan = (e, t) => '<span class="c' + e + '">' + t + '</span>';
 function cardHTML(pick, open, extra, sel) {
   const c = pick.c;
-  return '<button type="button" class="card' + (open ? ' open' : '') + (sel ? ' sel' : '') + '" ' + (extra || '') + ' aria-label="' + (open ? esc(c.name) + (pick.rev ? ' 역방향' : ' 정방향') : '뒤집힌 카드') + '"><span class="flip">' +
+  return '<button type="button" class="card' + (open ? ' open' : '') + (sel ? ' sel' : '') + '" ' + (extra || '') + ' aria-label="' + (open ? esc(c.name) + (pick.rev ? T(' 역방향', ' reversed') : T(' 정방향', ' upright')) : T('뒤집힌 카드', 'Face-down card')) + '"><span class="flip">' +
     '<span class="f back"></span><span class="f face fc' + c.el + (pick.rev ? ' rev' : '') + '"><span class="no">' + c.no + '</span><span class="sym">' + c.sym + '</span><span class="nm">' + esc(c.name) + '</span></span></span></button>';
 }
-const dirTag = rev => '<span class="tag">' + (rev ? '역방향' : '정방향') + '</span>';
+const dirTag = rev => '<span class="tag">' + (rev ? T('역방향', 'Reversed') : T('정방향', 'Upright')) + '</span>';
 function lockWrap(inner, label, kind) {
   const open = kind === 'match' ? S.matchOpen : S.premium;
-  return '<div class="lock' + (open ? '' : ' locked') + '"><div class="inner">' + inner + '</div><div class="gate">' + TIER.paid + '<span>' + label + '</span><button class="goldbtn" type="button" data-pay="' + (kind || 'saju') + '">' + PAY_CONFIG.priceLabel + '에 열기</button></div></div>';
+  return '<div class="lock' + (open ? '' : ' locked') + '"><div class="inner">' + inner + '</div><div class="gate">' + TIER.paid + '<span>' + label + '</span><button class="goldbtn" type="button" data-pay="' + (kind || 'saju') + '">' + T(Pay.price() + '에 열기', 'Open for ' + Pay.price()) + '</button></div></div>';
 }
 
 function readItem(pick, pos) {
   const l = link(pick.c, pick.rev);
-  return '<div class="it"><b class="c' + pick.c.el + '">' + (pos ? pos + ' · ' : '') + esc(pick.c.name) + '</b>' + dirTag(pick.rev) + '<p>' + (pick.rev ? pick.c.rev : pick.c.up) + '</p><p class="note">' + l.txt + ' 닿는 영역은 ' + l.dom + '입니다.</p></div>';
+  return '<div class="it"><b class="c' + pick.c.el + '">' + (pos ? pos + ' · ' : '') + esc(pick.c.name) + '</b>' + dirTag(pick.rev) + '<p>' + (pick.rev ? pick.c.rev : pick.c.up) + '</p><p class="note">' + l.txt + T(' 닿는 영역은 ' + l.dom + '입니다.', ' It touches ' + l.dom + '.') + '</p></div>';
 }
 function currentCards() {
   if (S.picks.length === 3) return S.picks.map((i, k) => Object.assign({ pos: POS[k] }, S.deck[i]));
-  return [Object.assign({ pos: '오늘의 카드' }, todayCard())];
+  return [Object.assign({ pos: T('오늘의 카드', 'Today\'s card') }, todayCard())];
 }
 function renderReading() {
   const sj = S.saju, cards = currentCards();
   const total = cards.reduce((a, c) => a + link(c.c, c.rev).score, 0), tn = tone(total);
   const yNow = new Date().getFullYear(), yp = yearPillar(yNow + 1, sj.P.day.s);
-  const inner = '<div class="panel"><h3>' + TOPICS[S.topic] + ' · 한 줄 결론</h3><p class="kv" style="font-size:18px"><b>' + tn[0] + '</b></p><p>' + tn[1] + '</p></div>' +
-    '<div class="block"><h3>명리가 말하는 바탕</h3><div class="panel"><p>' + elSpan(sj.P.day.sEl, sj.P.day.stemH) + ' 일간, ' + (sj.strong ? '신강' : '신약') + '. 보완할 기운은 ' + elSpan(sj.need, EL[sj.need]) + '입니다. ' + (yNow + 1) + '년은 ' + yp.sGod + '의 해입니다. ' + GOD_YEAR[yp.sGod] + '</p></div></div>' +
-    '<div class="block"><h3>카드가 말하는 지금' + (cards.length === 1 ? ' · 3장 스프레드를 뽑으면 더 자세해집니다' : '') + '</h3><div class="read">' + cards.map(c => readItem(c, c.pos)).join('') + '</div></div>' +
-    '<div class="block"><h3>종합의견</h3><div class="panel block sum"><p>사주의 바탕과 뽑은 카드를 겹쳐 보면 지금은 <b>' + tn[0] + '</b>입니다. ' + tn[1] + '</p><p><b>정리하면, 나에게 필요한 ' + EL[sj.need] + ' 기운을 채우는 쪽으로 움직이세요. ' + EL_TIP[sj.need][1] + '</b></p></div></div>' +
-    '<div class="block needs-ai" id="aiBox"' + (S.ai ? '' : ' hidden') + '><h3>AI 상담</h3><div class="panel block"><label for="aiQ">내 사주와 뽑은 카드를 바탕으로 묻고 싶은 것</label><textarea id="aiQ" maxlength="300" placeholder="예: 내년에 이직해도 될까요?"></textarea><button type="button" class="primary" id="aiGo">상담 받기</button><div class="ai-out" id="aiOut" aria-live="polite"></div></div></div>';
-  $('v-reading').innerHTML = '<div class="block"><h2>통합 리딩' + TIER.paid + '</h2><h3>사주의 바탕 위에 카드를 겹쳐 읽습니다</h3></div>' + lockWrap(inner, '통합 리딩은 이 사주를 열면 함께 열립니다');
+  const inner = '<div class="panel"><h3>' + TOPICS[S.topic] + T(' · 한 줄 결론', ' · in one line') + '</h3><p class="kv" style="font-size:18px"><b>' + (EN ? tn[0].charAt(0).toUpperCase() + tn[0].slice(1) : tn[0]) + '</b></p><p>' + tn[1] + '</p></div>' +
+    '<div class="block"><h3>' + T('명리가 말하는 바탕', 'What your saju says') + '</h3><div class="panel"><p>' + T(elSpan(sj.P.day.sEl, sj.P.day.stemH) + ' 일간, ' + (sj.strong ? '신강' : '신약') + '. 보완할 기운은 ' + elSpan(sj.need, EL[sj.need]) + '입니다. ' + (yNow + 1) + '년은 ' + yp.sGod + '의 해입니다. ', 'Day Master ' + elSpan(sj.P.day.sEl, sj.P.day.stemH) + ', a ' + (sj.strong ? 'strong' : 'weak') + ' chart. The energy to add is ' + elSpan(sj.need, EL[sj.need]) + '. ' + (yNow + 1) + ' is a ' + G(yp.sGod) + ' year. ') + GOD_YEAR[yp.sGod] + '</p></div></div>' +
+    '<div class="block"><h3>' + T('카드가 말하는 지금', 'What the cards say now') + (cards.length === 1 ? T(' · 3장 스프레드를 뽑으면 더 자세해집니다', ' · draw the three-card spread for more detail') : '') + '</h3><div class="read">' + cards.map(c => readItem(c, c.pos)).join('') + '</div></div>' +
+    '<div class="block"><h3>' + T('종합의견', 'Overall') + '</h3><div class="panel block sum"><p>' + T('사주의 바탕과 뽑은 카드를 겹쳐 보면 지금은 <b>' + tn[0] + '</b>입니다. ', 'Reading your saju and the cards together, this is <b>' + tn[0] + '</b>. ') + tn[1] + '</p><p><b>' + T('정리하면, 나에게 필요한 ' + EL[sj.need] + ' 기운을 채우는 쪽으로 움직이세요. ', 'In short, move toward filling up the ' + EL[sj.need] + ' energy you need. ') + EL_TIP[sj.need][1] + '</b></p></div></div>' +
+    '<div class="block needs-ai" id="aiBox"' + (S.ai ? '' : ' hidden') + '><h3>' + T('AI 상담', 'Ask the AI') + '</h3><div class="panel block"><label for="aiQ">' + T('내 사주와 뽑은 카드를 바탕으로 묻고 싶은 것', 'What you want to ask, based on your saju and cards') + '</label><textarea id="aiQ" maxlength="300" placeholder="' + T('예: 내년에 이직해도 될까요?', 'e.g. Should I change jobs next year?') + '"></textarea><button type="button" class="primary" id="aiGo">' + T('상담 받기', 'Ask') + '</button><div class="ai-out" id="aiOut" aria-live="polite"></div></div></div>';
+  $('v-reading').innerHTML = '<div class="block"><h2>' + T('통합 리딩', 'Combined reading') + TIER.paid + '</h2><h3>' + T('사주의 바탕 위에 카드를 겹쳐 읽습니다', 'The cards read on top of your saju') + '</h3></div>' + lockWrap(inner, T('통합 리딩은 이 사주를 열면 함께 열립니다', 'The combined reading opens when you open this saju'));
 }
 /* ===== 라우팅과 이벤트 ===== */
 function route() {
@@ -209,14 +211,14 @@ let aiBusy = false;
 async function askAI() {
   const q = $('aiQ').value.trim(), out = $('aiOut');
   if (!S.ai || aiBusy) return;
-  if (!q) { out.textContent = '질문을 먼저 적어 주세요.'; return; }
-  aiBusy = true; $('aiGo').disabled = true; out.textContent = '풀이를 쓰는 중입니다.';
-  const prompt = '당신은 명리학과 타로를 함께 보는 상담가입니다. 아래 사주 정보와 타로 결과만을 근거로 질문에 한국어로 답하세요.\n규칙: 6~9문장, 머리말이나 목록 없이 문단으로. 명리 근거 하나와 카드 근거 하나를 분명히 짚고, 마지막 문단은 \'종합의견:\'으로 시작해 두세 문장으로 정리하고 구체적인 행동 한 가지로 끝내세요. 단정적인 예언, 건강·법률·투자에 대한 확답은 하지 말고 참고용 조언의 어조를 유지하세요.\n\n' + contextText() + '\n\n질문: ' + q;
+  if (!q) { out.textContent = T('질문을 먼저 적어 주세요.', 'Write your question first.'); return; }
+  aiBusy = true; $('aiGo').disabled = true; out.textContent = T('풀이를 쓰는 중입니다.', 'Writing your reading.');
+  const prompt = (EN ? 'You are a counselor who reads Korean saju (four pillars) together with tarot. Answer the question in English, using only the saju information and tarot result below.\nRules: 6 to 9 sentences, in paragraphs with no heading or list. Point clearly to one piece of saju evidence and one piece of card evidence. Begin the last paragraph with \'Overall:\', sum up in two or three sentences, and end with one concrete action. Make no definite predictions and give no firm answers on health, legal or investment matters; keep the tone of advice for reference.\n\n' + contextText() + '\n\nQuestion: ' + q : '') || '당신은 명리학과 타로를 함께 보는 상담가입니다. 아래 사주 정보와 타로 결과만을 근거로 질문에 한국어로 답하세요.\n규칙: 6~9문장, 머리말이나 목록 없이 문단으로. 명리 근거 하나와 카드 근거 하나를 분명히 짚고, 마지막 문단은 \'종합의견:\'으로 시작해 두세 문장으로 정리하고 구체적인 행동 한 가지로 끝내세요. 단정적인 예언, 건강·법률·투자에 대한 확답은 하지 말고 참고용 조언의 어조를 유지하세요.\n\n' + contextText() + '\n\n질문: ' + q;
   try {
     const r = await S.ai(prompt, { onText: ({ text }) => { out.textContent = text; } });
     out.textContent = r.text;
   } catch (err) {
-    out.textContent = err && err.code === 'rate_limited' ? '요청이 많습니다. 잠시 뒤에 다시 눌러 주세요.' : 'AI 상담을 불러오지 못했습니다. 위의 통합 리딩은 그대로 볼 수 있습니다.';
+    out.textContent = err && err.code === 'rate_limited' ? T('요청이 많습니다. 잠시 뒤에 다시 눌러 주세요.', 'Too many requests. Please try again in a moment.') : T('AI 상담을 불러오지 못했습니다. 위의 통합 리딩은 그대로 볼 수 있습니다.', 'Could not load the AI answer. The combined reading above is still available.');
     if (err && err.code === 'not_granted') { S.ai = null; const b = $('aiBox'); if (b) b.hidden = true; }
   }
   aiBusy = false; const g = $('aiGo'); if (g) g.disabled = false;

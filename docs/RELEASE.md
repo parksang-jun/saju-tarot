@@ -103,9 +103,13 @@ GitHub에서 빌드하려면 저장소 시크릿 네 개(`ANDROID_KEYSTORE_BASE6
 
 오늘의 운세와 타로 오늘의 카드는 보상형 광고를 한 번 보면 그날 하루 열린다. 사주를 연 사람은 광고 없이 본다.
 
-지금 들어 있는 것은 전부 구글의 테스트용 ID다. 테스트 광고는 나오지만 수익은 생기지 않는다. 프로덕션 전에 아래를 한다.
+Android에는 실제 AdMob ID가 들어 있다(1.5부터). 앱 ID `ca-app-pub-5724346706486152~7235144029`, 보상형 광고 단위 `ca-app-pub-5724346706486152/6660428955`. iOS는 아직 구글 데모 ID다.
 
-- [ ] AdMob(admob.google.com) 가입, 앱 추가(안드로이드, 패키지 `com.parksangjun.sajutarot`)
+앱이 스토어에 공개되고 AdMob 검토를 통과하기 전에는 광고 게재가 제한되어 광고가 안 나올 수 있다. 그때는 앱이 광고 없이 연다.
+
+남은 일
+
+- [x] AdMob 가입, 앱 추가, 앱 ID와 보상형 광고 단위 ID 반영
 - [ ] 앱 ID를 `android/app/src/main/res/values/strings.xml`의 `admob_app_id`에 넣는다. 비거나 틀리면 앱이 시작하자마자 종료된다
 - [ ] 보상형 광고 단위를 만들어 ID를 `src/ads.js`의 `androidRewarded`에 넣고 `testing`을 `false`로 바꾼다
 - [ ] 내 폰은 AdMob 테스트 기기로 등록한다. 자기 광고를 직접 누르면 계정이 정지될 수 있다

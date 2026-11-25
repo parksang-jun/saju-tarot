@@ -103,7 +103,7 @@ const EN_D = {
   TOPICS: { all: 'Overall', love: 'Love · relationships', money: 'Money', work: 'Work · career' },
   POS: ['The flow so far', 'Now', 'The flow ahead']
 };
-const POS_EN = { '년간': 'year stem', '년지': 'year branch', '월간': 'month stem', '월지': 'month branch', '일간': 'day stem', '일지': 'day branch', '시간': 'hour stem', '시지': 'hour branch' };
+const POS_EN = { '년간': 'year stem', '년지': 'year branch', '월간': 'month stem', '월지': 'month branch', '일간': 'day stem', '일지': 'day branch', '시간': 'hour stem', '시지': 'hour branch', '일주': 'day pillar' };
 const PW = w => EN ? (POS_EN[w] || w) : w;   // 자리 이름(월지 등)을 화면에 보일 때 쓴다
 const EN_Y = {
   TEN_KEY: { '비견': 'self-respect · independence · peers', '겁재': 'rivalry · contest · sharing', '식신': 'talent · ease · plenty', '상관': 'expression · critique · skill', '편재': 'big money · business · activity', '정재': 'salary · savings · diligence', '편관': 'pressure · power · decisiveness', '정관': 'rules · career · honor', '편인': 'intuition · niche fields · solitude', '정인': 'study · documents · care' },

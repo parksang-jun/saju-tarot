@@ -284,7 +284,7 @@ function renderSaju() {
     '<div class="block" id="s-year"><h3>해마다 조심할 것 · ' + years[0] + '~' + years[years.length - 1] + '</h3><div class="read">' + years.map(yItem).join('') + '</div></div>' + summaryHTML();
   const jump = '<div class="chips">' + (S.premium ? [['s-yuk', '육신'], ['s-pick', '연도 선택'], ['s-graph', '인생 그래프'], ['s-field', '분야별'], ['s-daeun', '지나온 운·다가올 운'], ['s-month', '월별'], ['s-year', '연도별'], ['s-sum', '종합의견']].map(j => '<button type="button" class="chip" data-jump="' + j[0] + '">' + j[1] + '</button>').join('') : '') + '<button type="button" class="chip' + (S.why ? ' on' : '') + '" data-why>명리 근거 ' + (S.why ? '숨기기' : '보기') + '</button></div>';
   $('v-saju').classList.toggle('show-why', !!S.why);
-  $('v-saju').innerHTML = heroHTML() + dailyHTML() +
+  $('v-saju').innerHTML = heroHTML() + fortuneHTML() +
     '<div class="block"><h2>사주 원국</h2><h3>' + sj.sajuYear + '년생 ' + sj.animal + '띠 · ' + ni.season + '에 태어난 ' + P.day.stem + EL[P.day.sEl] + '(' + P.day.stemH + ')</h3>' + table + '<p class="note">네 기둥은 태어난 해, 달, 날, 시각입니다. 가운데 일주의 윗글자가 나 자신입니다.</p>' + correctionHTML() + jump + '</div>' +
     '<div class="block"><h3>다섯 기운(오행)의 분포</h3><div class="panel">' + bars + '</div></div>' + yuksinHTML() +
     '<div class="block"><h3>나는 어떤 사람인가</h3><div class="panel"><p class="kv"><b>' + elSpan(P.day.sEl, P.day.stemH + ' ' + dm[0]) + '</b></p><p>' + dm[1] + ' ' + plainSeason(mod(P.month.bEl - sj.me, 5)) + '</p></div></div>' + mbtiHTML() +

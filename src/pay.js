@@ -3,8 +3,8 @@
 const PAY_CONFIG = {
   androidKey: 'REPLACE_WITH_REVENUECAT_ANDROID_PUBLIC_KEY',   // RevenueCat > Project > API keys > Google Play
   iosKey: 'REPLACE_WITH_REVENUECAT_IOS_PUBLIC_KEY',
-  productId: 'reading_1000',                                  // 플레이 콘솔의 소모성 인앱 상품 ID
-  priceLabel: '1,000원',                                      // 스토어 가격을 못 불러왔을 때와 웹 미리보기에서 쓰는 표시
+  productId: 'reading_1000',                                  // 플레이 콘솔의 소모성 인앱 상품 ID(내부 이름. 가격은 990원으로 등록한다)
+  priceLabel: '990원',                                      // 스토어 가격을 못 불러왔을 때와 웹 미리보기에서 쓰는 표시
   termsUrl: 'https://parksang-jun.github.io/deungbul/terms.html',                      // 출시 전 실제 주소로 교체
   privacyUrl: 'https://parksang-jun.github.io/deungbul/privacy.html',
   reviewHash: '85d166ec3e32d01143550c4cbdb5c5c2845811751f675361905c9a30c18cfea5'   // 스토어 검토용 열람 코드의 SHA-256. 코드 자체는 저장소에 두지 않는다. 바꾸려면: printf '%s' '새코드' | shasum -a 256

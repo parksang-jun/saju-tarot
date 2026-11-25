@@ -343,17 +343,30 @@ function draw(src, P, m, r) {
   return cv;
 }
 
+/* 분석 진행 막대: 단계마다 목표 %를 정하고 그 사이는 천천히 차오르게 한다 */
+const prog = { v: 0, to: 0, t: null,
+  start() { const st = $('fStage'); if (!st) return; st.innerHTML = '<div class="fprog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="관상 분석 진행"><b id="fPct">0%</b><div class="trk"><i id="fBar"></i></div><span class="note" id="fStep"></span></div>'; this.v = 0; this.to = 0; clearInterval(this.t); this.t = setInterval(() => { if (this.v < this.to) { this.v += Math.max(.4, (this.to - this.v) * .08); this.paint(); } }, 120); },
+  step(to, text) { this.to = to; const e = $('fStep'); if (e) e.textContent = text; },
+  paint() { const b = $('fBar'), p = $('fPct'); if (!b) return; const v = Math.min(100, Math.round(this.v)); b.style.width = v + '%'; p.textContent = v + '%'; b.parentNode.parentNode.setAttribute('aria-valuenow', v); },
+  async done() { this.v = this.to = 100; this.paint(); clearInterval(this.t); await new Promise(r => setTimeout(r, 350)); },
+  stop() { clearInterval(this.t); } };
+const tick = () => new Promise(r => setTimeout(r, 30));
 async function handle(file) {
   if (!file || F.busy) return;
-  setBusy(true); say('얼굴을 찾는 중입니다. 처음에는 몇 초 걸립니다.');
+  setBusy(true); say('사진을 분석하는 중입니다. 화면을 닫지 말고 잠시 기다려 주세요.');
+  prog.start(); prog.step(30, ready ? '분석 준비 중' : '얼굴 인식 엔진을 불러오는 중 (처음 한 번은 조금 걸립니다)');
   try {
     await loadModels();
+    prog.step(45, '사진을 읽는 중'); await tick();
     const c = await toCanvas(file);
+    prog.step(85, '얼굴을 찾는 중'); await tick();
     let dets = await faceapi.detectAllFaces(c, new faceapi.TinyFaceDetectorOptions({ inputSize: 512, scoreThreshold: .3 })).withFaceLandmarks();
     if (!dets.length) dets = await faceapi.detectAllFaces(c, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: .25 })).withFaceLandmarks();
-    if (!dets.length) { say('얼굴을 찾지 못했습니다. 밝은 곳에서 얼굴이 화면의 절반쯤 차도록 정면으로 다시 찍어 주세요.', true); return; }
+    if (!dets.length) { prog.stop(); F.busy = false; renderFace(); say('얼굴을 찾지 못했습니다. 밝은 곳에서 얼굴이 화면의 절반쯤 차도록 정면으로 다시 찍어 주세요.', true); return; }
+    prog.step(95, '얼굴 비율을 재고 풀이를 만드는 중'); await tick();
     dets.sort((a, b) => b.detection.box.area - a.detection.box.area);
     const P = dets[0].landmarks.positions.map(q => ({ x: q.x, y: q.y })), m = measure(P), r = read(m);
+    await prog.done();
     F.res = { m, r, P, src: c }; F.cv = draw(c, P, m, r);
     F.msg = m.yaw > .13 ? '고개가 한쪽으로 돌아가 있어 정확도가 떨어집니다. 정면 사진으로 다시 보면 결과가 달라질 수 있습니다.' : dets.length > 1 ? '여러 얼굴 중 가장 크게 찍힌 얼굴을 봤습니다.' : ''; F.err = m.yaw > .13;
     F.busy = false; renderFace();
@@ -362,6 +375,7 @@ async function handle(file) {
     if (r.total >= 80 && typeof fx !== 'undefined') setTimeout(() => fx.burst($('fRing'), 50), 1100);
     $('fStage').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (e) {
+    prog.stop(); F.busy = false; renderFace();
     say(e && e.message === 'lib' ? '얼굴 인식 엔진을 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.' : e && e.message === 'img' ? '이 사진 파일을 열 수 없습니다. JPG나 PNG 사진으로 다시 시도해 주세요.' : '분석 중 오류가 났습니다. 다른 사진으로 다시 시도해 주세요.', true);
     if (window.console) console.error(e);
   } finally { setBusy(false); }

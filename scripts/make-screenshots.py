@@ -1,5 +1,10 @@
-# 스토어용 휴대전화 스크린샷(1080x1920)을 만든다. 실행: npm run build && python3 scripts/make-screenshots.py (playwright 필요)
-import asyncio, os, shutil
+# 스토어용 휴대전화 스크린샷을 만든다. 실행: npm run build && python3 scripts/make-screenshots.py (playwright 필요)
+#   인자 없음: 안드로이드용 1080x1920 -> store/screenshots
+#   ios      : 애플 6.9인치용 1320x2868 -> store/ios-screenshots
+import asyncio, os, shutil, sys
+IOS = len(sys.argv) > 1 and sys.argv[1] == 'ios'
+W, H, OUT = (440, 956, 'store/ios-screenshots/') if IOS else (360, 640, 'store/screenshots/')
+os.makedirs(OUT, exist_ok=True)
 from playwright.async_api import async_playwright
 CHROME = shutil.which('google-chrome') or shutil.which('chromium')
 URL = 'file://' + os.path.abspath('dist/index.html')
@@ -14,14 +19,15 @@ FACE_JS = r'''
 async def main():
     async with async_playwright() as p:
         b = await p.chromium.launch(executable_path=CHROME, args=['--no-sandbox'])
-        pg = await b.new_page(viewport={'width': 360, 'height': 640}, device_scale_factor=3)
+        pg = await b.new_page(viewport={'width': W, 'height': H}, device_scale_factor=3)
         errs = []; pg.on('pageerror', lambda e: errs.append(str(e)))
         await pg.goto(URL); await pg.wait_for_timeout(800)
         await pg.evaluate("$('guideDlg').close(); S.user={name:'김하늘',gender:'F',cal:'solar',y:1990,m:5,d:15,si:3}; S.partner={name:'이도윤',gender:'M',cal:'solar',y:1988,m:8,d:23,si:7}; Access.add('s:'+profileKey(S.user)); Access.add('m:'+pairKey()); S.streak=1; shuffle(); renderAll(); document.querySelector('canvas.fx').remove()")
+        if IOS: await pg.evaluate("$('codeBtn').hidden = true")   # 아이폰 앱에는 열람 코드 단추가 없다
         async def shot(name, sel=None, dy=0):
             if sel: await pg.evaluate("(a)=>{const e=document.querySelector(a[0]);window.scrollTo(0,e.getBoundingClientRect().top+scrollY-56+a[1])}", [sel, dy])
             else: await pg.evaluate("scrollTo(0,0)")
-            await pg.wait_for_timeout(250); await pg.screenshot(path='store/screenshots/' + name + '.png')
+            await pg.wait_for_timeout(250); await pg.screenshot(path=OUT + name + '.png')
         await shot('1-saju')
         await shot('2-yuksin', '#s-yuk')
         await shot('3-year', '#s-pick')

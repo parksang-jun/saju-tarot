@@ -7,7 +7,7 @@ const ADS_CONFIG = {
   iosRewarded: 'ca-app-pub-3940256099942544/1712485313',
   testingIos: true
 };
-const TIER = { free: '<span class="tier free">무료</span>', ad: '<span class="tier ad">광고 보고 보기</span>', paid: '<span class="tier paid">유료 ' + PAY_CONFIG.priceLabel + '</span>' };
+const TIER = { free: '<span class="tier free">무료</span>', ad: '<span class="tier ad">광고 보고 보기</span>', get paid() { return '<span class="tier paid">유료 ' + esc(Pay.price()) + '</span>'; } };   // 스토어에서 받은 실제 가격을 쓴다(아이폰은 990원이 아닐 수 있다)
 const Ads = {
   ok: false, busy: false, msg: '',
   testing() { return window.Capacitor.getPlatform() === 'ios' && ADS_CONFIG.testingIos; },

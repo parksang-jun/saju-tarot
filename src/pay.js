@@ -34,6 +34,8 @@ const Pay = {
       Pay.pkg = all.find(p => p.product.identifier === PAY_CONFIG.productId) || all[0] || null;
       Pay.state = Pay.pkg ? 'ready' : 'empty';
     } catch (e) { Pay.state = 'error'; }
+    /* 스토어 가격이 표시 가격과 다르면(아이폰 등) 화면의 가격을 스토어 값으로 맞춘다 */
+    if (Pay.pkg && Pay.price() !== PAY_CONFIG.priceLabel) { document.querySelectorAll('.pp').forEach(e => { e.textContent = Pay.price(); }); renderAll(); }
     if ($('pay').open) renderPlans();
   }
 };

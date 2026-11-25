@@ -238,13 +238,10 @@ ul.ftips{margin:0;padding-left:18px;display:grid;gap:4px}
 .ftbl td:first-child,.ftbl th:first-child{text-align:left}
 #v-face details summary{cursor:pointer}
 .fnow{text-align:center;font-family:var(--serif);font-size:15px}
-.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
-.cal .wd{text-align:center;font-size:11px;color:var(--mute)}
-.cal button{background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px 0;display:grid;justify-items:center;line-height:1.2}
-.cal button b{font-size:13px;font-weight:600}.cal button small{font-size:10px;color:var(--mute);font-variant-numeric:tabular-nums}
-.cal button.up{border-color:var(--e0)}.cal button.up small{color:var(--e0)}
-.cal button.dn{border-color:var(--e1)}.cal button.dn small{color:var(--e1)}
-.cal button.now{background:var(--ink3);box-shadow:0 0 0 1px var(--gold)}
+.fbanner{display:grid;gap:6px;width:100%;text-align:left;padding:18px 16px;border-radius:16px;border:1px solid var(--gold);background:radial-gradient(120% 160% at 100% 0%,rgba(207,169,95,.22),transparent 60%),var(--ink2);color:var(--paper)}
+.fbanner .fb-t{font-family:var(--serif);font-weight:900;font-size:22px;color:var(--gold)}
+.fbanner .fb-l{font-size:13px;color:var(--mute)}
+.fbanner .fb-c{font-size:12px}.fbanner .tier{margin-left:0;margin-right:6px}
 .gq{width:18px;height:18px;border-radius:50%;border:1px solid var(--mute);background:none;color:var(--mute);font-size:11px;line-height:1;padding:0;margin-left:6px;vertical-align:1px;font-family:var(--sans);font-weight:600}
 dl.gloss{margin:0;display:grid;gap:8px}
 dl.gloss div{border-left:3px solid var(--line);padding-left:10px}
@@ -319,7 +316,7 @@ table.tiers th{white-space:nowrap;width:1%}
     <h2>사용 방법</h2>
     <ol class="guide">
       <li><b>내 정보 입력</b> 생년월일(양력·음력)과 태어난 시를 넣습니다. 시를 모르면 "시를 모릅니다"에 체크하세요.</li>
-      <li><b>사주</b> 맨 위에서 오늘의 운세와 이달의 운세를 보고, 연도를 골라 해마다의 운세를 봅니다. 맨 아래에 종합의견이 있습니다. 제목 옆의 ? 를 누르면 어려운 말을 풀어 줍니다.</li>
+      <li><b>사주</b> 맨 위의 "오늘의 운세 보기"를 누르면 광고를 본 뒤 오늘의 운세가 열립니다. 연도를 골라 해마다의 운세를 봅니다. 맨 아래에 종합의견이 있습니다. 제목 옆의 ? 를 누르면 어려운 말을 풀어 줍니다.</li>
       <li><b>타로</b> 카드를 직접 눌러 뒤집습니다. 오늘의 카드는 하루 한 장이고 광고를 본 뒤 뒤집힙니다.</li>
       <li><b>궁합</b> 상대의 생년월일을 넣으면 두 사람의 점수와 풀이가 나옵니다.</li>
       <li><b>관상</b> 정면 사진을 찍거나 고르면 얼굴 비율을 재서 풀이하고 사주와 겹쳐 읽습니다. 사진은 저장하지 않습니다.</li>
@@ -327,9 +324,9 @@ table.tiers th{white-space:nowrap;width:1%}
     </ol>
     <h3>무엇이 무료이고 무엇이 유료인가요</h3>
     <table class="tiers">
-      <tr><th><span class="tier free" style="margin:0">무료</span></th><td>사주 원국, 오행과 육신 요약, 올해 총운, 이달의 운세 요약, 궁합 총점, 관상 얼굴형과 총점, 어려운 말 풀이</td></tr>
-      <tr><th><span class="tier ad" style="margin:0">광고 보고 보기</span></th><td>오늘의 운세(날짜를 바꿔 가며 보기 포함), 타로 오늘의 카드. 광고 한 번에 그날 하루 열립니다</td></tr>
-      <tr><th><span class="tier paid" style="margin:0">유료 990원</span></th><td><b>사주 한 명</b>: 상세 풀이 전체, 날짜별 달력과 다른 달 운세, 관상 상세, 타로 3장 스프레드, 통합 리딩. 광고 없이 봅니다<br><b>궁합 한 쌍</b>: 항목별 풀이와 종합의견</td></tr>
+      <tr><th><span class="tier free" style="margin:0">무료</span></th><td>사주 원국, 오행과 육신 요약, 올해 총운, 궁합 총점, 관상 얼굴형과 총점, 어려운 말 풀이</td></tr>
+      <tr><th><span class="tier ad" style="margin:0">광고 보고 보기</span></th><td>오늘의 운세(점수, 재물·일·애정 운, 기회와 조심할 것, 행운의 색과 숫자, 어제와 내일), 타로 오늘의 카드. 광고 한 번에 그날 하루 열립니다</td></tr>
+      <tr><th><span class="tier paid" style="margin:0">유료 990원</span></th><td><b>사주 한 명</b>: 상세 풀이 전체(월별 흐름과 해마다의 운세 포함), 관상 상세, 타로 3장 스프레드, 통합 리딩. 광고 없이 봅니다<br><b>궁합 한 쌍</b>: 항목별 풀이와 종합의견</td></tr>
     </table>
     <p class="note">자동으로 갱신되는 결제는 없습니다. 자물쇠가 걸린 내용은 사주 한 명, 궁합 한 쌍마다 990원에 열립니다. 입력한 정보는 이 기기에만 저장되고, 화면 맨 아래에서 전부 지울 수 있습니다. 풀이는 오락·참고용입니다.</p>
     <button class="primary" id="guideStart" type="button">내 정보 입력하고 시작</button>

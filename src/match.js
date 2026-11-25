@@ -62,8 +62,15 @@ function branchRel(a, b) {
 function gunghap() {
   const A = S.saju, B = S.psaju, ua = S.user, ub = S.partner, lover = S.rel === 'love';
   const an = esc(ua.name || '나'), bn = esc(ub.name || '상대'), items = [];
-  // 1. 일간
-  const as = A.P.day.s, bs = B.P.day.s, ae = A.me, be = B.me, d = mod(be - ae, 5);
+  /* 항목: [제목, 점수, 풀이, 명리 근거, 비중, 짧은 이름, 묶음(out 겉궁합 / in 속궁합 / life 살림)] */
+  const add = (grp, short, title, sc, tx, why, w) => items.push([title, clamp(sc, 30, 98), tx, why, w, short, grp]);
+  const as = A.P.day.s, bs = B.P.day.s, ae = A.me, be = B.me, d = mod(be - ae, 5), ga5 = groupCount(A), gb5 = groupCount(B);
+
+  /* ===== 겉궁합: 남들 눈에 보이는 궁합 ===== */
+  const r5 = branchRel(A.P.year.b, B.P.year.b);
+  add('out', '띠', '띠 궁합', r5[1], A.animal + '띠와 ' + B.animal + '띠는 ' + (r5[1] >= 80 ? '예부터 잘 맞는다고 보는 짝입니다. 처음 만났을 때부터 편하게 어울립니다.' : r5[1] <= 52 ? '예부터 부딪힌다고 보는 짝입니다. 띠는 궁합에서 비중이 가장 작으니 참고만 하세요.' : '무난한 사이입니다.'), '년지 ' + A.P.year.branchH + ' · ' + B.P.year.branchH + ' ' + r5[0], 8);
+  const r4 = branchRel(A.P.month.b, B.P.month.b);
+  add('out', lover ? '집안·사회' : '일하는 방식', lover ? '집안과 사회생활' : '일하는 방식', r4[1], r4[1] >= 80 ? '자라 온 환경과 일하는 방식이 잘 맞습니다. 양쪽 집안이나 직장 문제로 부딪힐 일이 적습니다.' : r4[1] <= 52 ? '자라 온 환경과 일하는 방식이 다릅니다. 집안 행사, 직장 문제는 각자의 방식을 인정하고 선을 정하세요.' : '환경의 차이가 크지 않습니다. 평범하게 맞춰 갈 수 있습니다.', '월지 ' + A.P.month.branchH + ' · ' + B.P.month.branchH + ' ' + r4[0], lover ? 10 : 14);
   let sc, tx, tag;
   if (STEM_HAP(as, bs)) { sc = 95; tag = '천간합'; tx = '두 사람의 중심 기운이 짝을 이룹니다. 처음부터 끌리고 정이 쉽게 붙는 배치입니다.'; }
   else if (d === 0) { sc = as === bs ? 66 : 70; tag = '같은 오행'; tx = '서로 닮은 꼴입니다. 친구처럼 편하고 말이 통하지만, 둘 다 물러서지 않아 고집이 부딪힙니다.'; }
@@ -74,25 +81,51 @@ function gunghap() {
     if (lover && ctrl.gender === 'M' && ua.gender !== ub.gender) { sc = 74; tag = '부부성 배치'; tx = lead + ' 쪽이 이끌고 ' + follow + ' 쪽이 맞춰 주는 구도로, 전통적으로 부부 인연으로 보는 배치입니다. 이끄는 쪽이 일방적이지 않게 하세요.'; }
     else { sc = clash ? 46 : 58; tag = clash ? '천간충' : '상극'; tx = lead + ' 쪽이 ' + follow + ' 쪽을 누르는 구도입니다. 긴장이 매력이 되기도 하지만, 한쪽이 참는 관계가 되지 않게 말로 풀어야 합니다.'; }
   }
-  items.push(['끌림과 기질', sc, tx, '일간 ' + STEMS_H[as] + ' · ' + STEMS_H[bs] + ' ' + tag, 25]);
-  // 2. 일지
+  add('out', '성격', lover ? '성격과 끌림' : '성격과 기질', sc, tx, '일간 ' + STEMS_H[as] + ' · ' + STEMS_H[bs] + ' ' + tag, lover ? 17 : 20);
+
+  /* ===== 속궁합: 둘만 아는 궁합 ===== */
   const r2 = branchRel(A.P.day.b, B.P.day.b);
-  const t2 = { '충': '생활 리듬과 습관이 정면으로 부딪힙니다. 같이 살면 잠, 돈 쓰는 법, 집안일에서 다투기 쉬우니 규칙을 미리 정하세요.', '육합': '생활 궁합이 아주 좋습니다. 같이 있으면 편하고 살림이 자연스럽게 맞춰집니다.', '삼합': '같은 방향을 보는 사이입니다. 함께 무언가를 도모할 때 힘이 납니다.', '원진': '이유 없이 서운하고 미운 마음이 들기 쉬운 배치입니다. 오해가 생기면 그날 풀어야 합니다.', '형': '서로 고치려 들어 삐걱거립니다. 상대의 방식을 그대로 두는 연습이 필요합니다.', '같은 글자': '생활 방식이 닮았습니다. 편한 대신 단점도 같아 서로 거울이 됩니다.', '무난': '크게 끌어당기지도 부딪히지도 않습니다. 함께하는 습관을 만들면 정이 쌓입니다.' }[r2[0]];
-  items.push([lover ? '함께 사는 궁합' : '함께 지내는 궁합', r2[1], t2, '일지 ' + A.P.day.branchH + ' · ' + B.P.day.branchH + ' ' + r2[0], 25]);
-  // 3. 서로 채워 주는 기운
+  if (lover) {
+    const yy = as % 2 !== bs % 2;
+    const warm = sj => 2 * sj.count[1] + sj.count[0] - 2 * sj.count[4] - sj.count[3] + ({ '여름': 3, '봄': 1, '가을': -1, '겨울': -3 })[seasonOf(sj.P.month.b)];
+    const wa = warm(A), wb = warm(B), comp = wa * wb < 0 && Math.abs(wa - wb) >= 4, same = wa * wb > 0 && Math.min(Math.abs(wa), Math.abs(wb)) >= 4;
+    const tword = w => w >= 4 ? '뜨거움' : w >= 1 ? '따뜻함' : w <= -4 ? '차가움' : w <= -1 ? '서늘함' : '중간';
+    const b1 = { '육합': '배우자 자리끼리 합을 이뤄 몸과 마음이 자연스럽게 가까워집니다. 스킨십과 애정 표현의 박자가 잘 맞습니다.', '삼합': '배우자 자리가 같은 편이라 함께 있을 때 편안하고 갈수록 정이 깊어집니다.', '충': '배우자 자리끼리 부딪혀 끌림은 강하지만 박자가 어긋나기 쉽습니다. 원하는 것을 말로 맞춰야 합니다.', '원진': '가까워질수록 사소한 서운함이 쌓이기 쉬운 배치입니다. 애정 표현을 미루지 않는 것이 약입니다.', '형': '서로의 방식을 고치려 들어 애정 표현에서 삐걱거릴 수 있습니다. 상대가 편해하는 방식을 먼저 물어보세요.', '같은 글자': '애정을 주고받는 방식이 닮았습니다. 편안하지만 새로움은 일부러 만들어야 합니다.', '무난': '강하게 당기지도 밀어내지도 않습니다. 함께 보내는 시간이 쌓일수록 정이 깊어지는 사이입니다.' }[r2[0]];
+    const b2 = yy ? '일간의 음양이 달라 서로에게 자연스럽게 끌립니다.' : '일간의 음양이 같아 연인보다 친구 같은 편안함이 앞섭니다.';
+    const b3 = comp ? '한쪽은 따뜻하고 한쪽은 서늘한 사주라 함께 있으면 온도가 맞춰집니다. 예부터 속궁합이 좋다고 보는 짝입니다.' : same ? (wa > 0 ? '둘 다 뜨거운 사주라 금방 달아오르고 금방 부딪힙니다. 식히는 시간을 두세요.' : '둘 다 서늘한 사주라 표현이 적어 서로 외로워지기 쉽습니다. 먼저 다가가는 쪽을 정해 두세요.') : '사주의 온도 차가 크지 않아 무난합니다.';
+    add('in', '몸과 정', '몸과 정의 궁합', 0.5 * r2[1] + 0.25 * (yy ? 88 : 62) + 0.25 * (comp ? 90 : same ? 54 : 72), b1 + ' ' + b2 + ' ' + b3, '일지 ' + A.P.day.branchH + ' · ' + B.P.day.branchH + ' ' + r2[0] + ' · 음양 ' + (yy ? '다름' : '같음') + ' · 사주의 온도 ' + tword(wa) + ' · ' + tword(wb), 20);
+  }
+  const talkA = ga5[1], talkB = gb5[1], hearA = ga5[4], hearB = gb5[4];
+  if ((talkA >= 2 && hearB >= 2) || (talkB >= 2 && hearA >= 2)) { const sp = talkA >= 2 && hearB >= 2 ? an : bn, li = sp === an ? bn : an; sc = 86; tx = sp + ' 쪽이 말을 꺼내고 ' + li + ' 쪽이 받아 주는 구도라 대화가 잘 이어집니다. 속마음을 터놓기 좋은 사이입니다.'; }
+  else if (talkA >= 3 && talkB >= 3) { sc = 58; tx = '둘 다 표현이 강해 말이 많고, 서로 자기 말을 하느라 듣는 사람이 없어지기 쉽습니다. 한 사람씩 끝까지 말하는 규칙이 도움이 됩니다.'; }
+  else if (talkA === 0 && talkB === 0) { sc = 56; tx = '둘 다 속마음을 잘 꺼내지 않습니다. 침묵이 오해로 굳기 전에, 정해 둔 시간에 이야기하는 습관이 필요합니다.'; }
+  else { sc = 70; tx = '대화의 박자가 크게 어긋나지 않습니다. 중요한 이야기는 미루지 않고 그날 하는 것이 좋습니다.'; }
+  if (STEM_HAP(as, bs)) { sc += 6; tx += ' 중심 기운이 합을 이뤄 말하지 않아도 통하는 순간이 많습니다.'; }
+  add('in', '마음·대화', '마음과 대화', sc, tx, '표현(식상) ' + talkA + ' · ' + talkB + '개, 받아들임(인성) ' + hearA + ' · ' + hearB + '개', lover ? 12 : 20);
   const give = (to, from) => clamp(46 + 11 * from.count[to.need] + (from.me === to.need ? 16 : 0), 30, 98);
   const ga = give(A, B), gb = give(B, A);
-  items.push(['서로 채워 주는 힘', Math.round((ga + gb) / 2), bn + '의 사주에는 ' + an + '에게 필요한 ' + EL[A.need] + ' 기운이 ' + B.count[A.need] + '개, ' + an + '의 사주에는 ' + bn + '에게 필요한 ' + EL[B.need] + ' 기운이 ' + A.count[B.need] + '개 있습니다. ' + (ga >= 75 && gb >= 75 ? '서로에게 힘이 되는 사이입니다.' : ga >= 75 ? an + ' 쪽이 더 많이 받는 관계입니다.' : gb >= 75 ? bn + ' 쪽이 더 많이 받는 관계입니다.' : '서로의 부족함을 사주가 직접 채워 주지는 않아, 함께하는 활동으로 보완해야 합니다.'), '용신 ' + EL[A.need] + ' · ' + EL[B.need], 25]);
-  // 4. 월지
-  const r4 = branchRel(A.P.month.b, B.P.month.b);
-  items.push([lover ? '집안과 사회생활' : '일하는 방식', r4[1], r4[1] >= 80 ? '자라 온 환경과 일하는 방식이 잘 맞습니다. 양쪽 집안이나 직장 문제로 부딪힐 일이 적습니다.' : r4[1] <= 52 ? '자라 온 환경과 일하는 방식이 다릅니다. 집안 행사, 직장 문제는 각자의 방식을 인정하고 선을 정하세요.' : '환경의 차이가 크지 않습니다. 평범하게 맞춰 갈 수 있습니다.', '월지 ' + A.P.month.branchH + ' · ' + B.P.month.branchH + ' ' + r4[0], 15]);
-  // 5. 띠
-  const r5 = branchRel(A.P.year.b, B.P.year.b);
-  items.push(['띠 궁합', r5[1], A.animal + '띠와 ' + B.animal + '띠는 ' + (r5[1] >= 80 ? '예부터 잘 맞는다고 보는 짝입니다.' : r5[1] <= 52 ? '예부터 부딪힌다고 보는 짝입니다. 띠는 궁합에서 비중이 가장 작으니 참고만 하세요.' : '무난한 사이입니다.'), '년지 ' + A.P.year.branchH + ' · ' + B.P.year.branchH + ' ' + r5[0], 10]);
-  const saju = Math.round(items.reduce((s, it) => s + it[1] * it[4], 0) / 100);
+  add('in', '채워 주는 힘', '서로 채워 주는 힘', (ga + gb) / 2, bn + '의 사주에는 ' + an + '에게 필요한 ' + EL[A.need] + ' 기운이 ' + B.count[A.need] + '개, ' + an + '의 사주에는 ' + bn + '에게 필요한 ' + EL[B.need] + ' 기운이 ' + A.count[B.need] + '개 있습니다. ' + (ga >= 75 && gb >= 75 ? '서로에게 힘이 되는 사이입니다.' : ga >= 75 ? an + ' 쪽이 더 많이 받는 관계입니다.' : gb >= 75 ? bn + ' 쪽이 더 많이 받는 관계입니다.' : '서로의 부족함을 사주가 직접 채워 주지는 않아, 함께하는 활동으로 보완해야 합니다.'), '용신 ' + EL[A.need] + ' · ' + EL[B.need], lover ? 13 : 18);
+
+  /* ===== 살림 궁합: 함께 꾸리는 생활 ===== */
+  const t2 = { '충': '생활 리듬과 습관이 정면으로 부딪힙니다. 같이 살면 잠, 돈 쓰는 법, 집안일에서 다투기 쉬우니 규칙을 미리 정하세요.', '육합': '생활 궁합이 아주 좋습니다. 같이 있으면 편하고 살림이 자연스럽게 맞춰집니다.', '삼합': '같은 방향을 보는 사이입니다. 함께 무언가를 도모할 때 힘이 납니다.', '원진': '이유 없이 서운하고 미운 마음이 들기 쉬운 배치입니다. 오해가 생기면 그날 풀어야 합니다.', '형': '서로 고치려 들어 삐걱거립니다. 상대의 방식을 그대로 두는 연습이 필요합니다.', '같은 글자': '생활 방식이 닮았습니다. 편한 대신 단점도 같아 서로 거울이 됩니다.', '무난': '크게 끌어당기지도 부딪히지도 않습니다. 함께하는 습관을 만들면 정이 쌓입니다.' }[r2[0]];
+  add('life', '생활', lover ? '함께 사는 궁합' : '함께 지내는 궁합', r2[1], t2, '일지 ' + A.P.day.branchH + ' · ' + B.P.day.branchH + ' ' + r2[0], 8);
+  const ma = ga5[2], mb2 = gb5[2];
+  if (ma >= 2 && mb2 >= 2) { sc = 84; tx = '둘 다 돈과 기회를 보는 눈이 있습니다. 함께 벌고 불리는 데 강하지만, 큰돈은 한 사람이 정리해서 관리하세요.'; }
+  else if ((ma >= 2 && mb2 === 0) || (mb2 >= 2 && ma === 0)) { const k = ma >= 2 ? an : bn; sc = 74; tx = k + ' 쪽이 돈 감각이 좋습니다. 살림과 저축은 ' + k + ' 쪽이 맡고 다른 쪽은 믿고 맡기는 편이 낫습니다.'; }
+  else if (ma === 0 && mb2 === 0) { sc = 58; tx = '둘 다 돈에 무심한 편이라 모이는 속도가 느립니다. 자동이체처럼 신경 쓰지 않아도 모이는 장치를 먼저 만드세요.'; }
+  else { sc = 70; tx = '돈을 대하는 태도가 크게 다르지 않습니다. 큰 지출만 미리 상의하면 다툴 일이 적습니다.'; }
+  if (ga5[0] >= 3 || gb5[0] >= 3) { sc -= 8; tx += ' 한쪽은 사람에게 쓰는 돈이 큰 사주이니 보증과 빌려주는 돈은 함께 정하세요.'; }
+  add('life', '돈', lover ? '돈 궁합' : '돈 거래와 동업', sc, tx, '돈(재성) ' + ma + ' · ' + mb2 + '개, 내 편(비겁) ' + ga5[0] + ' · ' + gb5[0] + '개', 6);
+  let nClash = 0, nHap = 0, nSore = 0;
+  ['year', 'month', 'day', 'hour'].forEach(k => { if (A.P[k] && B.P[k]) { const r = branchRel(A.P[k].b, B.P[k].b)[0]; if (r === '충') nClash++; else if (r === '육합' || r === '삼합') nHap++; else if (r === '원진' || r === '형') nSore++; } });
+  tx = (nClash + nSore === 0 ? '같은 자리의 기둥끼리 크게 부딪히는 곳이 없어 다툼이 잦지 않습니다.' : '같은 자리의 기둥끼리 부딪히는 곳이 ' + (nClash + nSore) + '곳 있어 ' + (nClash ? '한 번 다투면 크게 다툽니다.' : '사소한 일로 자주 토라집니다.')) + ' ' + (nHap ? '끌어당기는 자리가 ' + nHap + '곳 있어 다퉈도 금방 풀립니다.' : '끌어당기는 자리가 적어 다투면 오래 갑니다. 먼저 사과하는 순서를 정해 두세요.');
+  add('life', '다툼·화해', '다툼과 화해', 70 - 9 * nClash - 6 * nSore + 7 * nHap, tx, '네 기둥의 충 ' + nClash + ' · 원진·형 ' + nSore + ' · 합 ' + nHap, 6);
+
+  const avg = list => Math.round(list.reduce((s, it) => s + it[1] * it[4], 0) / list.reduce((s, it) => s + it[4], 0));
+  const saju = avg(items), grp = { out: avg(items.filter(i => i[6] === 'out')), in: avg(items.filter(i => i[6] === 'in')), life: avg(items.filter(i => i[6] === 'life')) };
   const mb = null;
   const total = mb ? Math.round(saju * 0.7 + mb.score * 0.3) : saju;
-  return { items, saju, mb, total, an, bn };
+  return { items, saju, mb, total, an, bn, grp, lover };
 }
 const matchWord = n => n >= 85 ? '천생연분' : n >= 72 ? '잘 맞는 사이' : n >= 58 ? '맞춰 가면 좋은 사이' : '다름을 인정해야 하는 사이';
 function partnerSheet() {
@@ -106,15 +139,20 @@ function renderMatch() {
   const A = S.saju, B = S.psaju, g = gunghap(), why = t => '<p class="why">명리 근거: ' + t + '</p>';
   const who = (sj, name, mb) => '<div class="duo"><small>' + SEASON_ADJ[seasonOf(sj.P.month.b)] + '</small><b class="c' + sj.P.day.sEl + '">' + DAY_TXT[sj.P.day.s][0] + '</b><span>' + name + (mb ? ' · ' + mb : '') + '</span><span class="han4">' + sj.keys.slice().reverse().map(k => elSpan(sj.P[k].sEl, sj.P[k].stemH) + elSpan(sj.P[k].bEl, sj.P[k].branchH)).join(' ') + '</span></div>';
   const hero = '<div class="hero match"><div class="pair">' + who(A, g.an) + '<div class="ring" id="mring" style="--p:' + g.total + '"><div><b data-count="' + g.total + '">' + g.total + '</b><small>' + matchWord(g.total) + '</small></div></div>' + who(B, g.bn) + '</div>' +
-    '<div class="sbars">' + g.items.map((i, k) => '<div class="sbar"><span>' + ['끌림', '생활', '채워 주는 힘', '집안·사회', '띠'][k] + '</span><span class="trk"><i style="--w:' + i[1] + '%"></i></span><b data-count="' + i[1] + '">' + i[1] + '</b></div>').join('') + (g.mb ? '<div class="sbar"><span>성격유형</span><span class="trk"><i style="--w:' + g.mb.score + '%"></i></span><b data-count="' + g.mb.score + '">' + g.mb.score + '</b></div>' : '') + '</div></div>';
+    '<div class="sbars">' + g.items.map(i => '<div class="sbar"><span>' + i[5] + '</span><span class="trk"><i style="--w:' + i[1] + '%"></i></span><b data-count="' + i[1] + '">' + i[1] + '</b></div>').join('') + (g.mb ? '<div class="sbar"><span>성격유형</span><span class="trk"><i style="--w:' + g.mb.score + '%"></i></span><b data-count="' + g.mb.score + '">' + g.mb.score + '</b></div>' : '') + '</div></div>';
+  const gw = n => n >= 80 ? '아주 좋음' : n >= 70 ? '좋음' : n >= 60 ? '무난' : '맞춰 가기';
+  const tile = (cap, n, cls) => '<div class="tile ' + cls + '"><small>' + cap + '</small><b>' + n + '</b><span>' + gw(n) + '</span></div>';
+  const GN = g.lover ? { out: ['겉궁합', '남들 눈에 보이는 궁합'], in: ['속궁합', '둘만 아는 궁합'], life: ['살림 궁합', '함께 꾸리는 생활'] } : { out: ['겉으로 맞는 점', '함께 있을 때 보이는 모습'], in: ['속으로 맞는 점', '마음이 통하는 정도'], life: ['함께 지내는 법', '생활과 돈, 다툼'] };
+  const tiles = '<div class="tiles">' + tile(GN.out[0], g.grp.out, g.grp.out >= 72 ? 'up' : '') + tile(GN.in[0], g.grp.in, g.grp.in >= 72 ? 'gold' : '') + tile(GN.life[0], g.grp.life, g.grp.life >= 72 ? 'up' : '') + '</div>';
+  const inOut = g.grp.out >= 70 && g.grp.in >= 70 ? '겉과 속이 다 맞는 사이입니다.' : g.grp.out >= 70 ? '겉으로는 잘 맞는데 속은 맞춰 가야 하는 사이입니다.' : g.grp.in >= 70 ? '겉으로는 달라 보여도 속이 깊이 맞는 사이입니다.' : '겉과 속 모두 노력으로 맞춰 가는 사이입니다.';
   const good = g.items.filter(i => i[1] >= 80), bad = g.items.filter(i => i[1] <= 55);
-  const sum = '<div class="panel"><p>' + (good.length ? '<b class="c0">잘 맞는 점</b>은 ' + good.map(i => i[0]).join(', ') + '입니다. ' : '') + (bad.length ? '<b class="c1">부딪히는 점</b>은 ' + bad.map(i => i[0]).join(', ') + '입니다. ' : '크게 부딪히는 자리가 없습니다. ') + '</p><p class="note" style="margin-top:6px">점수가 낮은 항목은 헤어지라는 뜻이 아니라 미리 알고 맞춰 갈 지점입니다.' + (g.mb ? ' 종합 점수는 사주 궁합 70%와 성격유형 궁합 30%를 합친 값입니다.' : '') + '</p></div>';
-  const detail = '<div class="block"><h3>항목별 풀이</h3><div class="read">' + g.items.map(i => '<div class="it"><b>' + i[0] + ' · ' + i[1] + '점</b><p>' + i[2] + '</p>' + why(i[3] + ' · 비중 ' + i[4] + '%') + '</div>').join('') + '</div></div>' +
+  const sum = tiles + '<div class="panel"><p><b>' + inOut + '</b> ' + (good.length ? '<b class="c0">잘 맞는 점</b>은 ' + good.map(i => i[0]).join(', ') + '입니다. ' : '') + (bad.length ? '<b class="c1">부딪히는 점</b>은 ' + bad.map(i => i[0]).join(', ') + '입니다. ' : '크게 부딪히는 자리가 없습니다. ') + '</p><p class="note" style="margin-top:6px">점수가 낮은 항목은 헤어지라는 뜻이 아니라 미리 알고 맞춰 갈 지점입니다.' + (g.mb ? ' 종합 점수는 사주 궁합 70%와 성격유형 궁합 30%를 합친 값입니다.' : '') + '</p></div>';
+  const detail = ['out', 'in', 'life'].map(k => '<div class="block"><h3>' + GN[k][0] + ' ' + g.grp[k] + '점 · ' + GN[k][1] + '</h3><div class="read">' + g.items.filter(i => i[6] === k).map(i => '<div class="it"><b>' + i[0] + ' · ' + i[1] + '점</b><p>' + i[2] + '</p>' + why(i[3] + ' · 비중 ' + i[4] + '%') + '</div>').join('') + '</div></div>').join('') +
     (g.mb ? '<div class="block"><h3>성격유형 궁합 · ' + S.user.mbti + ' × ' + ub.mbti + ' · ' + g.mb.score + '점</h3><div class="read">' + g.mb.pts.map(t => '<div class="it"><p>' + t + '</p></div>').join('') + '</div><p class="why">성격유형 궁합 점수는 이 앱의 자체 규칙이며 검증된 이론이 아닙니다.</p></div>' : '') +
     '<div class="block needs-ai"' + (S.ai ? '' : ' hidden') + '><h3>AI 궁합 풀이</h3><div class="panel block"><p class="note">두 사람의 사주를 함께 읽고, 잘 지내는 법을 쉬운 말로 풀어 줍니다.</p><button type="button" class="primary" id="matchGo">AI 궁합 풀이 받기</button><div class="ai-out" id="matchOut" aria-live="polite">' + esc(S.matchText || '') + '</div></div></div>';
-  const hi = g.items.slice().sort((a, b) => b[1] - a[1])[0], lo = g.items.slice().sort((a, b) => a[1] - b[1])[0], loIdx = g.items.indexOf(lo);
-  const tip = ['서로를 바꾸려 들지 말고 잘하는 일로 역할을 나누세요.', '돈, 집안일, 잠처럼 같이 지내는 규칙을 미리 정해 두세요.', '함께하는 취미나 운동으로 서로에게 없는 기운을 채우세요.', '집안 일과 직장 문제는 각자의 방식을 인정하고 선을 정하세요.', '띠는 비중이 가장 작으니 마음에 두지 않아도 됩니다.'][loIdx];
-  const opinion = '<div class="block"><h3>종합의견</h3><div class="panel block sum"><p>' + josa(g.an, '과', '와') + ' ' + josa(g.bn, '은', '는') + ' 종합 ' + g.total + '점으로 <b>' + matchWord(g.total) + '</b>입니다. 가장 큰 강점은 ' + hi[0] + '(' + hi[1] + '점)이고, 가장 신경 쓸 곳은 ' + lo[0] + '(' + lo[1] + '점)입니다.</p><p><b>정리하면, ' + (g.total >= 72 ? '기본 바탕이 좋은 사이입니다. 좋은 점을 당연하게 여기지 않는 것이 오래가는 길입니다.' : g.total >= 58 ? '맞는 곳과 다른 곳이 섞인 사이입니다. 다른 곳을 미리 알고 맞춰 가면 충분히 좋아집니다.' : '타고난 결이 많이 다른 사이입니다. 상대를 고치려 하기보다 다름을 규칙으로 정리해야 편해집니다.') + ' ' + tip + '</b></p></div></div>';
+  const hi = g.items.slice().sort((a, b) => b[1] - a[1])[0], lo = g.items.slice().sort((a, b) => a[1] - b[1])[0];
+  const tip = { '성격': '서로를 바꾸려 들지 말고 잘하는 일로 역할을 나누세요.', '생활': '돈, 집안일, 잠처럼 같이 지내는 규칙을 미리 정해 두세요.', '채워 주는 힘': '함께하는 취미나 운동으로 서로에게 없는 기운을 채우세요.', '집안·사회': '집안 일과 직장 문제는 각자의 방식을 인정하고 선을 정하세요.', '일하는 방식': '일하는 방식의 차이는 역할을 나눠서 풀어 가세요.', '띠': '띠는 비중이 가장 작으니 마음에 두지 않아도 됩니다.', '몸과 정': '애정 표현은 짐작하지 말고 서로 원하는 방식을 말로 맞추세요.', '마음·대화': '일주일에 한 번, 정해 둔 시간에 속 이야기를 나누세요.', '돈': '큰 지출과 빌려주는 돈은 반드시 함께 정하세요.', '다툼·화해': '다툰 날은 넘기지 말고, 먼저 사과하는 순서를 정해 두세요.' }[lo[5]];
+  const opinion = '<div class="block"><h3>종합의견</h3><div class="panel block sum"><p>' + josa(g.an, '과', '와') + ' ' + josa(g.bn, '은', '는') + ' 종합 ' + g.total + '점으로 <b>' + matchWord(g.total) + '</b>입니다. ' + GN.out[0] + ' ' + g.grp.out + '점, ' + GN.in[0] + ' ' + g.grp.in + '점으로 ' + inOut + ' 가장 큰 강점은 ' + hi[0] + '(' + hi[1] + '점)이고, 가장 신경 쓸 곳은 ' + lo[0] + '(' + lo[1] + '점)입니다.</p><p><b>정리하면, ' + (g.total >= 72 ? '기본 바탕이 좋은 사이입니다. 좋은 점을 당연하게 여기지 않는 것이 오래가는 길입니다.' : g.total >= 58 ? '맞는 곳과 다른 곳이 섞인 사이입니다. 다른 곳을 미리 알고 맞춰 가면 충분히 좋아집니다.' : '타고난 결이 많이 다른 사이입니다. 상대를 고치려 하기보다 다름을 규칙으로 정리해야 편해집니다.') + ' ' + tip + '</b></p></div></div>';
   const form = '<form class="birth" id="partnerForm"' + (S.pEdit ? '' : ' hidden') + '><div class="row"><label>상대 이름(선택)<input id="p-name" maxlength="12" autocomplete="off" value="' + (ub.example ? '' : esc(ub.name || '')) + '"></label><label>성별<select id="p-gender"><option value="M"' + (ub.gender === 'M' ? ' selected' : '') + '>남</option><option value="F"' + (ub.gender === 'F' ? ' selected' : '') + '>여</option></select></label></div>' +
     '<div class="row4"><label>달력<select id="p-cal">' + [['solar', '양력'], ['lunar', '음력'], ['leap', '음력 윤달']].map(c => '<option value="' + c[0] + '"' + (ub.cal === c[0] ? ' selected' : '') + '>' + c[1] + '</option>').join('') + '</select></label><label>년<input id="p-y" type="number" inputmode="numeric" min="1900" max="2100" required value="' + ub.y + '"></label><label>월<input id="p-m" type="number" inputmode="numeric" min="1" max="12" required value="' + ub.m + '"></label><label>일<input id="p-d" type="number" inputmode="numeric" min="1" max="31" required value="' + ub.d + '"></label></div>' +
     '<div class="row"><label>태어난 시<select id="p-si"' + (siOf(ub) < 0 ? ' disabled' : '') + '>' + siOptions(siOf(ub) < 0 ? 5 : siOf(ub)) + '</select></label><label class="chk" style="align-self:end;padding-bottom:10px"><input id="p-notime" type="checkbox"' + (siOf(ub) < 0 ? ' checked' : '') + '> 시를 모릅니다</label></div>' +
@@ -122,7 +160,7 @@ function renderMatch() {
   const detailAll = detail + opinion;
   const chips = '<div class="chips"><button type="button" class="chip' + (S.rel === 'love' ? ' on' : '') + '" data-rel="love">연인·부부</button><button type="button" class="chip' + (S.rel === 'friend' ? ' on' : '') + '" data-rel="friend">친구·동료</button><button type="button" class="chip" data-pedit>' + (ub.example ? '상대 정보 입력' : '상대 정보 수정') + '</button></div>';
   $('v-match').classList.toggle('show-why', !!S.why);
-  $('v-match').innerHTML = '<div class="block"><h2>궁합</h2><h3>' + g.an + ' × ' + g.bn + (ub.example ? '<span class="badge">상대는 예시 데이터</span>' : '') + '</h3>' + chips + form + '</div>' + hero + (B.info.err ? '<p class="note warn">' + B.info.err + '</p>' : '') + '<div class="block"><h3>한눈에 보기</h3>' + sum + '</div>' + lockWrap(detailAll, '이 궁합의 항목별 풀이와 종합의견이 한 번 결제로 열립니다', 'match');
+  $('v-match').innerHTML = '<div class="block"><h2>궁합</h2><h3>' + g.an + ' × ' + g.bn + (ub.example ? '<span class="badge">상대는 예시 데이터</span>' : '') + '</h3>' + chips + form + '</div>' + hero + (B.info.err ? '<p class="note warn">' + B.info.err + '</p>' : '') + '<div class="block"><h3>한눈에 보기</h3>' + sum + '</div>' + lockWrap(detailAll, '겉궁합·속궁합·살림 궁합의 항목별 풀이와 종합의견이 한 번 결제로 열립니다', 'match');
 }
 let matchBusy = false;
 async function askMatch() {

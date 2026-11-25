@@ -211,7 +211,26 @@ function sajuLink(f) {
   return { a, b, fit, d, n };
 }
 
-function read(m) {
+/* ----- 좋아지는 변화: 표정·습관·손질로 바꿀 수 있는 것만 바꿔 보고 점수가 얼마나 달라지는지 계산한다 ----- */
+const CHANGES = [
+  ['입꼬리 올리기', '입', '말하지 않을 때도 입꼬리를 살짝 올려 둡니다. 거울 앞에서 하루 1분, 입꼬리를 올린 채 10초씩 버티는 연습이 가장 빠릅니다. 상법은 올라간 입꼬리를 복이 들어오는 입으로 봅니다.', c => { c.z.lift = Math.max(c.z.lift, 1.2); }, m => !m.smile],
+  ['미간 펴기', '인당', '집중할 때 미간을 찌푸리는 버릇을 알아차리고 폅니다. 화면을 볼 때 눈썹 사이를 손끝으로 가볍게 펴 주세요. 명궁이 넓어지면 운이 드나드는 문이 열린다고 봅니다.', c => { c.z.ig = Math.min(1.5, c.z.ig + .9); }],
+  ['눈썹 다듬기', '눈썹', '눈썹 꼬리를 눈꼬리보다 조금 길게 그리거나 기르고, 흩어진 털을 정리합니다. 눈썹이 눈을 덮을 만큼 가지런하면 형제궁이 살아난다고 봅니다.', c => { c.z.bl = Math.max(c.z.bl, .9); }],
+  ['눈두덩 환하게 하기', '전택궁', '눈썹 아래 잔털을 정리하고, 눈을 치켜뜨거나 찡그리는 버릇을 줄입니다. 눈썹과 눈 사이가 환하게 드러나면 전택궁이 넓어 보입니다.', c => { c.z.be = Math.min(1.5, c.z.be + .6); }],
+  ['좌우 균형 잡기', '좌우 균형', '한쪽으로만 씹거나 턱을 괴는 습관을 고치고, 고개를 바로 세우는 자세를 들입니다. 상법은 부위보다 전체의 균형을 먼저 봅니다.', c => { c.asym *= .5; }]
+];
+function improve(m, base) {
+  const sim = fs => { const c = Object.assign({}, m, { z: Object.assign({}, m.z) }); fs.forEach(f => f(c)); return read(c, true); };
+  const tagOf = q => q > .5 ? 2 : q < -.5 ? 0 : 1;
+  const list = CHANGES.filter(c => !c[4] || c[4](m)).map(([title, part, how, f]) => {
+    const r = sim([f]), dl = r.luck.map((l, i) => [l[0], l[1] - base.luck[i][1]]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+    const p0 = base.parts.find(p => p.title === part), p1 = r.parts.find(p => p.title === part);
+    return { title, part, how, f, keep: !p0 || p0.q <= .5, d: r.total - base.total, dl, up: p0 && p1 && tagOf(p1.q) > tagOf(p0.q) ? ['보완', '보통', '강점'][tagOf(p1.q)] : '' };
+  }).filter(x => x.keep && (x.d > 0 || x.dl.length)).sort((a, b) => (b.d * 3 + (b.dl[0] ? b.dl[0][1] : 0)) - (a.d * 3 + (a.dl[0] ? a.dl[0][1] : 0))).slice(0, 3);
+  return { list, after: list.length ? sim(list.map(x => x.f)).total : base.total };
+}
+
+function read(m, simOnly) {
   const z = m.z, sh = shapeOf(z), parts = partsOf(m), P = k => parts.find(x => x.key === k).q;
   const b = (...k) => k.includes(sh.main) ? 3 : 0, sc = x => Math.round(clamp(74 + x, 52, 98));
   const luck = [
@@ -225,7 +244,9 @@ function read(m) {
   const link = sajuLink(sh.main);
   const yNow = new Date().getFullYear(), age = S.user && S.user.y ? yNow - S.user.y + 1 : 0;
   const years = age > 0 ? [0, 1, 2, 3, 4].map(i => Object.assign({ year: yNow + i, age: age + i }, yunOf(age + i, parts))) : [];
-  return { sh, parts, luck, total, link, age, years };
+  const res = { sh, parts, luck, total, link, age, years };
+  if (!simOnly) res.better = improve(m, res);
+  return res;
 }
 
 /* ----- 화면 ----- */
@@ -246,15 +267,20 @@ function resultHTML() {
   const top = [...r.luck].sort((a, b) => b[1] - a[1]), y0 = r.years[0];
   const sum = ['<p>' + S5[0] + (r.sh.sub >= 0 ? '에 ' + SHAPE[r.sh.sub][0] + '이 섞인' : '의') + ' 얼굴이고 관상 총점은 ' + r.total + '점입니다. ' + (strong.length ? '가장 잘 갖춰진 자리는 ' + strong.slice(0, 3).map(p => p.title).join(', ') + '입니다. ' : '어느 한 부위가 튀기보다 전체가 고른 상입니다. ') + '다섯 가지 운에서는 ' + top[0][0] + '(' + top[0][1] + ')이 가장 강하고 ' + top[1][0] + '(' + top[1][1] + ')이 뒤를 받칩니다.</p>',
     '<p>' + (weak.length ? '보완할 자리는 ' + weak.slice(0, 2).map(p => p.title).join(', ') + '입니다. ' : '') + '상대적으로 약한 ' + top[4][0] + '운(' + top[4][1] + ')은 ' + jo(top[4][2], '이', '가') + ' 채워 줍니다.' + (r.link ? ' 사주와는 ' + (r.link.fit > 0 ? '서로 보태는 짝입니다.' : r.link.fit < 0 ? '필요한 기운을 따로 챙겨야 하는 짝입니다.' : '무난하게 어울립니다.') : '') + '</p>',
+    r.better.list.length ? '<p>지금 가장 효과가 큰 변화는 ' + r.better.list[0].title + '입니다.' + (r.better.after > r.total ? ' 권한 변화를 모두 하면 총점이 ' + r.better.after + '점까지 오릅니다.' : '') + '</p>' : '',
     y0 ? '<p>올해 ' + y0.age + '세는 ' + y0.name + '의 자리이고 ' + (y0.q == null ? '사진으로 재기 어려운 자리라 빛깔과 살집으로 봐야 합니다.' : '사진으로는 ' + grade(y0.q)[0] + '로 읽습니다.') + '</p>' : '',
     '<p><b>마의상법은 생김새가 좋은 것이 몸 좋은 것만 못하고, 몸 좋은 것이 마음 좋은 것만 못하다고 했습니다. 표정과 기색이 골격보다 운을 더 크게 바꿉니다.</b></p>'].join('');
   const yun = r.years.length ? '<div class="block"><h3>나이의 자리 · 올해 ' + r.age + '세(세는나이)</h3><div class="panel block"><p>' + y0.lead + ' ' + (y0.q == null ? '정면 사진으로는 재기 어려워 점수는 매기지 않습니다. 이 자리는 살집과 빛깔로 보며, 맑고 밝으면 좋게 읽습니다.' : y0.q > .5 ? '이 자리가 잘 갖춰져 있어 올해는 힘을 받는 해로 읽습니다.' : y0.q < -.5 ? '이 자리가 약한 편이라 올해는 무리한 확장보다 관리에 무게를 두라고 읽습니다.' : '이 자리가 무난해 올해는 큰 기복 없이 가는 해로 읽습니다.') + '</p>' +
     '<div class="fyear">' + r.years.map(y => { const g = grade(y.q); return '<div><span>' + y.year + ' · ' + y.age + '세</span><span>' + y.name + '</span><span class="tag ' + g[1] + '">' + g[0] + '</span></div>'; }).join('') + '</div><p class="note">나이별 자리는 마의상법의 유년운기부위가를 따랐고, 평가는 이번 사진의 측정값 기준입니다.</p></div></div>' : '';
   const tbl = '<details class="block"><summary class="note">측정값 보기</summary><div class="ftbl"><table><thead><tr><th>항목</th><th>측정</th><th>기준</th><th>편차</th></tr></thead><tbody>' + Object.keys(REF).map(k => '<tr><td>' + REF[k][0] + '</td><td>' + m.v[k].toFixed(3) + '</td><td>' + REF[k][1].toFixed(3) + '</td><td>' + sig(m.z[k]) + 'σ</td></tr>').join('') + '</tbody></table></div></details>';
-  const inner = '<div class="block"><h3>부위별 풀이 · 삼정, 오관, 십이궁</h3><div class="read">' + r.parts.map(p => it(p.title, p.sub, p.text, tagOf(p.q), why(p))).join('') + '</div></div>' + yun +
+  const bt = r.better, better = '<div class="block"><h3>이렇게 바뀌면 좋아집니다 · 표정과 습관으로 바꾸는 관상</h3>' + (bt.list.length
+    ? '<div class="read">' + bt.list.map(x => '<div class="it"><b>' + x.title + '</b>' + (x.d > 0 ? '<span class="tag gup">총점 +' + x.d + '</span>' : '') + (x.up ? '<span class="tag gup">' + x.part + ' → ' + x.up + '</span>' : '') + '<p>' + x.how + '</p>' + (x.dl.length ? '<small>달라지는 운: ' + x.dl.map(l => l[0] + ' +' + l[1]).join(' · ') + '</small>' : '') + '</div>').join('') + '</div>' +
+      '<div class="panel block"><p>' + (bt.list.length > 1 ? '위의 ' + bt.list.length + '가지를 함께 하면' : '이 한 가지만 해도') + ' 관상 총점이 <b>' + r.total + '점에서 ' + bt.after + '점</b>으로 오르는 것으로 계산됩니다.</p><p class="note">성형이 아니라 표정, 습관, 손질로 바꿀 수 있는 것만 골랐습니다. 점수는 이 앱의 측정 기준으로 계산한 예상치입니다. 2~3주 뒤 같은 조명과 각도로 다시 찍어 달라졌는지 확인해 보세요.</p></div>'
+    : '<div class="panel"><p>표정과 손질로 바꿀 수 있는 자리가 이미 잘 갖춰져 있습니다. 지금의 표정을 유지하는 것이 가장 좋은 개운입니다.</p></div>') + '</div>';
+  const inner = '<div class="block"><h3>부위별 풀이 · 삼정, 오관, 십이궁</h3><div class="read">' + r.parts.map(p => it(p.title, p.sub, p.text, tagOf(p.q), why(p))).join('') + '</div></div>' + better + yun +
     '<div class="block"><h3>종합의견</h3><div class="panel block sum">' + sum + '</div></div>' + tbl;
   const locked = !S.premium;
-  return hero + free + '<div class="lock' + (locked ? ' locked' : '') + '"><div class="inner">' + inner + '</div><div class="gate"><span>부위별 풀이, 나이의 자리, 종합의견은 사주를 열면 함께 열립니다</span><button type="button" class="goldbtn" id="fUnlock">열기</button></div></div>';
+  return hero + free + '<div class="lock' + (locked ? ' locked' : '') + '"><div class="inner">' + inner + '</div><div class="gate"><span>부위별 풀이, 좋아지는 변화, 나이의 자리, 종합의견은 사주를 열면 함께 열립니다</span><button type="button" class="goldbtn" id="fUnlock">열기</button></div></div>';
 }
 function elSpanSafe(i) { return typeof elSpan === 'function' ? elSpan(i, EL[i] + EL_H[i]) : EL[i]; }
 

@@ -4,7 +4,7 @@ const PAY_CONFIG = {
   androidKey: 'REPLACE_WITH_REVENUECAT_ANDROID_PUBLIC_KEY',   // RevenueCat > Project > API keys > Google Play
   iosKey: 'REPLACE_WITH_REVENUECAT_IOS_PUBLIC_KEY',
   productId: 'reading_1000',                                  // 플레이 콘솔의 소모성 인앱 상품 ID(내부 이름. 가격은 990원으로 등록한다)
-  priceLabel: '990원',                                      // 스토어 가격을 못 불러왔을 때와 웹 미리보기에서 쓰는 표시
+  priceLabel: T('990원', '₩990'),                                      // 스토어 가격을 못 불러왔을 때와 웹 미리보기에서 쓰는 표시
   termsUrl: 'https://parksang-jun.github.io/deungbul/terms.html',                      // 출시 전 실제 주소로 교체
   privacyUrl: 'https://parksang-jun.github.io/deungbul/privacy.html',
   reviewHash: '85d166ec3e32d01143550c4cbdb5c5c2845811751f675361905c9a30c18cfea5'   // 스토어 검토용 열람 코드의 SHA-256. 코드 자체는 저장소에 두지 않는다. 바꾸려면: printf '%s' '새코드' | shasum -a 256
@@ -40,19 +40,19 @@ const Pay = {
   }
 };
 function payTarget() {
-  const u = S.user, who = x => esc(x.name || '이름 없음') + ' · ' + (x.cal === 'solar' ? '양력 ' : x.cal === 'leap' ? '음력 윤달 ' : '음력 ') + x.y + '.' + x.m + '.' + x.d + ' ' + (siOf(x) < 0 ? '시 모름' : SI_NAME[siOf(x)]) + ' · ' + (x.gender === 'M' ? '남' : '여');
+  const u = S.user, who = x => esc(x.name || T('이름 없음', 'No name')) + ' · ' + (x.cal === 'solar' ? T('양력 ', 'Solar ') : x.cal === 'leap' ? T('음력 윤달 ', 'Lunar leap ') : T('음력 ', 'Lunar ')) + x.y + '.' + x.m + '.' + x.d + ' ' + (siOf(x) < 0 ? T('시 모름', 'hour unknown') : SI_NAME[siOf(x)]) + ' · ' + (x.gender === 'M' ? T('남', 'M') : T('여', 'F'));
   return S.payKind === 'match'
-    ? { key: 'm:' + pairKey(), title: '이 궁합 열기', desc: who(u) + '<br>' + who(S.partner), blocked: u.example || S.partner.example, why: '예시 데이터로는 결제할 수 없습니다. 내 정보와 상대 정보를 먼저 입력하세요.' }
-    : { key: 's:' + profileKey(u), title: '이 사주 열기', desc: who(u), blocked: u.example, why: '예시 데이터로는 결제할 수 없습니다. 내 정보를 먼저 입력하세요.' };
+    ? { key: 'm:' + pairKey(), title: T('이 궁합 열기', 'Open this match'), desc: who(u) + '<br>' + who(S.partner), blocked: u.example || S.partner.example, why: T('예시 데이터로는 결제할 수 없습니다. 내 정보와 상대 정보를 먼저 입력하세요.', 'The example cannot be purchased. Enter your details and your partner\'s first.') }
+    : { key: 's:' + profileKey(u), title: T('이 사주 열기', 'Open this saju'), desc: who(u), blocked: u.example, why: T('예시 데이터로는 결제할 수 없습니다. 내 정보를 먼저 입력하세요.', 'The example cannot be purchased. Enter your details first.') };
 }
 function renderPlans() {
-  const t = payTarget(), go = $('payGo'), msg = { loading: '스토어에서 가격을 불러오는 중입니다.', nokey: '결제 설정이 아직 끝나지 않은 빌드입니다.', empty: '판매 중인 상품이 없습니다. 잠시 뒤 다시 열어 주세요.', error: '스토어에 연결하지 못했습니다. 인터넷 연결을 확인하고 다시 열어 주세요.' }[Pay.state];
+  const t = payTarget(), go = $('payGo'), msg = { loading: T('스토어에서 가격을 불러오는 중입니다.', 'Loading the price from the store.'), nokey: T('결제 설정이 아직 끝나지 않은 빌드입니다.', 'Payments are not set up in this build yet.'), empty: T('판매 중인 상품이 없습니다. 잠시 뒤 다시 열어 주세요.', 'Nothing is on sale right now. Please open this again in a moment.'), error: T('스토어에 연결하지 못했습니다. 인터넷 연결을 확인하고 다시 열어 주세요.', 'Could not reach the store. Check your connection and open this again.') }[Pay.state];
   $('payTitle').textContent = t.title;
   $('payPerk').hidden = S.payKind === 'match'; $('payPerkMatch').hidden = S.payKind !== 'match';
-  $('plans').innerHTML = '<div class="plan on"><span>' + (S.payKind === 'match' ? '궁합 1쌍' : '사주 1명') + '<small>' + t.desc + '</small></span><span class="pr">' + esc(Pay.price()) + '</span></div>';
+  $('plans').innerHTML = '<div class="plan on"><span>' + (S.payKind === 'match' ? T('궁합 1쌍', 'Match for 1 couple') : T('사주 1명', 'Saju for 1 person')) + '<small>' + t.desc + '</small></span><span class="pr">' + esc(Pay.price()) + '</span></div>';
   $('payDemo').hidden = NATIVE; $('payNote').hidden = false;
   if (NATIVE && (t.blocked || msg)) { go.hidden = true; $('payMsg').textContent = t.blocked ? t.why : msg; return; }
-  go.hidden = false; go.textContent = NATIVE ? Pay.price() + ' 결제하고 열기' : '테스트 결제로 열기';
+  go.hidden = false; go.textContent = NATIVE ? T(Pay.price() + ' 결제하고 열기', 'Pay ' + Pay.price() + ' and open') : T('테스트 결제로 열기', 'Open with a test payment');
 }
 function openPay(kind) { S.payKind = kind === 'match' ? 'match' : 'saju'; $('payMsg').textContent = ''; renderPlans(); const d = $('pay'); if (d.showModal) d.showModal(); else d.setAttribute('open', ''); }
 $('payGo').onclick = async () => {
@@ -60,7 +60,7 @@ $('payGo').onclick = async () => {
   if (!NATIVE) return done();
   go.disabled = true; $('payMsg').textContent = '';
   try { await RC.purchasePackage({ aPackage: Pay.pkg }); done(); }
-  catch (e) { if (!(e && (e.userCancelled || e.code === '1' || e.code === 1))) $('payMsg').textContent = '결제를 마치지 못했습니다. 결제 수단을 확인하고 다시 시도해 주세요.'; }
+  catch (e) { if (!(e && (e.userCancelled || e.code === '1' || e.code === 1))) $('payMsg').textContent = T('결제를 마치지 못했습니다. 결제 수단을 확인하고 다시 시도해 주세요.', 'The payment did not go through. Check your payment method and try again.'); }
   go.disabled = false;
 };
 $('payTerms').href = PAY_CONFIG.termsUrl; $('payPrivacy').href = PAY_CONFIG.privacyUrl;
@@ -72,7 +72,7 @@ $('codeCancel').onclick = () => $('codeDlg').close();
 $('codeForm').addEventListener('submit', async e => {
   e.preventDefault();
   let ok = false; try { ok = await sha256Hex($('codeIn').value.trim().toUpperCase()) === PAY_CONFIG.reviewHash; } catch (err) {}
-  if (!ok) { $('codeMsg').textContent = '코드가 맞지 않습니다.'; return; }
+  if (!ok) { $('codeMsg').textContent = T('코드가 맞지 않습니다.', 'That code is not valid.'); return; }
   store.set('mw-review', true); $('codeDlg').close(); renderAll(); fx.burst($('editBtn'), 90);
 });
 /* iOS에서는 열람 코드를 쓰지 않는다: 애플 심사는 샌드박스 결제로 유료 기능을 확인한다 */

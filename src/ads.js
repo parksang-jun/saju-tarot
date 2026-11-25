@@ -7,7 +7,7 @@ const ADS_CONFIG = {
   iosRewarded: 'ca-app-pub-3940256099942544/1712485313',
   testingIos: true
 };
-const TIER = { free: '<span class="tier free">무료</span>', ad: '<span class="tier ad">광고 보고 보기</span>', get paid() { return '<span class="tier paid">유료 ' + esc(Pay.price()) + '</span>'; } };   // 스토어에서 받은 실제 가격을 쓴다(아이폰은 990원이 아닐 수 있다)
+const TIER = { free: '<span class="tier free">' + T('무료', 'Free') + '</span>', ad: '<span class="tier ad">' + T('광고 보고 보기', 'Watch an ad') + '</span>', get paid() { return '<span class="tier paid">' + T('유료 ', 'Paid ') + esc(Pay.price()) + '</span>'; } };   // 스토어에서 받은 실제 가격을 쓴다(아이폰은 990원이 아닐 수 있다)
 const Ads = {
   ok: false, busy: false, msg: '',
   testing() { return window.Capacitor.getPlatform() === 'ios' && ADS_CONFIG.testingIos; },
@@ -19,7 +19,7 @@ const Ads = {
     this.msg = '';
     if (this.unlocked(kind)) return true;
     if (this.busy) return false;
-    if (!NATIVE || !this.ok) { this.grant(kind); if (!NATIVE) this.msg = '미리보기에서는 광고 없이 열립니다. 앱에서는 광고가 먼저 나옵니다.'; return true; }
+    if (!NATIVE || !this.ok) { this.grant(kind); if (!NATIVE) this.msg = T('미리보기에서는 광고 없이 열립니다. 앱에서는 광고가 먼저 나옵니다.', 'The preview opens without an ad. In the app an ad plays first.'); return true; }
     this.busy = true;
     const A = window.CapAdMob, subs = []; let rewarded = false;
     const on = (ev, fn) => A.addListener(ev, fn).then(h => subs.push(h));
@@ -37,8 +37,8 @@ const Ads = {
     });
     subs.forEach(h => { try { h.remove(); } catch (e) {} });
     this.busy = false;
-    if (result === 'closed') { this.msg = '광고를 끝까지 봐야 열립니다. 다시 눌러 주세요.'; return false; }
-    if (result === 'fail') this.msg = '지금은 광고를 불러올 수 없어 바로 열었습니다.';
+    if (result === 'closed') { this.msg = T('광고를 끝까지 봐야 열립니다. 다시 눌러 주세요.', 'Watch the ad to the end to open this. Tap again.'); return false; }
+    if (result === 'fail') this.msg = T('지금은 광고를 불러올 수 없어 바로 열었습니다.', 'No ad was available, so this was opened right away.');
     this.grant(kind); return true;
   }
 };

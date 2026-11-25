@@ -32,6 +32,33 @@ const cityKeyOf = u => u.city && CITY_LON[u.city] != null ? u.city : (Object.key
 const cityLabel = key => { const p = key.split('|'); return (['경기', '강원', '경남'].includes(p[0]) && ['광주', '고성'].includes(p[1]) ? p[0] + ' ' : '') + p[1]; };
 const cityOptions = sel => REGIONS.map(g => '<optgroup label="' + g[0] + '">' + g[1].map(c => { const k = g[0] + '|' + c[0]; return '<option value="' + k + '"' + (k === sel ? ' selected' : '') + '>' + c[0] + '</option>'; }).join('') + '</optgroup>').join('');
 
+/* 해외 출생: 주요 도시의 경도(동경 +, 서경 -)와 시간대. 태어난 곳의 시계 시각을 그 시간대(서머타임 포함)로 세계시로 바꾸고, 경도로 그곳의 태양시를 구해 시주를 세운다. */
+const WORLD = [
+  ['Korea · Japan', [['Seoul', 126.98, 'Asia/Seoul'], ['Busan', 129.08, 'Asia/Seoul'], ['Tokyo', 139.69, 'Asia/Tokyo'], ['Osaka', 135.50, 'Asia/Tokyo'], ['Sapporo', 141.35, 'Asia/Tokyo'], ['Fukuoka', 130.40, 'Asia/Tokyo']]],
+  ['United States · Canada', [['New York', -74.01, 'America/New_York'], ['Boston', -71.06, 'America/New_York'], ['Philadelphia', -75.17, 'America/New_York'], ['Washington, D.C.', -77.04, 'America/New_York'], ['Atlanta', -84.39, 'America/New_York'], ['Miami', -80.19, 'America/New_York'], ['Detroit', -83.05, 'America/Detroit'], ['Toronto', -79.38, 'America/Toronto'], ['Montreal', -73.57, 'America/Toronto'], ['Chicago', -87.63, 'America/Chicago'], ['Houston', -95.37, 'America/Chicago'], ['Dallas', -96.80, 'America/Chicago'], ['San Antonio', -98.49, 'America/Chicago'], ['Minneapolis', -93.27, 'America/Chicago'], ['Denver', -104.99, 'America/Denver'], ['Calgary', -114.07, 'America/Edmonton'], ['Phoenix', -112.07, 'America/Phoenix'], ['Los Angeles', -118.24, 'America/Los_Angeles'], ['San Diego', -117.16, 'America/Los_Angeles'], ['San Francisco', -122.42, 'America/Los_Angeles'], ['San Jose', -121.89, 'America/Los_Angeles'], ['Las Vegas', -115.14, 'America/Los_Angeles'], ['Portland', -122.68, 'America/Los_Angeles'], ['Seattle', -122.33, 'America/Los_Angeles'], ['Vancouver', -123.12, 'America/Vancouver'], ['Anchorage', -149.90, 'America/Anchorage'], ['Honolulu', -157.86, 'Pacific/Honolulu']]],
+  ['Asia · Pacific', [['Beijing', 116.41, 'Asia/Shanghai'], ['Shanghai', 121.47, 'Asia/Shanghai'], ['Hong Kong', 114.17, 'Asia/Hong_Kong'], ['Taipei', 121.57, 'Asia/Taipei'], ['Manila', 120.98, 'Asia/Manila'], ['Hanoi', 105.85, 'Asia/Ho_Chi_Minh'], ['Ho Chi Minh City', 106.63, 'Asia/Ho_Chi_Minh'], ['Bangkok', 100.50, 'Asia/Bangkok'], ['Singapore', 103.82, 'Asia/Singapore'], ['Kuala Lumpur', 101.69, 'Asia/Kuala_Lumpur'], ['Jakarta', 106.85, 'Asia/Jakarta'], ['Delhi', 77.21, 'Asia/Kolkata'], ['Mumbai', 72.88, 'Asia/Kolkata'], ['Dubai', 55.27, 'Asia/Dubai'], ['Sydney', 151.21, 'Australia/Sydney'], ['Melbourne', 144.96, 'Australia/Melbourne'], ['Perth', 115.86, 'Australia/Perth'], ['Auckland', 174.76, 'Pacific/Auckland']]],
+  ['Europe · Africa', [['London', -0.13, 'Europe/London'], ['Dublin', -6.26, 'Europe/Dublin'], ['Lisbon', -9.14, 'Europe/Lisbon'], ['Madrid', -3.70, 'Europe/Madrid'], ['Paris', 2.35, 'Europe/Paris'], ['Amsterdam', 4.90, 'Europe/Amsterdam'], ['Berlin', 13.40, 'Europe/Berlin'], ['Rome', 12.50, 'Europe/Rome'], ['Stockholm', 18.07, 'Europe/Stockholm'], ['Warsaw', 21.01, 'Europe/Warsaw'], ['Athens', 23.73, 'Europe/Athens'], ['Istanbul', 28.98, 'Europe/Istanbul'], ['Moscow', 37.62, 'Europe/Moscow'], ['Cairo', 31.24, 'Africa/Cairo'], ['Lagos', 3.38, 'Africa/Lagos'], ['Nairobi', 36.82, 'Africa/Nairobi'], ['Johannesburg', 28.05, 'Africa/Johannesburg']]],
+  ['Latin America', [['Mexico City', -99.13, 'America/Mexico_City'], ['Bogotá', -74.07, 'America/Bogota'], ['Lima', -77.04, 'America/Lima'], ['Santiago', -70.67, 'America/Santiago'], ['Buenos Aires', -58.38, 'America/Argentina/Buenos_Aires'], ['São Paulo', -46.63, 'America/Sao_Paulo']]]
+];
+const WORLD_MAP = {}; WORLD.forEach(g => g[1].forEach(c => { WORLD_MAP[c[0]] = c; }));
+const worldOptions = sel => WORLD.map(g => '<optgroup label="' + g[0] + '">' + g[1].map(c => '<option' + (c[0] === sel ? ' selected' : '') + '>' + c[0] + '</option>').join('') + '</optgroup>').join('');
+function worldGuess() { let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {} const hit = Object.keys(WORLD_MAP).find(k => WORLD_MAP[k][2] === tz); return hit || 'New York'; }
+const _zoneFmt = {};
+function zoneOffsetMin(ms, tz) {
+  try {
+    const f = _zoneFmt[tz] || (_zoneFmt[tz] = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }));
+    const p = {}; f.formatToParts(new Date(ms)).forEach(x => { p[x.type] = +x.value; });
+    return Math.round((Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second) - ms) / 60000);
+  } catch (e) { return 0; }
+}
+function zoneToUTC(y, m, d, h, mi, tz) { const wall = Date.UTC(y, m - 1, d, h, mi); let ms = wall - zoneOffsetMin(wall, tz) * 60000; return wall - zoneOffsetMin(ms, tz) * 60000; }
+/* 화면에서 받은 태어난 곳과 시계 시각을 사용자 정보에 붙인다(영어판). 시 번호(si)는 계산 결과에서 채운다. */
+function withPlace(u, place, time, noTime) {
+  const c = WORLD_MAP[place] || WORLD_MAP['New York'], t = /^(\d{1,2}):(\d{2})/.exec(time || '');
+  u.place = c[0]; u.lon = c[1]; u.tz = c[2]; u.hh = noTime || !t ? null : +t[1]; u.mm = noTime || !t ? null : +t[2]; u.si = null;
+  u.si = calcSaju(u).siIdx; return u;
+}
+
 const stemEl = s => Math.floor(s / 2);
 const mod = (a, n) => ((a % n) + n) % n;
 const pad2 = n => String(n).padStart(2, '0');
@@ -112,12 +139,15 @@ const siOptions = sel => SI_LABEL.map((l, i) => '<option value="' + i + '"' + (i
 function calcSaju(u) {
   let sol = { y: u.y, m: u.m, d: u.d }, err = null;
   if (u.cal !== 'solar') { const r = lunarToSolar(u.y, u.m, u.d, u.cal === 'leap'); if (r) sol = r; else err = T('음력 날짜를 양력으로 바꾸지 못했습니다. 날짜와 윤달 여부를 확인하세요.', 'Could not convert the lunar date to a solar date. Check the date and whether it is a leap month.'); }
-  const si = siOf(u), known = si >= 0;                             // 시는 사주의 열두 시로 직접 받는다
-  const LON = 127.5;
-  const utc = known ? Date.UTC(sol.y, sol.m - 1, sol.d, si === 12 ? 23 : si * 2, si === 12 || si === 0 ? 30 : 0) - LON * 240000 : seoulToUTC(sol.y, sol.m, sol.d, 12, 0);
+  const W = u.tz && u.lon != null;                                 // 해외 출생: 태어난 곳의 시계 시각과 시간대, 경도로 계산한다
+  const si0 = W ? -1 : siOf(u), known = W ? u.hh != null : si0 >= 0;  // 한국: 시는 사주의 열두 시로 직접 받는다
+  const LON = W ? u.lon : 127.5;
+  const utc = W ? zoneToUTC(sol.y, sol.m, sol.d, known ? u.hh : 12, known ? u.mm : 0, u.tz)
+    : known ? Date.UTC(sol.y, sol.m - 1, sol.d, si0 === 12 ? 23 : si0 * 2, si0 === 12 || si0 === 0 ? 30 : 0) - LON * 240000 : seoulToUTC(sol.y, sol.m, sol.d, 12, 0);
   const lst = new Date(utc + LON * 240000);
-  const yajaOn = si === 12;
   const Y = lst.getUTCFullYear(), Mo = lst.getUTCMonth() + 1, D = lst.getUTCDate(), H = lst.getUTCHours(), Mi = lst.getUTCMinutes();
+  const si = !W ? si0 : !known ? -1 : H >= 23 ? 12 : Math.floor(mod(H * 60 + Mi + 60, 1440) / 120);   // 해외: 그곳 태양시로 시를 정한다(23시 이후는 야자시)
+  const yajaOn = si === 12;
   const jd = msToJD(utc, sol.y), lon = sunLon(jd);
   const sy = (Mo <= 2 && lon >= 270 && lon < 315) ? Y - 1 : (Mo === 12 && lon >= 315 ? Y + 1 : Y);
   const ys = mod(sy - 4, 10), yb = mod(sy - 4, 12);
@@ -173,7 +203,7 @@ function calcSaju(u) {
     warn: nearMin < 90 ? T('태어난 날이 절기가 바뀌는 날입니다. 절기 시각 전후로 월주(입춘이면 년주도)가 달라지니, 평소 보던 만세력과 월주를 비교해 보세요.', 'You were born on a day when the solar term changes. The month pillar (and the year pillar, at the Start of Spring) differs before and after that moment, so compare the month pillar with a chart you trust.') : '',
     err
   };
-  return { P, keys, count, me, strong, ratio, amt, tot, basis, need, forward, startAge, startExact, daeun, sajuYear: sy, by: sol.y, animal: ANIMALS[yb], lon, hourIdx, info };
+  return { P, keys, count, me, strong, ratio, amt, tot, basis, need, forward, startAge, startExact, daeun, sajuYear: sy, by: sol.y, animal: ANIMALS[yb], lon, hourIdx, siIdx: si, info };
 }
 function yearPillar(year, dayStem) { return pillar(mod(year - 4, 10), mod(year - 4, 12), dayStem); }
 function dayPillarOf(y, m, d, dayStem) { const i = mod(jdn(y, m, d) + 49, 60); return pillar(i % 10, i % 12, dayStem); }

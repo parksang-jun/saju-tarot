@@ -1,8 +1,9 @@
 /* ===== 언어: 한국어(기본)와 영어 =====
    T(ko, en)으로 문장을 고른다. 표는 LANG에 따라 한국어 표나 영어 표를 통째로 고른다.
    표의 열쇠(비견, 목 같은 내부 이름)는 언어와 상관없이 한국어 그대로 두고, 화면에 보일 때만 이름표를 바꾼다.
-   EN_READY가 false인 동안에는 앱이 항상 한국어로 뜬다. 영어는 웹 미리보기에서 주소 끝에 ?lang=en 을 붙여서만 본다. */
-const EN_READY = false;
+   기기 언어가 한국어면 한국어, 그 밖에는 영어로 뜬다. 화면 맨 아래 단추로 바꿀 수 있고, 고른 언어는 기기에 저장된다.
+   EN_READY를 false로 돌리면 앱이 항상 한국어로 뜬다(영어는 주소 끝에 ?lang=en 을 붙여야만 보인다). */
+const EN_READY = true;
 const LANG = (() => {
   let q = null, saved = null;
   try { q = new URLSearchParams(location.search).get('lang'); saved = localStorage.getItem('mw-lang'); } catch (e) {}
@@ -31,9 +32,9 @@ function setLang(l) { try { localStorage.setItem('mw-lang', l); } catch (e) {} l
   tx(id('f-name').parentNode, 'Name (optional)'); tx(id('f-gender').parentNode, 'Sex'); opt('f-gender', { M: 'Male', F: 'Female' });
   tx(id('f-cal').parentNode, 'Calendar'); opt('f-cal', { solar: 'Solar', lunar: 'Lunar', leap: 'Lunar (leap month)' });
   tx(id('f-y').parentNode, 'Year'); tx(id('f-m').parentNode, 'Month'); tx(id('f-d').parentNode, 'Day');
-  tx(id('f-si').parentNode, 'Birth hour'); tx(id('f-notime').parentNode, " I don't know the hour", true);
+  tx(id('f-si').parentNode, 'Birth time (clock)'); tx(id('f-notime').parentNode, " I don't know the hour", true);
   tx(id('f-mbti').parentNode, 'MBTI type (optional)');
-  html(q('#birthForm .hint'), 'Hours follow the clock time where you were born. If you were born near the edge of a two-hour block, or during daylight saving time, check the neighboring block as well.');
+  html(q('#birthForm .hint'), 'Enter the clock time where you were born. The app converts it with that city\'s time zone (daylight saving included) and its longitude to find your hour pillar. Choose the nearest listed city in the same time zone.');
   html(q('#birthForm button.primary'), 'See my chart');
   const nav = { saju: 'Saju', tarot: 'Tarot', match: 'Match', face: 'Face', reading: 'Combined' };
   document.querySelectorAll('nav a[data-v]').forEach(a => { if (nav[a.dataset.v]) a.textContent = nav[a.dataset.v]; });
@@ -42,7 +43,7 @@ function setLang(l) { try { localStorage.setItem('mw-lang', l); } catch (e) {} l
 
   html(q('#guideDlg h2'), 'How it works');
   html(q('#guideDlg ol.guide'),
-    '<li><b>Enter your details</b> Your birth date (solar or lunar) and birth hour. If you don\'t know the hour, tick "I don\'t know the hour".</li>' +
+    '<li><b>Enter your details</b> Your birth date (solar or lunar) and birth time. Add the city nearest your birthplace. If you don\'t know the time, tick "I don\'t know the hour".</li>' +
     '<li><b>Saju</b> Tap "See today\'s fortune" at the top; it opens after one ad. Pick a year to read that year\'s fortune. The overall summary is at the bottom. Tap the ? next to a heading for a plain explanation of the term.</li>' +
     '<li><b>Tarot</b> Tap the cards to flip them yourself. The daily card is one card a day and flips after an ad.</li>' +
     '<li><b>Match</b> Enter the other person\'s birth date to see your scores and reading as a pair.</li>' +

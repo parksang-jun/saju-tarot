@@ -106,7 +106,7 @@ function celebrate() {
 /* ===== 헤더, 입력 폼 ===== */
 function renderWho() {
   const u = S.user, i = S.saju.info;
-  $('who').innerHTML = esc(u.name || T('이름 없음', 'No name')) + ' · ' + (u.cal === 'solar' ? T('양력 ', 'Solar ') : u.cal === 'leap' ? T('음력 윤달 ', 'Lunar leap ') : T('음력 ', 'Lunar ')) + u.y + '.' + u.m + '.' + u.d + (i.siName ? ' ' + i.siName : T(' 시 모름', ' hour unknown')) + ' · ' + (u.gender === 'M' ? T('남', 'M') : T('여', 'F')) +
+  $('who').innerHTML = esc(u.name || T('이름 없음', 'No name')) + ' · ' + (u.cal === 'solar' ? T('양력 ', 'Solar ') : u.cal === 'leap' ? T('음력 윤달 ', 'Lunar leap ') : T('음력 ', 'Lunar ')) + u.y + '.' + u.m + '.' + u.d + (u.place ? ' ' + esc(u.place) : '') + (i.siName ? ' ' + i.siName : T(' 시 모름', ' hour unknown')) + ' · ' + (u.gender === 'M' ? T('남', 'M') : T('여', 'F')) +
     (u.example ? '<span class="badge">' + T('예시 데이터', 'Example') + '</span>' : '') + (S.premium ? '<span class="badge">' + T('열람 중', 'Unlocked') + '</span>' : '');
   $('editBtn').textContent = u.example ? T('내 정보 입력', 'Enter my details') : T('수정', 'Edit');
 }
@@ -118,12 +118,19 @@ function correctionHTML() {
 }
 $('f-mbti').innerHTML = mbtiOptions;
 $('f-si').innerHTML = siOptions(-1);
+/* 영어판: 열두 시 대신 태어난 곳과 시계 시각을 받는다 */
+if (EN) {
+  const lab = $('f-si').parentNode; $('f-si').hidden = true;
+  lab.insertAdjacentHTML('beforeend', '<input id="f-time" type="time" value="12:00">');
+  lab.closest('.row').insertAdjacentHTML('afterend', '<div class="row"><label>Birthplace (nearest city)<select id="f-place">' + worldOptions(worldGuess()) + '</select></label><span></span></div>');
+}
 function fillForm() {
   const u = S.user;
   $('f-name').value = u.example ? '' : (u.name || ''); $('f-gender').value = u.gender; $('f-cal').value = u.cal;
   $('f-y').value = u.y; $('f-m').value = u.m; $('f-d').value = u.d;
   const si = siOf(u); $('f-si').value = si < 0 ? 5 : si; $('f-notime').checked = si < 0; $('f-si').disabled = si < 0;
   $('f-mbti').value = u.mbti || '';
+  if (EN) { $('f-time').value = u.hh != null ? pad2(u.hh) + ':' + pad2(u.mm) : '12:00'; $('f-time').disabled = u.tz ? u.hh == null : si < 0; $('f-notime').checked = $('f-time').disabled; if (u.place) $('f-place').value = u.place; }
 }
 $('birthForm').addEventListener('submit', e => {
   e.preventDefault();
@@ -131,6 +138,7 @@ $('birthForm').addEventListener('submit', e => {
   if (!(y >= 1900 && y <= 2100 && m >= 1 && m <= 12 && d >= 1 && d <= 31)) { msg.textContent = T('생년월일을 다시 확인하세요. 1900~2100년만 지원합니다.', 'Check the birth date again. Only 1900–2100 is supported.'); return; }
   const no = $('f-notime').checked;
   const u = { name: $('f-name').value.trim(), gender: $('f-gender').value, cal: $('f-cal').value, y, m, d, si: no ? -1 : +$('f-si').value, mbti: $('f-mbti').value };
+  if (EN) withPlace(u, $('f-place').value, $('f-time').value, no);
   if (u.cal !== 'solar' && !lunarToSolar(y, m, d, u.cal === 'leap')) { msg.textContent = T('해당 음력 날짜를 찾지 못했습니다. 윤달 여부와 날짜(29일/30일)를 확인하세요.', 'That lunar date was not found. Check whether it is a leap month and the day (29 or 30).'); return; }
   msg.textContent = ''; S.user = u; S.selYear = 0; S.deepText = ''; S.matchText = ''; store.set('mw-user2', u);
   $('birthForm').hidden = true; shuffle(); renderAll(); location.hash = 'saju'; route(); scrollTo(0, 0); celebrate();
@@ -176,8 +184,8 @@ document.addEventListener('click', e => {
   S.todayOpen = store.get('mw-today') === t;
 })();
 
-$('f-notime').addEventListener('change', e => { $('f-si').disabled = e.target.checked; });
-document.addEventListener('change', e => { if (e.target.id === 'p-notime') $('p-si').disabled = e.target.checked; });
+$('f-notime').addEventListener('change', e => { $('f-si').disabled = e.target.checked; if (EN) $('f-time').disabled = e.target.checked; });
+document.addEventListener('change', e => { if (e.target.id === 'p-notime') { $('p-si').disabled = e.target.checked; if (EN) $('p-time').disabled = e.target.checked; } });
 
 /* ===== 종합의견 ===== */
 function summaryHTML() {
@@ -189,7 +197,7 @@ function summaryHTML() {
   const topG = g.indexOf(Math.max.apply(null, g)), zero = g.map((n, i) => n === 0 ? GROUP_PLAIN[i] : null).filter(Boolean);
   if (EN) {
     const flow = { up: 'favorable', mid: 'even', dn: 'cautious' }[cur ? evalLuck(cur, false).grade[0] : 'mid'];
-    const e1 = 'You are ' + GYEOK_NICK[ni.gyeok.god].replace(/^The/, 'the') + ', born with the energy of ' + DAY_TXT[P.day.s][0].toLowerCase() + ' ' + SEASON_ADJ[ni.season].toLowerCase() + '. ' + (sj.strong ? 'Your innate strength is ample, so pushing forward yourself suits you, and the surplus should be drawn off into work and results.' : 'Your innate strength is on the weak side, so working through people, credentials and preparation suits you better than holding out alone.') + ' What stands out most is the energy of ' + GROUP_PLAIN[topG] + (zero.length ? ', while the energy of ' + zero.join(', ') + ' does not show and needs conscious attention.' : ', and all five energies are present.');
+    const e1 = 'You are ' + GYEOK_NICK[ni.gyeok.god].replace(/^The/, 'the') + ', ' + SEASON_ADJ[ni.season].toLowerCase() + ', with the energy of ' + DAY_TXT[P.day.s][0].toLowerCase() + '. ' + (sj.strong ? 'Your innate strength is ample, so pushing forward yourself suits you, and the surplus should be drawn off into work and results.' : 'Your innate strength is on the weak side, so working through people, credentials and preparation suits you better than holding out alone.') + ' What stands out most is the energy of ' + GROUP_PLAIN[topG] + (zero.length ? ', while the energy of ' + zero.join(', ') + ' does not show and needs conscious attention.' : ', and all five energies are present.');
     const e2 = (cur ? 'Now (age ' + cur.age + '–' + (cur.age + 9) + ') is ten years of ' + theme(cur.sGod, cur.age + 2) + ', and the flow is ' + flow + '. ' : 'Your first ten-year cycle has not begun yet. ') + 'This year\'s overall score is ' + sc.total + ' (' + scoreWord(sc.total) + '). The period of your life with the most support ' + (best.year + 9 < yNow ? 'was' : 'is') + ' age ' + best.age + '–' + (best.age + 9) + '. Within the next ten years, ' + top[0] + ' is the best and ' + low[0] + ' calls for the most care.';
     const e3 = 'In short, ' + (sc.total >= 70 ? 'this is a year when you can move.' : sc.total >= 50 ? 'this is a year for refining rather than starting anew.' : 'this is a year to put your strength into protecting what you have.') + ' Time big decisions for ' + top[0] + ', and finish preparing before ' + low[0] + ' arrives. Day to day, add the ' + EL[sj.need] + ' energy you need. ' + EL_TIP[sj.need][1];
     return '<div class="block" id="s-sum"><h3>Overall summary</h3><div class="panel block sum"><p>' + e1 + '</p><p>' + e2 + '</p><p><b>' + e3 + '</b></p></div></div>';

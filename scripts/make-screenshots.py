@@ -2,12 +2,15 @@
 #   인자 없음: 안드로이드용 1080x1920 -> store/screenshots
 #   ios      : 애플 아이폰용 1206x2622(App Store Connect의 Dynamic Island 지원 iPhone 칸) -> store/ios-screenshots
 import asyncio, os, shutil, sys
+#   뒤에 en 을 붙이면 영어 화면: python3 scripts/make-screenshots.py ios en -> store/ios-screenshots-en, python3 scripts/make-screenshots.py android en -> store/screenshots-en
 IOS = len(sys.argv) > 1 and sys.argv[1] == 'ios'
-W, H, OUT = (402, 874, 'store/ios-screenshots/') if IOS else (360, 640, 'store/screenshots/')
+ENG = 'en' in sys.argv[1:]
+W, H, OUT = (402, 874, 'store/ios-screenshots') if IOS else (360, 640, 'store/screenshots')
+OUT += '-en/' if ENG else '/'
 os.makedirs(OUT, exist_ok=True)
 from playwright.async_api import async_playwright
 CHROME = shutil.which('google-chrome') or shutil.which('chromium')
-URL = 'file://' + os.path.abspath('dist/index.html')
+URL = 'file://' + os.path.abspath('dist/index.html') + ('?lang=en' if 'en' in sys.argv[1:] else '?lang=ko')
 FACE_JS = r'''
 (P) => {
   /* 얼굴 사진이나 그림 없이, 어두운 바탕에 측정 윤곽선만 보이게 한다 */
@@ -22,7 +25,8 @@ async def main():
         pg = await b.new_page(viewport={'width': W, 'height': H}, device_scale_factor=3)
         errs = []; pg.on('pageerror', lambda e: errs.append(str(e)))
         await pg.goto(URL); await pg.wait_for_timeout(800)
-        await pg.evaluate("$('guideDlg').close(); S.user={name:'김하늘',gender:'F',cal:'solar',y:1990,m:5,d:15,si:3}; S.partner={name:'이도윤',gender:'M',cal:'solar',y:1988,m:8,d:23,si:7}; Access.add('s:'+profileKey(S.user)); Access.add('m:'+pairKey()); S.streak=1; shuffle(); renderAll(); document.querySelector('canvas.fx').remove()")
+        await pg.evaluate("$('guideDlg').close(); S.user={name:EN?'Skye':'김하늘',gender:'F',cal:'solar',y:1990,m:5,d:15,si:3}; S.partner={name:EN?'Daniel':'이도윤',gender:'M',cal:'solar',y:1988,m:8,d:23,si:7}; if(EN){withPlace(S.user,'Los Angeles','07:40',false); withPlace(S.partner,'Chicago','15:20',false);} Access.add('s:'+profileKey(S.user)); Access.add('m:'+pairKey()); S.streak=1; shuffle(); renderAll(); document.querySelector('canvas.fx').remove()")
+        await pg.evaluate("$('langBtn').hidden = true")
         if IOS: await pg.evaluate("$('codeBtn').hidden = true")   # 아이폰 앱에는 열람 코드 단추가 없다
         async def shot(name, sel=None, dy=0):
             if sel: await pg.evaluate("(a)=>{const e=document.querySelector(a[0]);window.scrollTo(0,e.getBoundingClientRect().top+scrollY-56+a[1])}", [sel, dy])

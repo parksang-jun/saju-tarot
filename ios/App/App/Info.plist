@@ -6,6 +6,11 @@
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>ko</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ko</string>
+		<string>en</string>
+	</array>
 	<key>CFBundleDisplayName</key>
         <string>등불사주</string>
 	<key>CFBundleExecutable</key>
@@ -25,9 +30,9 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSCameraUsageDescription</key>
-	<string>관상 풀이를 위해 정면 얼굴 사진을 찍습니다. 사진은 기기 안에서만 분석하고 저장하거나 전송하지 않습니다.</string>
+	<string>관상 풀이를 위해 정면 얼굴 사진을 찍습니다. 사진은 기기 안에서만 분석하고 저장하거나 전송하지 않습니다. / Takes a front-facing photo for face reading. The photo is analyzed on this device only and is never stored or sent.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>관상 풀이에 쓸 얼굴 사진을 고릅니다. 사진은 기기 안에서만 분석하고 저장하거나 전송하지 않습니다.</string>
+	<string>관상 풀이에 쓸 얼굴 사진을 고릅니다. 사진은 기기 안에서만 분석하고 저장하거나 전송하지 않습니다. / Chooses a face photo for face reading. The photo is analyzed on this device only and is never stored or sent.</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-3940256099942544~1458002511</string>
 	<key>SKAdNetworkItems</key>

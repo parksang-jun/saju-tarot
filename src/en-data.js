@@ -220,7 +220,7 @@ const EN_P = {
   SS_PLAIN: { '천을귀인': 'luck with helpers', '도화': 'charm and popularity', '역마': 'movement and change', '화개': 'absorption and art', '양인': 'strong drive', '문창귀인': 'study and writing', '공망': 'an empty seat', '괴강': 'strong momentum', '백호': 'forceful energy' }
 };
 const EN_U = {
-  SEASON_ADJ: { '봄': 'Of a spring day', '여름': 'Of midsummer', '가을': 'Of autumn', '겨울': 'Of midwinter' },
+  SEASON_ADJ: { '봄': 'Spring-born', '여름': 'Midsummer-born', '가을': 'Autumn-born', '겨울': 'Midwinter-born' },
   GYEOK_NICK: { '비견': 'The self-made type', '겁재': 'The competitor', '식신': 'The craftsperson', '상관': 'The innovator', '편재': 'The entrepreneur', '정재': 'The steady manager', '편관': 'The troubleshooter', '정관': 'The principled leader', '편인': 'The explorer', '정인': 'The scholar' },
   DAY_TIP: {
     '비견': 'A good day to push on at your own pace. Take the lead in setting appointments.', '겁재': 'A day when your wallet opens easily. Put off big payments until tomorrow.',

@@ -1,5 +1,5 @@
 /* ===== 어려운 말 풀이: 용어 사전과, 제목 옆에 자동으로 붙는 ? 단추 ===== */
-const GLOSS = [
+const GLOSS = EN ? EN_G : [
   ['사주의 기본', [
     ['사주', '태어난 해, 달, 날, 시각을 네 개의 기둥으로 적은 것입니다. 기둥마다 글자가 둘씩이라 모두 여덟 글자(팔자)가 됩니다.'],
     ['만세력', '날짜를 사주의 글자로 바꿔 주는 달력입니다. 이 앱은 절기를 계산해 자동으로 바꿉니다.'],
@@ -65,10 +65,10 @@ const GLOSS = [
 const GLOSS_TERMS = GLOSS.flatMap(g => g[1].map(t => t[0])).filter(t => t.length >= 2).sort((a, b) => b.length - a.length);
 (() => {
   const dlg = document.createElement('dialog'); dlg.id = 'glossDlg';
-  dlg.innerHTML = '<div class="sheet"><h2>어려운 말 풀이</h2>' + GLOSS.map(g => '<h3>' + g[0] + '</h3><dl class="gloss">' + g[1].map(t => '<div id="g-' + t[0] + '"><dt>' + t[0] + '</dt><dd>' + t[1] + '</dd></div>').join('') + '</dl>').join('') + '<button class="ghost" type="button" id="glossClose">닫기</button></div>';
+  dlg.innerHTML = '<div class="sheet"><h2>' + T('어려운 말 풀이', 'Glossary') + '</h2>' + GLOSS.map(g => '<h3>' + g[0] + '</h3><dl class="gloss">' + g[1].map(t => '<div id="g-' + t[0] + '"><dt>' + t[0] + '</dt><dd>' + t[1] + '</dd></div>').join('') + '</dl>').join('') + '<button class="ghost" type="button" id="glossClose">' + T('닫기', 'Close') + '</button></div>';
   document.body.appendChild(dlg);
   $('glossClose').onclick = () => dlg.close();
-  const btn = document.createElement('button'); btn.className = 'ghost'; btn.type = 'button'; btn.id = 'glossBtn'; btn.textContent = '어려운 말 풀이';
+  const btn = document.createElement('button'); btn.className = 'ghost'; btn.type = 'button'; btn.id = 'glossBtn'; btn.textContent = T('어려운 말 풀이', 'Glossary');
   $('guideBtn').insertAdjacentElement('afterend', btn);
   const openGloss = term => {
     if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
@@ -82,8 +82,8 @@ const GLOSS_TERMS = GLOSS.flatMap(g => g[1].map(t => t[0])).filter(t => t.length
   const decorate = () => {
     pend = false; ob.disconnect();
     root.querySelectorAll('section.view h3:not([data-gq]), section.view .read .it > b:not([data-gq])').forEach(h => {
-      h.setAttribute('data-gq', '1'); const tx = h.textContent, term = GLOSS_TERMS.find(t => tx.includes(t)); if (!term) return;
-      const q = document.createElement('button'); q.type = 'button'; q.className = 'gq'; q.dataset.gloss = term; q.setAttribute('aria-label', term + ' 뜻 보기'); q.textContent = '?'; h.appendChild(q);
+      h.setAttribute('data-gq', '1'); const tx = EN ? h.textContent.toLowerCase() : h.textContent, term = GLOSS_TERMS.find(t => tx.includes(EN ? t.toLowerCase() : t)); if (!term) return;
+      const q = document.createElement('button'); q.type = 'button'; q.className = 'gq'; q.dataset.gloss = term; q.setAttribute('aria-label', T(term + ' 뜻 보기', 'What ' + term + ' means')); q.textContent = '?'; h.appendChild(q);
     });
     ob.observe(root, { childList: true, subtree: true });
   };

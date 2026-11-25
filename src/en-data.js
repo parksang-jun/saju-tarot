@@ -230,3 +230,66 @@ const EN_U = {
     '편인': 'A day of good intuition. Use it for solitary study and planning.', '정인': 'A day of receiving help. Ask your seniors and look after your documents.'
   }
 };
+const EN_G = [
+  ['Saju basics', [
+    ['Saju', 'The year, month, day and hour of your birth written as four pillars. Each pillar has two characters, eight in all, which is why it is also called the Eight Characters.'],
+    ['Solar-term calendar', 'The calendar that turns a date into saju characters. This app calculates the solar terms and converts automatically.'],
+    ['Heavenly stems', 'The ten upper characters of the pillars (甲 乙 丙 丁 戊 己 庚 辛 壬 癸). They show the energy on the surface.'],
+    ['Earthly branches', 'The twelve lower characters of the pillars (子 丑 寅 卯 …). The zodiac animals come from these; they show the underlying energy and surroundings.'],
+    ['Five elements', 'Wood, Fire, Earth, Metal and Water. Each of the eight characters belongs to one of the five.'],
+    ['Day Master', 'The upper character of the day pillar, which stands for you. Every reading is made from this character.'],
+    ['Day branch', 'The lower character of the day pillar. It is the partner\'s seat and shows how you live.'],
+    ['Month branch', 'The lower character of the month pillar. It is your birth season, showing the base of the chart and your social life.'],
+    ['Strong chart', 'A chart where much energy supports you, so your innate strength is high. Pushing forward yourself suits you. The opposite is a weak chart.'],
+    ['Weak chart', 'A chart where little energy supports you, so your innate strength is low. Getting help from people, credentials and preparation suits you.'],
+    ['Balancing element', 'The energy your chart needs most. Things are read as going well when this energy arrives.'],
+    ['Seasonal need', 'How hot or cold the chart is. Born in a hot summer you need Water; born in a cold winter you need Fire.']]],
+  ['The ten gods', [
+    ['Ten gods', 'Ten names for the relationship between you (the Day Master) and each other character. Areas of life such as money, work, people and study come from these.'],
+    ['Friend', 'The same energy as you. It stands for allies, siblings and friends, and independence.'],
+    ['Rob Wealth', 'The same element as you with the opposite yin or yang. It stands for rivals and colleagues, and money that has to be shared.'],
+    ['Eating God', 'The gentler of the energies you produce. It stands for plenty, steady skill and the power to make things.'],
+    ['Hurting Officer', 'The sharper of the energies you produce. It stands for eloquence, skill and ideas that break the mold.'],
+    ['Indirect Wealth', 'Of the energies you control, the money that moves. It stands for business, investment and money earned on your feet.'],
+    ['Direct Wealth', 'Of the energies you control, the fixed money. It stands for salary, savings and property built up diligently.'],
+    ['Seven Killings', 'The rougher of the energies that press on you. It stands for pressure, responsibility and strength born in a crisis.'],
+    ['Direct Officer', 'The upright one of the energies that press on you. It stands for career, rules, honor and reputation.'],
+    ['Indirect Resource', 'The off-center one of the energies that give birth to you. It stands for unusual talent, solitary study and intuition.'],
+    ['Direct Resource', 'The upright one of the energies that give birth to you. It stands for mother, scholarship, credentials and help received.']]],
+  ['The flow of luck', [
+    ['Luck cycle', 'The major luck that changes every ten years. It is like the seasons of a life changing.'],
+    ['Year by year', 'The luck of each year, which changes annually.'],
+    ['Month by month', 'The luck that changes each month. Months are divided by the solar terms.'],
+    ['Today\'s fortune', 'The luck of each day: how the characters of today\'s date meet your chart.'],
+    ['Solar terms', 'The year divided into twenty-four by the position of the sun. In saju, the month changes at terms such as the Start of Spring.'],
+    ['Life stage', 'Twelve stages through which an energy is born, grows and declines. It shows whether strength is rising or falling in a period.'],
+    ['Three-year trial', 'A three-year period of caution that comes every nine years according to your zodiac animal. It is read as a time to avoid big changes and overexpansion.'],
+    ['Void', 'A seat that stays empty even when filled. Results may fall short of expectations.'],
+    ['Traveling Horse', 'The star of movement. Moves, business trips, travel and ties abroad arise.'],
+    ['Peach Blossom', 'The star of charm that draws people. Popularity and new connections arise, with gossip to watch for.'],
+    ['Noble Helper', 'The best of the stars: a helper appears in hard times.'],
+    ['Literary Star', 'A star that lends strength to writing, study and exams.'],
+    ['Blade', 'An energy as strong as a blade. It becomes drive, but quarrels and injuries are to be watched.']]],
+  ['Relations between characters', [
+    ['Stem bond', 'A relationship in which two upper characters pair up. They are drawn to each other and tied together.'],
+    ['Six bond', 'A relationship in which two lower characters pair up. Close, with affection attaching.'],
+    ['Triple bond', 'A relationship in which three lower characters take the same side. They gather strength in one direction.'],
+    ['Resentment', 'A relationship of hurt and dislike that arise for no reason.'],
+    ['Bond', 'A relationship in which characters pull together and tie. Things grow close and stable.'],
+    ['Clash', 'A relationship in which characters collide head-on. Change, movement and quarrels arise.'],
+    ['Friction', 'A relationship that grates as each tries to correct the other. Quarrels and paperwork trouble are to be watched.']]],
+  ['Compatibility', [
+    ['Outer match', 'The compatibility others can see: zodiac, family and social life, and personality.'],
+    ['Inner match', 'The compatibility only the two of you know: the relationship of your partner seats (day branches), yin and yang, and the temperature of your charts show how well body and heart fit.'],
+    ['Daily-life match', 'The compatibility of living together: daily habits, money, and how you quarrel and make up.']]],
+  ['Face reading', [
+    ['Element type', 'The outline of the face sorted into five shapes: Wood, Fire, Earth, Metal and Water. A long face is the Wood type, a round face the Water type, and so on.'],
+    ['Three zones', 'The face divided into three from top to bottom. The forehead (upper) is read for early life, brows to nose tip (middle) for midlife, and nose tip to chin (lower) for later life.'],
+    ['Five features', 'The eyebrows, eyes, nose, mouth and ears.'],
+    ['Twelve palaces', 'Twelve seats on the face. Each is read for an area of life such as wealth, partner, siblings or home.'],
+    ['Between the brows', 'The space between the eyebrows. It is the Life Palace, first of the twelve palaces, read as the door luck passes through.'],
+    ['Property Palace', 'The space between brow and eye, read for home, property and ease of mind.'],
+    ['Temples', 'From beside the outer corner of the eye to the edge of the face. Called the Spouse Palace, it is read for ties with a partner.'],
+    ['Wealth Palace', 'The nose, read as the seat where wealth gathers.'],
+    ['Age positions', 'The method in which one seat of the face governs the luck of each age. For example, age 41 is the root of the nose and age 60 is the mouth.']]]
+];

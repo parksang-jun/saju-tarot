@@ -219,3 +219,14 @@ const EN_P = {
   GROUP_PLAIN: ['allies and rivals', 'expression and talent', 'money and chances', 'responsibility and work', 'study and help'],
   SS_PLAIN: { '천을귀인': 'luck with helpers', '도화': 'charm and popularity', '역마': 'movement and change', '화개': 'absorption and art', '양인': 'strong drive', '문창귀인': 'study and writing', '공망': 'an empty seat', '괴강': 'strong momentum', '백호': 'forceful energy' }
 };
+const EN_U = {
+  SEASON_ADJ: { '봄': 'Of a spring day', '여름': 'Of midsummer', '가을': 'Of autumn', '겨울': 'Of midwinter' },
+  GYEOK_NICK: { '비견': 'The self-made type', '겁재': 'The competitor', '식신': 'The craftsperson', '상관': 'The innovator', '편재': 'The entrepreneur', '정재': 'The steady manager', '편관': 'The troubleshooter', '정관': 'The principled leader', '편인': 'The explorer', '정인': 'The scholar' },
+  DAY_TIP: {
+    '비견': 'A good day to push on at your own pace. Take the lead in setting appointments.', '겁재': 'A day when your wallet opens easily. Put off big payments until tomorrow.',
+    '식신': 'A day when hands-on work goes well. Finish the task you have been putting off.', '상관': 'A day when your words turn sharp. Put ideas in a memo and make a criticism only once.',
+    '편재': 'A day of unexpected proposals and talk of money. Go and meet people.', '정재': 'A day when carefulness turns into money. Do your accounts, contracts and tidying.',
+    '편관': 'A day when pressure comes in. Avoid an overfull schedule and speeding.', '정관': 'A day of being assessed. Keep to the time and the formalities and you gain points.',
+    '편인': 'A day of good intuition. Use it for solitary study and planning.', '정인': 'A day of receiving help. Ask your seniors and look after your documents.'
+  }
+};

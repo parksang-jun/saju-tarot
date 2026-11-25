@@ -2,7 +2,7 @@
 import { build } from 'esbuild';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
-const ORDER = ['i18n.js', 'en-data.js', 'en-saju.js', 'engine.js', 'app.js', 'deep.js', 'yuksin.js', 'match.js', 'pay.js', 'ads.js', 'ui2.js', 'daily.js', 'gloss.js', 'face.js', 'boot.js'];
+const ORDER = ['i18n.js', 'en-data.js', 'en-saju.js', 'engine.js', 'app.js', 'deep.js', 'yuksin.js', 'en-match.js', 'match.js', 'pay.js', 'ads.js', 'ui2.js', 'daily.js', 'gloss.js', 'face.js', 'boot.js'];
 const read = f => readFileSync(new URL('../src/' + f, import.meta.url), 'utf8');
 
 const vendor = await build({ entryPoints: ['src/vendor-entry.js'], bundle: true, format: 'iife', minify: true, write: false, target: 'es2020' });

@@ -28,6 +28,15 @@
 	<string>관상 풀이를 위해 정면 얼굴 사진을 찍습니다. 사진은 기기 안에서만 분석하고 저장하거나 전송하지 않습니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>관상 풀이에 쓸 얼굴 사진을 고릅니다. 사진은 기기 안에서만 분석하고 저장하거나 전송하지 않습니다.</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

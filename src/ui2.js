@@ -147,19 +147,23 @@ function spreadReadHTML() {
 }
 function renderTarot() {
   const t = todayCard(), open = S.todayOpen;
-  const today = '<div class="block"><h2>오늘의 카드</h2><div class="panel today"><div>' + cardHTML(t, open, open ? 'tabindex="-1"' : 'data-today') + '</div><div class="read" id="todayRead">' + (open ? readItem(t) : '<p class="kv">오늘 하루를 떠올리고 카드를 눌러 뒤집으세요.</p><p class="note">카드는 자정에 바뀝니다.</p>') + '</div></div></div>';
+  const today = '<div class="block"><h2>오늘의 카드' + TIER.ad + '</h2><div class="panel today"><div>' + cardHTML(t, open, open ? 'tabindex="-1"' : 'data-today') + '</div><div class="read" id="todayRead">' + (open ? readItem(t) : '<p class="kv">오늘 하루를 떠올리고 카드를 눌러 뒤집으세요.</p>' + (Ads.unlocked('tarot') ? '' : '<p class="note">카드를 누르면 광고가 한 번 나온 뒤 뒤집힙니다. 사주를 연 분은 광고 없이 봅니다.</p>') + '<p class="note">카드는 자정에 바뀝니다.</p>') + '</div></div></div>';
   const done = S.picks.length === 3;
   const chips = '<div class="chips">' + Object.keys(TOPICS).map(k => '<button type="button" class="chip' + (S.topic === k ? ' on' : '') + '" data-topic="' + k + '">' + TOPICS[k] + '</button>').join('') + '</div>';
   const body = !done
     ? '<p class="kv">질문을 떠올리고 카드 3장을 고르세요. <b>' + S.picks.length + ' / 3</b></p><div class="deck">' + S.deck.map((p, i) => cardHTML(p, false, 'data-pick="' + i + '"', S.picks.includes(i))).join('') + '</div>'
     : '<div class="spread">' + S.picks.map((i, k) => '<div><div class="pos">' + POS[k] + '</div>' + cardHTML(S.deck[i], S.rev[k], 'data-rev="' + k + '"') + '</div>').join('') + '</div><div class="read" id="spreadRead">' + spreadReadHTML() + '</div>';
-  $('v-tarot').innerHTML = today + '<div class="block"><h2>3장 스프레드</h2><h3>주제: ' + TOPICS[S.topic] + (S.premium ? '' : ' · 사주를 열면 사용') + '</h3>' + chips + body + '</div>';
+  $('v-tarot').innerHTML = today + '<div class="block"><h2>3장 스프레드' + TIER.paid + '</h2><h3>주제: ' + TOPICS[S.topic] + (S.premium ? '' : ' · 사주를 열면 사용') + '</h3>' + chips + body + '</div>';
 }
 document.addEventListener('click', e => {
   const t = e.target.closest('button'); if (!t) return;
   if (t.hasAttribute('data-today') && !S.todayOpen) {
-    S.todayOpen = true; store.set('mw-today', todayStr()); t.classList.add('open'); t.removeAttribute('data-today'); fx.burst(t);
-    setTimeout(() => { const r = $('todayRead'); if (r) r.innerHTML = readItem(todayCard()); }, 450);
+    const flip = () => {
+      S.todayOpen = true; store.set('mw-today', todayStr()); t.classList.add('open'); t.removeAttribute('data-today'); fx.burst(t);
+      setTimeout(() => { const r = $('todayRead'); if (r) r.innerHTML = readItem(todayCard()) + (Ads.msg ? '<p class="note">' + Ads.msg + '</p>' : ''); }, 450);
+    };
+    if (Ads.unlocked('tarot')) flip();
+    else Ads.watch('tarot').then(ok => { if (ok) flip(); else { const r = $('todayRead'); if (r) r.insertAdjacentHTML('beforeend', '<p class="note warn">' + Ads.msg + '</p>'); } });
   }
   if (t.dataset.rev !== undefined && !S.rev[+t.dataset.rev]) {
     S.rev[+t.dataset.rev] = true; t.classList.add('open'); fx.burst(t, S.rev.every(Boolean) ? 80 : 36);

@@ -4,4 +4,6 @@
     <string name="title_activity_main">등불사주</string>
     <string name="package_name">com.parksangjun.sajutarot</string>
     <string name="custom_url_scheme">com.parksangjun.sajutarot</string>
+    <!-- AdMob 앱 ID. 지금 값은 구글의 테스트용 ID다. 출시 전에 AdMob에서 받은 실제 앱 ID로 바꾼다. 값이 비거나 틀리면 앱이 시작하자마자 종료된다. -->
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
 </resources>

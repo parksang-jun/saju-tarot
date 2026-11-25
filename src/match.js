@@ -160,7 +160,7 @@ function renderMatch() {
   const detailAll = detail + opinion;
   const chips = '<div class="chips"><button type="button" class="chip' + (S.rel === 'love' ? ' on' : '') + '" data-rel="love">연인·부부</button><button type="button" class="chip' + (S.rel === 'friend' ? ' on' : '') + '" data-rel="friend">친구·동료</button><button type="button" class="chip" data-pedit>' + (ub.example ? '상대 정보 입력' : '상대 정보 수정') + '</button></div>';
   $('v-match').classList.toggle('show-why', !!S.why);
-  $('v-match').innerHTML = '<div class="block"><h2>궁합</h2><h3>' + g.an + ' × ' + g.bn + (ub.example ? '<span class="badge">상대는 예시 데이터</span>' : '') + '</h3>' + chips + form + '</div>' + hero + (B.info.err ? '<p class="note warn">' + B.info.err + '</p>' : '') + '<div class="block"><h3>한눈에 보기</h3>' + sum + '</div>' + lockWrap(detailAll, '겉궁합·속궁합·살림 궁합의 항목별 풀이와 종합의견이 한 번 결제로 열립니다', 'match');
+  $('v-match').innerHTML = '<div class="block"><h2>궁합' + TIER.free + '</h2><h3>' + g.an + ' × ' + g.bn + (ub.example ? '<span class="badge">상대는 예시 데이터</span>' : '') + '</h3>' + chips + form + '</div>' + hero + (B.info.err ? '<p class="note warn">' + B.info.err + '</p>' : '') + '<div class="block"><h3>한눈에 보기 · 총점과 묶음 점수는 무료</h3>' + sum + '</div>' + lockWrap(detailAll, '겉궁합·속궁합·살림 궁합의 항목별 풀이와 종합의견이 한 번 결제로 열립니다', 'match');
 }
 let matchBusy = false;
 async function askMatch() {

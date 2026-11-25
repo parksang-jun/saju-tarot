@@ -157,7 +157,7 @@ function cardHTML(pick, open, extra, sel) {
 const dirTag = rev => '<span class="tag">' + (rev ? '역방향' : '정방향') + '</span>';
 function lockWrap(inner, label, kind) {
   const open = kind === 'match' ? S.matchOpen : S.premium;
-  return '<div class="lock' + (open ? '' : ' locked') + '"><div class="inner">' + inner + '</div><div class="gate"><span>' + label + '</span><button class="goldbtn" type="button" data-pay="' + (kind || 'saju') + '">' + PAY_CONFIG.priceLabel + '에 열기</button></div></div>';
+  return '<div class="lock' + (open ? '' : ' locked') + '"><div class="inner">' + inner + '</div><div class="gate">' + TIER.paid + '<span>' + label + '</span><button class="goldbtn" type="button" data-pay="' + (kind || 'saju') + '">' + PAY_CONFIG.priceLabel + '에 열기</button></div></div>';
 }
 
 function readItem(pick, pos) {
@@ -177,7 +177,7 @@ function renderReading() {
     '<div class="block"><h3>카드가 말하는 지금' + (cards.length === 1 ? ' · 3장 스프레드를 뽑으면 더 자세해집니다' : '') + '</h3><div class="read">' + cards.map(c => readItem(c, c.pos)).join('') + '</div></div>' +
     '<div class="block"><h3>종합의견</h3><div class="panel block sum"><p>사주의 바탕과 뽑은 카드를 겹쳐 보면 지금은 <b>' + tn[0] + '</b>입니다. ' + tn[1] + '</p><p><b>정리하면, 나에게 필요한 ' + EL[sj.need] + ' 기운을 채우는 쪽으로 움직이세요. ' + EL_TIP[sj.need][1] + '</b></p></div></div>' +
     '<div class="block needs-ai" id="aiBox"' + (S.ai ? '' : ' hidden') + '><h3>AI 상담</h3><div class="panel block"><label for="aiQ">내 사주와 뽑은 카드를 바탕으로 묻고 싶은 것</label><textarea id="aiQ" maxlength="300" placeholder="예: 내년에 이직해도 될까요?"></textarea><button type="button" class="primary" id="aiGo">상담 받기</button><div class="ai-out" id="aiOut" aria-live="polite"></div></div></div>';
-  $('v-reading').innerHTML = '<div class="block"><h2>통합 리딩</h2><h3>사주의 바탕 위에 카드를 겹쳐 읽습니다</h3></div>' + lockWrap(inner, '통합 리딩은 이 사주를 열면 함께 열립니다');
+  $('v-reading').innerHTML = '<div class="block"><h2>통합 리딩' + TIER.paid + '</h2><h3>사주의 바탕 위에 카드를 겹쳐 읽습니다</h3></div>' + lockWrap(inner, '통합 리딩은 이 사주를 열면 함께 열립니다');
 }
 /* ===== 라우팅과 이벤트 ===== */
 function route() {

@@ -80,7 +80,7 @@ function measure(P) {
 }
 
 /* ----- 오행형: 다섯 형의 점수를 매겨 주형과 겸형을 고른다 ----- */
-const SHAPE = [
+const SHAPE = EN ? EN_F.SHAPE : [
   ['목형', '木', '세로로 길고 선이 곧은 얼굴', '세로로 길고 선이 곧은 목형입니다. 나무처럼 위로 뻗는 기운이라 배우고 성장하는 일에 강하고, 원칙과 체면을 중시합니다. 한번 정한 방향은 오래 밀고 갑니다. 융통성이 부족하다는 말을 들을 수 있으니 한 박자 쉬어 가는 여유가 약이 됩니다.'],
   ['화형', '火', '위가 넓고 턱으로 갈수록 좁아지는 얼굴', '위쪽이 넓고 턱으로 갈수록 좁아지는 화형입니다. 머리 회전이 빠르고 감각이 예민해 기획하고 표현하는 일에서 빛납니다. 불처럼 빨리 타오르는 만큼 식기도 쉬우니, 시작한 일을 끝까지 끌고 갈 체력 관리가 관건입니다.'],
   ['토형', '土', '가로세로가 고르게 잡힌 중후한 얼굴', '가로세로 균형이 잡혀 어느 쪽으로도 치우치지 않은 토형입니다. 땅처럼 묵직하고 믿음을 주는 상이라 사람과 재물이 천천히 모입니다. 급하게 승부를 보기보다 시간을 내 편으로 만드는 쪽이 맞습니다. 변화에 반응이 느린 점만 조심하면 됩니다.'],
@@ -96,6 +96,7 @@ function shapeOf(z) {
 /* ----- 부위별 풀이: q는 상법에서 좋게 보는 방향의 점수(대략 -2~2) ----- */
 const pick = (x, hi, mid, lo) => x > .5 ? hi : x < -.5 ? lo : mid;
 function partsOf(m) {
+  if (EN) return facePartsEN(m);
   const z = m.z, out = [];
   const add = (key, title, sub, q, keys, sents) => out.push({ key, title, sub, q, keys, text: sents.filter(Boolean).join(' ') });
   const sym = clamp(1.2 - m.asym / .09, -2, 2);
@@ -167,7 +168,7 @@ function partsOf(m) {
 }
 
 /* ----- 유년: 마의상법 유년운기부위가의 나이별 자리(세는나이). 정면 사진으로 잴 수 있는 자리만 평가한다 ----- */
-const YUN = [
+const YUN = EN ? EN_F.YUN : [
   [1, 14, '귀', '', '어린 시절의 운은 귀에서 봅니다.'],
   [15, 27, '이마', '', '15~30세의 운은 이마(상정)에서 봅니다. 부모와 윗사람의 덕, 공부와 출발을 읽는 자리입니다.'],
   [28, 28, '인당', 'ig', '28세는 인당의 자리입니다. 상정의 끝이자 명궁이라 인생의 방향이 정해지는 해로 봅니다.'],
@@ -189,10 +190,11 @@ function yunOf(age, parts) {
   const y = YUN.find(r => age >= r[0] && age <= r[1]) || YUN[YUN.length - 1], p = y[3] ? parts.find(x => x.key === y[3]) : null;
   return { name: y[2], lead: y[4], q: p ? p.q : null, key: y[3] };
 }
-const grade = q => q == null ? ['자리만 안내', 'gmid'] : q > .5 ? ['힘 받는 해', 'gup'] : q < -.5 ? ['관리하는 해', 'gdn'] : ['무난한 해', 'gmid'];
+const grade = q => q == null ? [T('자리만 안내', 'Seat only'), 'gmid'] : q > .5 ? [T('힘 받는 해', 'A supported year'), 'gup'] : q < -.5 ? [T('관리하는 해', 'A year to manage'), 'gdn'] : [T('무난한 해', 'An even year'), 'gmid'];
 
 /* ----- 사주와 겹쳐 읽기: 얼굴의 오행형과 일간·필요한 기운의 생극 ----- */
 function sajuLink(f) {
+  if (EN) return sajuLinkEN(f);
   const sj = S.saju; if (!sj || !sj.P) return null;
   const d = sj.P.day.sEl, n = sj.need, gen = a => (a + 1) % 5, ctl = a => (a + 2) % 5, E = EL;
   let a;
@@ -219,13 +221,14 @@ const CHANGES = [
   ['눈두덩 환하게 하기', '전택궁', '눈썹 아래 잔털을 정리하고, 눈을 치켜뜨거나 찡그리는 버릇을 줄입니다. 눈썹과 눈 사이가 환하게 드러나면 전택궁이 넓어 보입니다.', c => { c.z.be = Math.min(1.5, c.z.be + .6); }],
   ['좌우 균형 잡기', '좌우 균형', '한쪽으로만 씹거나 턱을 괴는 습관을 고치고, 고개를 바로 세우는 자세를 들입니다. 상법은 부위보다 전체의 균형을 먼저 봅니다.', c => { c.asym *= .5; }]
 ];
+if (EN) CHANGES.forEach((c, i) => { c[0] = EN_F.CH[i][0]; c[1] = EN_F.CH[i][1]; c[2] = EN_F.CH[i][2]; });
 function improve(m, base) {
   const sim = fs => { const c = Object.assign({}, m, { z: Object.assign({}, m.z) }); fs.forEach(f => f(c)); return read(c, true); };
   const tagOf = q => q > .5 ? 2 : q < -.5 ? 0 : 1;
   const list = CHANGES.filter(c => !c[4] || c[4](m)).map(([title, part, how, f]) => {
     const r = sim([f]), dl = r.luck.map((l, i) => [l[0], l[1] - base.luck[i][1]]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
     const p0 = base.parts.find(p => p.title === part), p1 = r.parts.find(p => p.title === part);
-    return { title, part, how, f, keep: !p0 || p0.q <= .5, d: r.total - base.total, dl, up: p0 && p1 && tagOf(p1.q) > tagOf(p0.q) ? ['보완', '보통', '강점'][tagOf(p1.q)] : '' };
+    return { title, part, how, f, keep: !p0 || p0.q <= .5, d: r.total - base.total, dl, up: p0 && p1 && tagOf(p1.q) > tagOf(p0.q) ? T(['보완', '보통', '강점'], ['to work on', 'average', 'strength'])[tagOf(p1.q)] : '' };
   }).filter(x => x.keep && (x.d > 0 || x.dl.length)).sort((a, b) => (b.d * 3 + (b.dl[0] ? b.dl[0][1] : 0)) - (a.d * 3 + (a.dl[0] ? a.dl[0][1] : 0))).slice(0, 3);
   return { list, after: list.length ? sim(list.map(x => x.f)).total : base.total };
 }
@@ -234,11 +237,11 @@ function read(m, simOnly) {
   const z = m.z, sh = shapeOf(z), parts = partsOf(m), P = k => parts.find(x => x.key === k).q;
   const b = (...k) => k.includes(sh.main) ? 3 : 0, sc = x => Math.round(clamp(74 + x, 52, 98));
   const luck = [
-    ['재물', sc(5 * z.nw + 3 * z.nl + 2 * z.mw + 3 * z.ch + b(2, 4)), '돈이 새는 구멍을 막는 기록 습관'],
-    ['대인', sc(5 * z.lift + 3 * z.eo + 2 * z.lt + 3 * z.eg + 3 * z.ig + b(4)), '먼저 연락하고 표정을 여는 작은 노력'],
-    ['추진력', sc(5 * z.jr - 4 * z.be + 4 * z.et + 3 * z.ba + 2 * z.nl + b(3, 0)), '작더라도 마감이 있는 목표를 세우는 일'],
-    ['애정', sc(4 * z.lt + 3 * z.eo + 4 * z.lift + 4 * z.gm + b(1)), '마음을 말로 꺼내는 연습'],
-    ['말년', sc(5 * z.ch - 3 * z.zr + 3 * z.jr + 3 * z.jc + 3 * z.ph + b(2)), '건강과 저축처럼 오래 가는 것에 미리 들이는 투자']
+    [T('재물', 'Money'), sc(5 * z.nw + 3 * z.nl + 2 * z.mw + 3 * z.ch + b(2, 4)), T('돈이 새는 구멍을 막는 기록 습관', 'the habit of keeping records to stop money leaking')],
+    [T('대인', 'People'), sc(5 * z.lift + 3 * z.eo + 2 * z.lt + 3 * z.eg + 3 * z.ig + b(4)), T('먼저 연락하고 표정을 여는 작은 노력', 'the small effort of reaching out first and opening your expression')],
+    [T('추진력', 'Drive'), sc(5 * z.jr - 4 * z.be + 4 * z.et + 3 * z.ba + 2 * z.nl + b(3, 0)), T('작더라도 마감이 있는 목표를 세우는 일', 'setting goals with a deadline, however small')],
+    [T('애정', 'Love'), sc(4 * z.lt + 3 * z.eo + 4 * z.lift + 4 * z.gm + b(1)), T('마음을 말로 꺼내는 연습', 'practice putting your feelings into words')],
+    [T('말년', 'Later life'), sc(5 * z.ch - 3 * z.zr + 3 * z.jr + 3 * z.jc + 3 * z.ph + b(2)), T('건강과 저축처럼 오래 가는 것에 미리 들이는 투자', 'investing early in what lasts, such as health and savings')]
   ];
   const total = Math.round(clamp(70 + 9 * parts.reduce((s, p) => s + clamp(p.q, -1.5, 1.5), 0) / parts.length + luck.reduce((s, l) => s + l[1] - 74, 0) / 10, 50, 97));
   const link = sajuLink(sh.main);
@@ -250,49 +253,49 @@ function read(m, simOnly) {
 }
 
 /* ----- 화면 ----- */
-const DIAGRAM = '<svg viewBox="0 0 560 400" role="img" aria-label="관상에서 보는 부위"><ellipse class="ft" cx="280" cy="200" rx="122" ry="162"/><path class="ft" d="M208 158q28-16 52 0M300 158q28-16 52 0"/><path class="ft" d="M214 186q21-13 42 0q-21 11-42 0zM304 186q21-13 42 0q-21 11-42 0z"/><path class="ft" d="M280 186v60M263 250q17 11 34 0"/><path class="ft" d="M246 292q34 15 68 0M246 292q34 28 68 0"/><path class="ax" d="M124 150h312M124 256h312M124 362h312"/><text x="70" y="104">상정</text><text x="70" y="208">중정</text><text x="70" y="314">하정</text><text x="446" y="162">눈썹 · 형제궁</text><text x="446" y="192">눈 · 감찰관</text><text x="446" y="250">코 · 재백궁</text><text x="446" y="304">입 · 출납관</text><text x="446" y="366">턱 · 지각</text></svg>';
+const DIAGRAM = '<svg viewBox="0 0 560 400" role="img" aria-label="' + T('관상에서 보는 부위', 'Areas read in face reading') + '"><ellipse class="ft" cx="280" cy="200" rx="122" ry="162"/><path class="ft" d="M208 158q28-16 52 0M300 158q28-16 52 0"/><path class="ft" d="M214 186q21-13 42 0q-21 11-42 0zM304 186q21-13 42 0q-21 11-42 0z"/><path class="ft" d="M280 186v60M263 250q17 11 34 0"/><path class="ft" d="M246 292q34 15 68 0M246 292q34 28 68 0"/><path class="ax" d="M124 150h312M124 256h312M124 362h312"/><text x="70" y="104">' + T('상정', 'Upper') + '</text><text x="70" y="208">' + T('중정', 'Middle') + '</text><text x="70" y="314">' + T('하정', 'Lower') + '</text><text x="446" y="162">' + T('눈썹 · 형제궁', 'Brows · ties') + '</text><text x="446" y="192">' + T('눈 · 감찰관', 'Eyes · judgment') + '</text><text x="446" y="250">' + T('코 · 재백궁', 'Nose · wealth') + '</text><text x="446" y="304">' + T('입 · 출납관', 'Mouth · speech') + '</text><text x="446" y="366">' + T('턱 · 지각', 'Chin · later life') + '</text></svg>';
 const sig = x => (x > 0 ? '+' : '') + x.toFixed(1);
 function resultHTML() {
-  const r = F.res.r, m = F.res.m, S5 = SHAPE[r.sh.main], word = r.total >= 85 ? '아주 좋음' : r.total >= 75 ? '좋음' : r.total >= 65 ? '무난' : '보완 필요';
+  const r = F.res.r, m = F.res.m, S5 = SHAPE[r.sh.main], word = r.total >= 85 ? T('아주 좋음', 'very good') : r.total >= 75 ? T('좋음', 'good') : r.total >= 65 ? T('무난', 'fair') : T('보완 필요', 'needs work');
   const bar = (n, v) => '<div class="sbar"><span>' + n + '</span><span class="trk"><i style="--w:' + v + '%"></i></span><b data-count="' + v + '">' + v + '</b></div>';
-  const hero = '<div class="hero"><div class="arch"><small>얼굴의 오행</small><h2 class="c' + r.sh.main + '">' + S5[0] + ' ' + S5[1] + '</h2><span>' + (r.sh.sub >= 0 ? SHAPE[r.sh.sub][0] + '이 섞인 겸형' : S5[2]) + '</span></div>' +
-    '<div class="ring" id="fRing" style="--p:' + r.total + '"><div><b data-count="' + r.total + '">' + r.total + '</b><small>관상 총점 · ' + word + '</small></div></div><div class="sbars">' + r.luck.map(l => bar(l[0], l[1])).join('') + '</div></div>';
-  const it = (t, sub, body, tag, why) => '<div class="it"><b>' + t + '</b>' + (tag ? '<span class="tag ' + tag[1] + '">' + tag[0] + '</span>' : '') + (sub ? ' <span class="note">' + sub + '</span>' : '') + '<p>' + body + '</p>' + (why ? '<small>측정: ' + why + '</small>' : '') + '</div>';
-  const tagOf = q => q > .5 ? ['강점', 'gup'] : q < -.5 ? ['보완', 'gdn'] : ['보통', 'gmid'];
-  const why = p => p.keys.map(k => REF[k][0] + ' ' + sig(m.z[k]) + 'σ').join(' · ');
-  const shapeTxt = S5[3] + (r.sh.sub >= 0 ? ' ' + SHAPE[r.sh.sub][0] + '의 기운이 섞여 있어 ' + SHAPE[r.sh.sub][2] + '의 성향도 함께 나타납니다.' : '');
-  const free = '<div class="block"><h3>얼굴형 · 오행형</h3><div class="read">' + it(S5[0], S5[2], shapeTxt, null, ['fr', 'jr', 'jc'].map(k => REF[k][0] + ' ' + sig(m.z[k]) + 'σ').join(' · ')) + '</div></div>' +
-    (r.link ? '<div class="block"><h3>사주와 겹쳐 보기 · 일간 ' + elSpanSafe(r.link.d) + ' × 얼굴 ' + elSpanSafe(r.sh.main) + '</h3><div class="panel block"><p>' + r.link.a + '</p>' + (r.link.b ? '<p>' + r.link.b + '</p>' : '') + (S.user && S.user.example ? '<p class="note">지금은 예시 사주 기준입니다. 내 생년월일을 넣으면 내 사주와 겹쳐 읽습니다.</p>' : '') + '</div></div>' : '');
+  const hero = '<div class="hero"><div class="arch"><small>' + T('얼굴의 오행', 'Element of your face') + '</small><h2 class="c' + r.sh.main + '">' + S5[0] + ' ' + S5[1] + '</h2><span>' + (r.sh.sub >= 0 ? T(SHAPE[r.sh.sub][0] + '이 섞인 겸형', 'mixed with ' + SHAPE[r.sh.sub][0]) : S5[2]) + '</span></div>' +
+    '<div class="ring" id="fRing" style="--p:' + r.total + '"><div><b data-count="' + r.total + '">' + r.total + '</b><small>' + T('관상 총점 · ', 'Face total · ') + word + '</small></div></div><div class="sbars">' + r.luck.map(l => bar(l[0], l[1])).join('') + '</div></div>';
+  const it = (t, sub, body, tag, why) => '<div class="it"><b>' + t + '</b>' + (tag ? '<span class="tag ' + tag[1] + '">' + tag[0] + '</span>' : '') + (sub ? ' <span class="note">' + sub + '</span>' : '') + '<p>' + body + '</p>' + (why ? '<small>' + T('측정: ', 'Measured: ') + why + '</small>' : '') + '</div>';
+  const tagOf = q => q > .5 ? [T('강점', 'Strength'), 'gup'] : q < -.5 ? [T('보완', 'To work on'), 'gdn'] : [T('보통', 'Average'), 'gmid'];
+  const why = p => p.keys.map(k => (EN ? EN_F.REF[k] : REF[k][0]) + ' ' + sig(m.z[k]) + 'σ').join(' · ');
+  const shapeTxt = S5[3] + (r.sh.sub >= 0 ? T(' ' + SHAPE[r.sh.sub][0] + '의 기운이 섞여 있어 ' + SHAPE[r.sh.sub][2] + '의 성향도 함께 나타납니다.', ' ' + SHAPE[r.sh.sub][0] + ' energy is mixed in, so the tendencies of ' + SHAPE[r.sh.sub][2] + ' show as well.') : '');
+  const free = '<div class="block"><h3>' + T('얼굴형 · 오행형', 'Face shape · element type') + '</h3><div class="read">' + it(S5[0], S5[2], shapeTxt, null, ['fr', 'jr', 'jc'].map(k => (EN ? EN_F.REF[k] : REF[k][0]) + ' ' + sig(m.z[k]) + 'σ').join(' · ')) + '</div></div>' +
+    (r.link ? '<div class="block"><h3>' + T('사주와 겹쳐 보기 · 일간 ', 'Read with your saju · Day Master ') + elSpanSafe(r.link.d) + T(' × 얼굴 ', ' × face ') + elSpanSafe(r.sh.main) + '</h3><div class="panel block"><p>' + r.link.a + '</p>' + (r.link.b ? '<p>' + r.link.b + '</p>' : '') + (S.user && S.user.example ? '<p class="note">' + T('지금은 예시 사주 기준입니다. 내 생년월일을 넣으면 내 사주와 겹쳐 읽습니다.', 'This uses the example saju. Enter your birth date to read it with your own.') + '</p>' : '') + '</div></div>' : '');
   const strong = r.parts.filter(p => p.q > .5).sort((a, b) => b.q - a.q), weak = r.parts.filter(p => p.q < -.5).sort((a, b) => a.q - b.q);
   const top = [...r.luck].sort((a, b) => b[1] - a[1]), y0 = r.years[0];
-  const sum = ['<p>' + S5[0] + (r.sh.sub >= 0 ? '에 ' + SHAPE[r.sh.sub][0] + '이 섞인' : '의') + ' 얼굴이고 관상 총점은 ' + r.total + '점입니다. ' + (strong.length ? '가장 잘 갖춰진 자리는 ' + strong.slice(0, 3).map(p => p.title).join(', ') + '입니다. ' : '어느 한 부위가 튀기보다 전체가 고른 상입니다. ') + '다섯 가지 운에서는 ' + top[0][0] + '(' + top[0][1] + ')이 가장 강하고 ' + top[1][0] + '(' + top[1][1] + ')이 뒤를 받칩니다.</p>',
+  const sum = EN ? faceSumEN(r, S5, SHAPE, strong, weak, top, y0, grade) : ['<p>' + S5[0] + (r.sh.sub >= 0 ? '에 ' + SHAPE[r.sh.sub][0] + '이 섞인' : '의') + ' 얼굴이고 관상 총점은 ' + r.total + '점입니다. ' + (strong.length ? '가장 잘 갖춰진 자리는 ' + strong.slice(0, 3).map(p => p.title).join(', ') + '입니다. ' : '어느 한 부위가 튀기보다 전체가 고른 상입니다. ') + '다섯 가지 운에서는 ' + top[0][0] + '(' + top[0][1] + ')이 가장 강하고 ' + top[1][0] + '(' + top[1][1] + ')이 뒤를 받칩니다.</p>',
     '<p>' + (weak.length ? '보완할 자리는 ' + weak.slice(0, 2).map(p => p.title).join(', ') + '입니다. ' : '') + '상대적으로 약한 ' + top[4][0] + '운(' + top[4][1] + ')은 ' + jo(top[4][2], '이', '가') + ' 채워 줍니다.' + (r.link ? ' 사주와는 ' + (r.link.fit > 0 ? '서로 보태는 짝입니다.' : r.link.fit < 0 ? '필요한 기운을 따로 챙겨야 하는 짝입니다.' : '무난하게 어울립니다.') : '') + '</p>',
     r.better.list.length ? '<p>지금 가장 효과가 큰 변화는 ' + r.better.list[0].title + '입니다.' + (r.better.after > r.total ? ' 권한 변화를 모두 하면 총점이 ' + r.better.after + '점까지 오릅니다.' : '') + '</p>' : '',
     y0 ? '<p>올해 ' + y0.age + '세는 ' + y0.name + '의 자리이고 ' + (y0.q == null ? '사진으로 재기 어려운 자리라 빛깔과 살집으로 봐야 합니다.' : '사진으로는 ' + grade(y0.q)[0] + '로 읽습니다.') + '</p>' : '',
     '<p><b>마의상법은 생김새가 좋은 것이 몸 좋은 것만 못하고, 몸 좋은 것이 마음 좋은 것만 못하다고 했습니다. 표정과 기색이 골격보다 운을 더 크게 바꿉니다.</b></p>'].join('');
-  const yun = r.years.length ? '<div class="block"><h3>나이의 자리 · 올해 ' + r.age + '세(세는나이)</h3><div class="panel block"><p>' + y0.lead + ' ' + (y0.q == null ? '정면 사진으로는 재기 어려워 점수는 매기지 않습니다. 이 자리는 살집과 빛깔로 보며, 맑고 밝으면 좋게 읽습니다.' : y0.q > .5 ? '이 자리가 잘 갖춰져 있어 올해는 힘을 받는 해로 읽습니다.' : y0.q < -.5 ? '이 자리가 약한 편이라 올해는 무리한 확장보다 관리에 무게를 두라고 읽습니다.' : '이 자리가 무난해 올해는 큰 기복 없이 가는 해로 읽습니다.') + '</p>' +
-    '<div class="fyear">' + r.years.map(y => { const g = grade(y.q); return '<div><span>' + y.year + ' · ' + y.age + '세</span><span>' + y.name + '</span><span class="tag ' + g[1] + '">' + g[0] + '</span></div>'; }).join('') + '</div><p class="note">나이별 자리는 마의상법의 유년운기부위가를 따랐고, 평가는 이번 사진의 측정값 기준입니다.</p></div></div>' : '';
-  const tbl = '<details class="block"><summary class="note">측정값 보기</summary><div class="ftbl"><table><thead><tr><th>항목</th><th>측정</th><th>기준</th><th>편차</th></tr></thead><tbody>' + Object.keys(REF).map(k => '<tr><td>' + REF[k][0] + '</td><td>' + m.v[k].toFixed(3) + '</td><td>' + REF[k][1].toFixed(3) + '</td><td>' + sig(m.z[k]) + 'σ</td></tr>').join('') + '</tbody></table></div></details>';
-  const bt = r.better, better = '<div class="block"><h3>이렇게 바뀌면 좋아집니다 · 표정과 습관으로 바꾸는 관상</h3>' + (bt.list.length
-    ? '<div class="read">' + bt.list.map(x => '<div class="it"><b>' + x.title + '</b>' + (x.d > 0 ? '<span class="tag gup">총점 +' + x.d + '</span>' : '') + (x.up ? '<span class="tag gup">' + x.part + ' → ' + x.up + '</span>' : '') + '<p>' + x.how + '</p>' + (x.dl.length ? '<small>달라지는 운: ' + x.dl.map(l => l[0] + ' +' + l[1]).join(' · ') + '</small>' : '') + '</div>').join('') + '</div>' +
-      '<div class="panel block"><p>' + (bt.list.length > 1 ? '위의 ' + bt.list.length + '가지를 함께 하면' : '이 한 가지만 해도') + ' 관상 총점이 <b>' + r.total + '점에서 ' + bt.after + '점</b>으로 오르는 것으로 계산됩니다.</p><p class="note">성형이 아니라 표정, 습관, 손질로 바꿀 수 있는 것만 골랐습니다. 점수는 이 앱의 측정 기준으로 계산한 예상치입니다. 2~3주 뒤 같은 조명과 각도로 다시 찍어 달라졌는지 확인해 보세요.</p></div>'
-    : '<div class="panel"><p>표정과 손질로 바꿀 수 있는 자리가 이미 잘 갖춰져 있습니다. 지금의 표정을 유지하는 것이 가장 좋은 개운입니다.</p></div>') + '</div>';
-  const inner = '<div class="block"><h3>부위별 풀이 · 삼정, 오관, 십이궁</h3><div class="read">' + r.parts.map(p => it(p.title, p.sub, p.text, tagOf(p.q), why(p))).join('') + '</div></div>' + better + yun +
-    '<div class="block"><h3>종합의견</h3><div class="panel block sum">' + sum + '</div></div>' + tbl;
+  const yun = r.years.length ? '<div class="block"><h3>' + T('나이의 자리 · 올해 ' + r.age + '세(세는나이)', 'The age positions · this year, age ' + r.age + ' by Korean count') + '</h3><div class="panel block"><p>' + y0.lead + ' ' + (y0.q == null ? T('정면 사진으로는 재기 어려워 점수는 매기지 않습니다. 이 자리는 살집과 빛깔로 보며, 맑고 밝으면 좋게 읽습니다.', 'It is hard to measure from a front photo, so no score is given. This seat is read from fullness and color; clear and bright is read well.') : y0.q > .5 ? T('이 자리가 잘 갖춰져 있어 올해는 힘을 받는 해로 읽습니다.', 'This seat is well formed, so this year reads as a supported one.') : y0.q < -.5 ? T('이 자리가 약한 편이라 올해는 무리한 확장보다 관리에 무게를 두라고 읽습니다.', 'This seat is on the weak side, so this year reads as one for management rather than overreaching.') : T('이 자리가 무난해 올해는 큰 기복 없이 가는 해로 읽습니다.', 'This seat is even, so this year reads as one without big swings.')) + '</p>' +
+    '<div class="fyear">' + r.years.map(y => { const g = grade(y.q); return '<div><span>' + y.year + ' · ' + T(y.age + '세', 'age ' + y.age) + '</span><span>' + y.name + '</span><span class="tag ' + g[1] + '">' + g[0] + '</span></div>'; }).join('') + '</div><p class="note">' + T('나이별 자리는 마의상법의 유년운기부위가를 따랐고, 평가는 이번 사진의 측정값 기준입니다.', 'The seats by age follow the classic Mayi text, and the rating is based on this photo\'s measurements.') + '</p></div></div>' : '';
+  const tbl = '<details class="block"><summary class="note">' + T('측정값 보기', 'Show measurements') + '</summary><div class="ftbl"><table><thead><tr><th>' + T('항목', 'Item') + '</th><th>' + T('측정', 'Measured') + '</th><th>' + T('기준', 'Reference') + '</th><th>' + T('편차', 'Deviation') + '</th></tr></thead><tbody>' + Object.keys(REF).map(k => '<tr><td>' + (EN ? EN_F.REF[k] : REF[k][0]) + '</td><td>' + m.v[k].toFixed(3) + '</td><td>' + REF[k][1].toFixed(3) + '</td><td>' + sig(m.z[k]) + 'σ</td></tr>').join('') + '</tbody></table></div></details>';
+  const bt = r.better, better = '<div class="block"><h3>' + T('이렇게 바뀌면 좋아집니다 · 표정과 습관으로 바꾸는 관상', 'Changes that improve it · through expression and habit') + '</h3>' + (bt.list.length
+    ? '<div class="read">' + bt.list.map(x => '<div class="it"><b>' + x.title + '</b>' + (x.d > 0 ? '<span class="tag gup">' + T('총점 +', 'Total +') + x.d + '</span>' : '') + (x.up ? '<span class="tag gup">' + x.part + ' → ' + x.up + '</span>' : '') + '<p>' + x.how + '</p>' + (x.dl.length ? '<small>' + T('달라지는 운: ', 'Luck that changes: ') + x.dl.map(l => l[0] + ' +' + l[1]).join(' · ') + '</small>' : '') + '</div>').join('') + '</div>' +
+      '<div class="panel block"><p>' + T((bt.list.length > 1 ? '위의 ' + bt.list.length + '가지를 함께 하면' : '이 한 가지만 해도') + ' 관상 총점이 <b>' + r.total + '점에서 ' + bt.after + '점</b>으로 오르는 것으로 계산됩니다.', (bt.list.length > 1 ? 'Doing all ' + bt.list.length + ' of the above' : 'Doing just this one thing') + ' is calculated to raise your face total <b>from ' + r.total + ' to ' + bt.after + '</b>.') + '</p><p class="note">' + T('성형이 아니라 표정, 습관, 손질로 바꿀 수 있는 것만 골랐습니다. 점수는 이 앱의 측정 기준으로 계산한 예상치입니다. 2~3주 뒤 같은 조명과 각도로 다시 찍어 달라졌는지 확인해 보세요.', 'Only changes possible through expression, habit and grooming were chosen, not surgery. The score is an estimate by this app\'s measurements. Retake the photo in two or three weeks with the same light and angle to see whether it has changed.') + '</p></div>'
+    : '<div class="panel"><p>' + T('표정과 손질로 바꿀 수 있는 자리가 이미 잘 갖춰져 있습니다. 지금의 표정을 유지하는 것이 가장 좋은 개운입니다.', 'The seats that expression and grooming can change are already well formed. Keeping your present expression is the best way to improve your luck.') + '</p></div>') + '</div>';
+  const inner = '<div class="block"><h3>' + T('부위별 풀이 · 삼정, 오관, 십이궁', 'Reading by feature · three zones, five features, twelve palaces') + '</h3><div class="read">' + r.parts.map(p => it(p.title, p.sub, p.text, tagOf(p.q), why(p))).join('') + '</div></div>' + better + yun +
+    '<div class="block"><h3>' + T('종합의견', 'Overall summary') + '</h3><div class="panel block sum">' + sum + '</div></div>' + tbl;
   const locked = !S.premium;
-  return hero + free + '<div class="lock' + (locked ? ' locked' : '') + '"><div class="inner">' + inner + '</div><div class="gate"><span>부위별 풀이, 좋아지는 변화, 나이의 자리, 종합의견은 사주를 열면 함께 열립니다</span><button type="button" class="goldbtn" id="fUnlock">열기</button></div></div>';
+  return hero + free + '<div class="lock' + (locked ? ' locked' : '') + '"><div class="inner">' + inner + '</div><div class="gate"><span>' + T('부위별 풀이, 좋아지는 변화, 나이의 자리, 종합의견은 사주를 열면 함께 열립니다', 'The reading by feature, improving changes, age positions and summary open when you open your saju') + '</span><button type="button" class="goldbtn" id="fUnlock">' + T('열기', 'Open') + '</button></div></div>';
 }
 function elSpanSafe(i) { return typeof elSpan === 'function' ? elSpan(i, EL[i] + EL_H[i]) : EL[i]; }
 
 function renderFace() {
   const v = $('v-face'); if (!v) return;
   const has = !!F.res;
-  v.innerHTML = '<div class="block"><h2>관상</h2><h3>정면 사진 한 장으로 얼굴 비율을 재고 사주와 겹쳐 읽습니다</h3></div>' +
+  v.innerHTML = '<div class="block"><h2>' + T('관상', 'Face reading') + '</h2><h3>' + T('정면 사진 한 장으로 얼굴 비율을 재고 사주와 겹쳐 읽습니다', 'One front-facing photo: facial proportions measured and read with your saju') + '</h3></div>' +
     '<div class="panel fstage" id="fStage">' + (has ? '' : DIAGRAM) + '</div>' +
-    '<div class="row"><label class="primary flbl" aria-disabled="' + F.busy + '">' + (has ? '다시 찍기' : '지금 찍기') + '<input type="file" id="fShot" accept="image/*" capture="user"></label><label class="ghost flbl" aria-disabled="' + F.busy + '">' + (has ? '다른 사진' : '사진 고르기') + '<input type="file" id="fPick" accept="image/*"></label></div>' +
+    '<div class="row"><label class="primary flbl" aria-disabled="' + F.busy + '">' + (has ? T('다시 찍기', 'Retake') : T('지금 찍기', 'Take a photo')) + '<input type="file" id="fShot" accept="image/*" capture="user"></label><label class="ghost flbl" aria-disabled="' + F.busy + '">' + (has ? T('다른 사진', 'Another photo') : T('사진 고르기', 'Choose a photo')) + '<input type="file" id="fPick" accept="image/*"></label></div>' +
     '<p class="note' + (F.err ? ' warn' : '') + '" id="fMsg" role="status" aria-live="polite">' + F.msg + '</p>' +
-    (has ? resultHTML() : '<ul class="ftips note"><li>카메라를 눈높이에 두고 정면을 봅니다. 고개가 돌아가면 비율이 틀어집니다.</li><li>무표정이 가장 정확합니다. 웃으면 입과 눈 수치가 달라집니다.</li><li>앞머리와 안경이 눈썹을 가리지 않게 하고, 조명은 얼굴 정면에서 밝게 합니다.</li></ul>') +
-    '<p class="note">사진은 이 기기 안에서만 분석하고 저장하거나 전송하지 않습니다. 이마와 귀, 광대의 높이, 피부 빛깔은 정면 사진으로 재지 않습니다. 관상 풀이는 오락·참고용입니다.</p>';
+    (has ? resultHTML() : '<ul class="ftips note">' + T('<li>카메라를 눈높이에 두고 정면을 봅니다. 고개가 돌아가면 비율이 틀어집니다.</li><li>무표정이 가장 정확합니다. 웃으면 입과 눈 수치가 달라집니다.</li><li>앞머리와 안경이 눈썹을 가리지 않게 하고, 조명은 얼굴 정면에서 밝게 합니다.</li>', '<li>Hold the camera at eye level and face it straight on. A turned head distorts the proportions.</li><li>A neutral expression is most accurate. Smiling changes the mouth and eye measurements.</li><li>Keep fringe and glasses from covering your eyebrows, and light your face brightly from the front.</li>') + '</ul>') +
+    '<p class="note">' + T('사진은 이 기기 안에서만 분석하고 저장하거나 전송하지 않습니다. 이마와 귀, 광대의 높이, 피부 빛깔은 정면 사진으로 재지 않습니다. 관상 풀이는 오락·참고용입니다.', 'The photo is analyzed on this device only and is never stored or sent. Forehead, ears, cheekbone height and skin tone are not measured from a front photo. Face readings are for entertainment and reference.') + '</p>';
   if (has && F.cv) $('fStage').appendChild(F.cv);
 }
 function say(t, err) { F.msg = t || ''; F.err = !!err; const e = $('fMsg'); if (e) { e.textContent = F.msg; e.classList.toggle('warn', F.err); } }
@@ -302,7 +305,7 @@ function draw(src, P, m, r) {
   const xs = P.map(q => q.x), ys = P.map(q => q.y), x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
   const side = Math.max(x1 - x0, y1 - y0) * 1.75, sx = (x0 + x1) / 2 - side / 2, sy = (y0 + y1) / 2 - (y1 - y0) * .12 - side / 2 + side * .09, sw = side, sh = side * .82;
   const cv = document.createElement('canvas'), ctx = cv.getContext('2d'); cv.width = 840; cv.height = Math.round(840 * sh / sw);
-  cv.setAttribute('aria-label', '측정선을 그린 얼굴 사진');
+  cv.setAttribute('aria-label', T('측정선을 그린 얼굴 사진', 'Face photo with measurement lines'));
   const k = cv.width / sw, L = P.map(q => ({ x: (q.x - sx) * k, y: (q.y - sy) * k }));
   const u = { x: Math.cos(m.angle), y: Math.sin(m.angle) }, n = { x: -u.y, y: u.x }, W = Math.hypot(L[16].x - L[0].x, L[16].y - L[0].y), c0 = L[27];
   const level = q => { const t = (q.x - c0.x) * n.x + (q.y - c0.y) * n.y; return { x: c0.x + n.x * t, y: c0.y + n.y * t }; };
@@ -310,7 +313,7 @@ function draw(src, P, m, r) {
   const lines = [level({ x: (L[19].x + L[24].x) / 2, y: (L[19].y + L[20].y + L[23].y + L[24].y) / 4 }), level(L[33]), level(L[8])];
   const polys = [[0, 16, 0], [17, 21, 0], [22, 26, 0], [27, 30, 0], [31, 35, 0], [36, 41, 1], [42, 47, 1], [48, 59, 1]];
   const mid = (a, b) => ({ x: (L[a].x + L[b].x) / 2, y: (L[a].y + L[b].y) / 2 });
-  const spot = { ig: [mid(21, 22)], brow: [L[19], L[24]], eye: [mid(36, 39), mid(42, 45)], nose: [r.years[0] && r.years[0].name === '콧대' ? mid(28, 29) : L[30]], ph: [mid(33, 51)], mouth: [mid(62, 66)], chin: [L[8]] }[r.years[0] && r.years[0].key] || [];
+  const spot = { ig: [mid(21, 22)], brow: [L[19], L[24]], eye: [mid(36, 39), mid(42, 45)], nose: [r.years[0] && r.years[0].name === T('콧대', 'Nose bridge') ? mid(28, 29) : L[30]], ph: [mid(33, 51)], mouth: [mid(62, 66)], chin: [L[8]] }[r.years[0] && r.years[0].key] || [];
   const serif = getComputedStyle(document.documentElement).getPropertyValue('--serif') || 'serif';
   const t0 = performance.now(), dur = (typeof reduceMotion !== 'undefined' && reduceMotion) ? 0 : 1300;
   function frame(now) {
@@ -331,10 +334,10 @@ function draw(src, P, m, r) {
       ctx.setLineDash([]);
       if (g === 1) {
         ctx.font = '900 26px ' + serif; ctx.textBaseline = 'middle'; ctx.textAlign = 'right'; ctx.fillStyle = '#fff'; ctx.strokeStyle = 'rgba(0,0,0,.6)'; ctx.lineWidth = 4;
-        [['중정', 0, 1], ['하정', 1, 2]].forEach(([t, i, j]) => { const q = along({ x: (lines[i].x + lines[j].x) / 2, y: (lines[i].y + lines[j].y) / 2 }, -W * .62); ctx.strokeText(t, q.x - 10, q.y); ctx.fillText(t, q.x - 10, q.y); });
+        [[T('중정', 'Middle'), 0, 1], [T('하정', 'Lower'), 1, 2]].forEach(([t, i, j]) => { const q = along({ x: (lines[i].x + lines[j].x) / 2, y: (lines[i].y + lines[j].y) / 2 }, -W * .62); ctx.strokeText(t, q.x - 10, q.y); ctx.fillText(t, q.x - 10, q.y); });
         ctx.strokeStyle = '#ffd76a'; ctx.lineWidth = 3;
         spot.forEach(q => { ctx.beginPath(); ctx.arc(q.x, q.y, W * .055, 0, Math.PI * 2); ctx.stroke(); });
-        if (spot.length) { ctx.textAlign = 'left'; ctx.font = '500 22px ' + serif; ctx.fillStyle = '#ffd76a'; ctx.strokeStyle = 'rgba(0,0,0,.6)'; ctx.lineWidth = 4; const q = spot[spot.length - 1]; ctx.strokeText('올해의 자리', q.x + W * .07, q.y); ctx.fillText('올해의 자리', q.x + W * .07, q.y); }
+        if (spot.length) { ctx.textAlign = 'left'; ctx.font = '500 22px ' + serif; ctx.fillStyle = '#ffd76a'; ctx.strokeStyle = 'rgba(0,0,0,.6)'; ctx.lineWidth = 4; const q = spot[spot.length - 1]; ctx.strokeText(T('올해의 자리', 'This year'), q.x + W * .07, q.y); ctx.fillText(T('올해의 자리', 'This year'), q.x + W * .07, q.y); }
       }
     }
     if (f < 1) requestAnimationFrame(frame);
@@ -345,7 +348,7 @@ function draw(src, P, m, r) {
 
 /* 분석 진행 막대: 단계마다 목표 %를 정하고 그 사이는 천천히 차오르게 한다 */
 const prog = { v: 0, to: 0, t: null,
-  start() { const st = $('fStage'); if (!st) return; st.innerHTML = '<div class="fprog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="관상 분석 진행"><b id="fPct">0%</b><div class="trk"><i id="fBar"></i></div><span class="note" id="fStep"></span></div>'; this.v = 0; this.to = 0; clearInterval(this.t); this.t = setInterval(() => { if (this.v < this.to) { this.v += Math.max(.4, (this.to - this.v) * .08); this.paint(); } }, 120); },
+  start() { const st = $('fStage'); if (!st) return; st.innerHTML = '<div class="fprog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="' + T('관상 분석 진행', 'Face analysis progress') + '"><b id="fPct">0%</b><div class="trk"><i id="fBar"></i></div><span class="note" id="fStep"></span></div>'; this.v = 0; this.to = 0; clearInterval(this.t); this.t = setInterval(() => { if (this.v < this.to) { this.v += Math.max(.4, (this.to - this.v) * .08); this.paint(); } }, 120); },
   step(to, text) { this.to = to; const e = $('fStep'); if (e) e.textContent = text; },
   paint() { const b = $('fBar'), p = $('fPct'); if (!b) return; const v = Math.min(100, Math.round(this.v)); b.style.width = v + '%'; p.textContent = v + '%'; b.parentNode.parentNode.setAttribute('aria-valuenow', v); },
   async done() { this.v = this.to = 100; this.paint(); clearInterval(this.t); await new Promise(r => setTimeout(r, 350)); },
@@ -353,22 +356,22 @@ const prog = { v: 0, to: 0, t: null,
 const tick = () => new Promise(r => setTimeout(r, 30));
 async function handle(file) {
   if (!file || F.busy) return;
-  setBusy(true); say('사진을 분석하는 중입니다. 화면을 닫지 말고 잠시 기다려 주세요.');
-  prog.start(); prog.step(30, ready ? '분석 준비 중' : '얼굴 인식 엔진을 불러오는 중 (처음 한 번은 조금 걸립니다)');
+  setBusy(true); say(T('사진을 분석하는 중입니다. 화면을 닫지 말고 잠시 기다려 주세요.', 'Analyzing the photo. Please keep this screen open for a moment.'));
+  prog.start(); prog.step(30, ready ? T('분석 준비 중', 'Getting ready') : T('얼굴 인식 엔진을 불러오는 중 (처음 한 번은 조금 걸립니다)', 'Loading the face engine (the first time takes a little while)'));
   try {
     await loadModels();
-    prog.step(45, '사진을 읽는 중'); await tick();
+    prog.step(45, T('사진을 읽는 중', 'Reading the photo')); await tick();
     const c = await toCanvas(file);
-    prog.step(85, '얼굴을 찾는 중'); await tick();
+    prog.step(85, T('얼굴을 찾는 중', 'Finding the face')); await tick();
     let dets = await faceapi.detectAllFaces(c, new faceapi.TinyFaceDetectorOptions({ inputSize: 512, scoreThreshold: .3 })).withFaceLandmarks();
     if (!dets.length) dets = await faceapi.detectAllFaces(c, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: .25 })).withFaceLandmarks();
-    if (!dets.length) { prog.stop(); F.busy = false; renderFace(); say('얼굴을 찾지 못했습니다. 밝은 곳에서 얼굴이 화면의 절반쯤 차도록 정면으로 다시 찍어 주세요.', true); return; }
-    prog.step(95, '얼굴 비율을 재고 풀이를 만드는 중'); await tick();
+    if (!dets.length) { prog.stop(); F.busy = false; renderFace(); say(T('얼굴을 찾지 못했습니다. 밝은 곳에서 얼굴이 화면의 절반쯤 차도록 정면으로 다시 찍어 주세요.', 'No face was found. Retake the photo straight on in good light, with your face filling about half the frame.'), true); return; }
+    prog.step(95, T('얼굴 비율을 재고 풀이를 만드는 중', 'Measuring proportions and writing the reading')); await tick();
     dets.sort((a, b) => b.detection.box.area - a.detection.box.area);
     const P = dets[0].landmarks.positions.map(q => ({ x: q.x, y: q.y })), m = measure(P), r = read(m);
     await prog.done();
     F.res = { m, r, P, src: c }; F.cv = draw(c, P, m, r);
-    F.msg = m.yaw > .13 ? '고개가 한쪽으로 돌아가 있어 정확도가 떨어집니다. 정면 사진으로 다시 보면 결과가 달라질 수 있습니다.' : dets.length > 1 ? '여러 얼굴 중 가장 크게 찍힌 얼굴을 봤습니다.' : ''; F.err = m.yaw > .13;
+    F.msg = m.yaw > .13 ? T('고개가 한쪽으로 돌아가 있어 정확도가 떨어집니다. 정면 사진으로 다시 보면 결과가 달라질 수 있습니다.', 'Your head is turned to one side, which lowers accuracy. A straight-on photo may give a different result.') : dets.length > 1 ? T('여러 얼굴 중 가장 크게 찍힌 얼굴을 봤습니다.', 'Of several faces, the largest one was read.') : ''; F.err = m.yaw > .13;
     F.busy = false; renderFace();
     const v = $('v-face'); v.classList.remove('enter'); void v.offsetWidth; v.classList.add('enter');
     if (typeof countUp === 'function') countUp(v);
@@ -376,7 +379,7 @@ async function handle(file) {
     $('fStage').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } catch (e) {
     prog.stop(); F.busy = false; renderFace();
-    say(e && e.message === 'lib' ? '얼굴 인식 엔진을 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.' : e && e.message === 'img' ? '이 사진 파일을 열 수 없습니다. JPG나 PNG 사진으로 다시 시도해 주세요.' : '분석 중 오류가 났습니다. 다른 사진으로 다시 시도해 주세요.', true);
+    say(e && e.message === 'lib' ? T('얼굴 인식 엔진을 불러오지 못했습니다. 잠시 뒤 다시 시도해 주세요.', 'Could not load the face engine. Please try again in a moment.') : e && e.message === 'img' ? T('이 사진 파일을 열 수 없습니다. JPG나 PNG 사진으로 다시 시도해 주세요.', 'This photo file cannot be opened. Try again with a JPG or PNG photo.') : T('분석 중 오류가 났습니다. 다른 사진으로 다시 시도해 주세요.', 'Something went wrong during analysis. Try again with another photo.'), true);
     if (window.console) console.error(e);
   } finally { setBusy(false); }
 }

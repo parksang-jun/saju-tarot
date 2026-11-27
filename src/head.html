@@ -229,6 +229,13 @@ nav a{font-size:13px;padding:12px 0;white-space:nowrap;letter-spacing:-.02em}
 .flbl[aria-disabled="true"]{opacity:.5;pointer-events:none}
 ul.ftips{margin:0;padding-left:18px;display:grid;gap:4px}
 #v-face .read .it small{display:block;color:var(--mute);font-size:11px;margin-top:2px}
+.report{position:absolute;left:-10000px;top:0;width:760px;background:#fff;color:#1d1c24;padding:0;
+  --ink:#ffffff;--ink2:#f7f4ec;--ink3:#efeadc;--line:#d8d2c0;--paper:#1d1c24;--mute:#5b5d6e;--gold:#8a6a1f;--seal:#c23b26;--e0:#2e8a5f;--e1:#c9432f;--e2:#a67c14;--e3:#6b6b7a;--e4:#2f6fd0}
+.report .rblock{padding:10px 4px;background:#fff}.report .why{display:block}.report .ring{background:none;border:6px solid var(--gold)}.report .ring>div{background:none}
+.report .rcover{padding:60px 20px 40px;text-align:center}.report .rcover h1{font-family:var(--serif);font-size:44px;color:var(--gold)}.report .rcover h2{font-size:24px;margin-top:40px}.report .rcover p{color:var(--mute);margin-top:10px}
+.report .rsec{font-family:var(--serif);font-size:30px;border-bottom:2px solid var(--gold);padding:24px 0 8px;margin:0}
+.report img.rface{display:block;max-width:420px;margin:0 auto;border-radius:12px}
+.read .it p.fm{font-size:14px;color:var(--mute);margin-top:6px}.read .it p.fm b{color:var(--gold);font-size:12px;display:block;font-family:var(--sans);font-weight:600}.read .it p.fmr{font-size:12px}
 .fyear{display:grid;gap:6px}
 .fyear div{display:grid;grid-template-columns:96px 1fr auto;gap:8px;align-items:center;font-size:13px}
 .fyear div span:first-child{color:var(--mute);font-variant-numeric:tabular-nums}
@@ -329,7 +336,7 @@ table.tiers th{white-space:nowrap;width:1%}
     <table class="tiers">
       <tr><th><span class="tier free" style="margin:0">무료</span></th><td>사주 원국, 오행과 육신 요약, 올해 총운, 궁합 총점, 관상 얼굴형과 총점, 어려운 말 풀이</td></tr>
       <tr><th><span class="tier ad" style="margin:0">광고 보고 보기</span></th><td>오늘의 운세(점수, 재물·일·애정 운, 기회와 조심할 것, 행운의 색과 숫자, 어제와 내일), 오늘의 운세 타로(카드 세 장), 별자리 차트와 오늘의 별자리 운세. 각각 광고 한 번에 그날 하루 열립니다</td></tr>
-      <tr><th><span class="tier paid" style="margin:0">유료 <span class="pp">990원</span></span></th><td><b>사주 한 명</b>: 상세 풀이 전체(월별 흐름과 해마다의 운세 포함), 관상 상세, 통합 리딩. 오늘의 운세와 타로, 별자리도 광고 없이 봅니다<br><b>궁합 한 쌍</b>: 항목별 풀이와 종합의견</td></tr>
+      <tr><th><span class="tier paid" style="margin:0">유료 <span class="pp">990원</span></span></th><td><b>사주 한 명</b>: 상세 풀이 전체(월별 흐름과 해마다의 운세 포함), 관상 상세(부위마다 뜻과 살리는 법), 통합 리딩, 사주·관상 풀이 문서(PDF). 오늘의 운세와 타로, 별자리도 광고 없이 봅니다<br><b>궁합 한 쌍</b>: 항목별 풀이와 종합의견</td></tr>
     </table>
     <p class="note">자동으로 갱신되는 결제는 없습니다. 자물쇠가 걸린 내용은 사주 한 명, 궁합 한 쌍마다 <span class="pp">990원</span>에 열립니다. 입력한 정보는 이 기기에만 저장되고, 화면 맨 아래에서 전부 지울 수 있습니다. 풀이는 오락·참고용입니다.</p>
     <button class="primary" id="guideStart" type="button">내 정보 입력하고 시작</button>
@@ -364,6 +371,7 @@ table.tiers th{white-space:nowrap;width:1%}
       <li>타고난 유형, 타고난 별, 분야별 풀이(기질·일·돈·배우자)</li>
       <li>지나온 운, 지금의 운, 다가올 운과 종합의견</li>
       <li>사주와 오늘의 타로를 겹쳐 읽는 통합 리딩</li>
+      <li>사주와 관상 풀이를 한 권으로 받는 PDF 문서</li>
       <li>관상 부위별 풀이, 좋아지는 변화, 나이의 자리, 종합의견</li>
     </ul>
     <ul class="perk" id="payPerkMatch" hidden>

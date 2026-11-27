@@ -2,7 +2,7 @@
 import { build } from 'esbuild';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
-const ORDER = ['i18n.js', 'en-data.js', 'en-saju.js', 'engine.js', 'app.js', 'deep.js', 'yuksin.js', 'en-match.js', 'match.js', 'pay.js', 'ads.js', 'ui2.js', 'daily.js', 'gloss.js', 'astro.js', 'en-face.js', 'face.js', 'boot.js'];
+const ORDER = ['i18n.js', 'en-data.js', 'en-saju.js', 'engine.js', 'app.js', 'deep.js', 'yuksin.js', 'en-match.js', 'match.js', 'pay.js', 'ads.js', 'ui2.js', 'daily.js', 'gloss.js', 'report.js', 'astro.js', 'en-face.js', 'face-more.js', 'face.js', 'boot.js'];
 const read = f => readFileSync(new URL('../src/' + f, import.meta.url), 'utf8');
 
 const vendor = await build({ entryPoints: ['src/vendor-entry.js'], bundle: true, format: 'iife', minify: true, write: false, target: 'es2020' });
@@ -17,4 +17,7 @@ console.log('dist/index.html', (html.length / 1024).toFixed(0) + ' KB');
 
 // 관상: 얼굴 인식 엔진과 모델은 용량이 커서 index.html에 넣지 않고 dist에 따로 둔다(관상 탭에서 사진을 처음 올릴 때만 불러온다)
 import { copyFileSync as cpFace } from 'node:fs';
+// 풀이 문서(PDF) 라이브러리도 따로 둔다
+const rl = await build({ entryPoints: ['src/report-lib-entry.js'], bundle: true, format: 'iife', minify: true, write: false, target: 'es2020', external: ['canvg', 'dompurify'] });
+writeFileSync(new URL('../dist/report-lib.js', import.meta.url), rl.outputFiles[0].text);
 for (const f of ['face-api.js', 'face-models.js']) cpFace(new URL('../src/vendor/' + f, import.meta.url), new URL('../dist/' + f, import.meta.url));

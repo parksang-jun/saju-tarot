@@ -203,7 +203,7 @@ function calcSaju(u) {
     warn: nearMin < 90 ? T('태어난 날이 절기가 바뀌는 날입니다. 절기 시각 전후로 월주(입춘이면 년주도)가 달라지니, 평소 보던 만세력과 월주를 비교해 보세요.', 'You were born on a day when the solar term changes. The month pillar (and the year pillar, at the Start of Spring) differs before and after that moment, so compare the month pillar with a chart you trust.') : '',
     err
   };
-  return { P, keys, count, me, strong, ratio, amt, tot, basis, need, forward, startAge, startExact, daeun, sajuYear: sy, by: sol.y, animal: ANIMALS[yb], lon, hourIdx, siIdx: si, info };
+  return { P, keys, count, me, strong, ratio, amt, tot, basis, need, forward, startAge, startExact, daeun, sajuYear: sy, by: sol.y, animal: ANIMALS[yb], lon, hourIdx, siIdx: si, utc, timeKnown: known, info };
 }
 function yearPillar(year, dayStem) { return pillar(mod(year - 4, 10), mod(year - 4, 12), dayStem); }
 function dayPillarOf(y, m, d, dayStem) { const i = mod(jdn(y, m, d) + 49, 60); return pillar(i % 10, i % 12, dayStem); }

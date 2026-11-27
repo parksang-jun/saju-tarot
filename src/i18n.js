@@ -36,24 +36,25 @@ function setLang(l) { try { localStorage.setItem('mw-lang', l); } catch (e) {} l
   tx(id('f-mbti').parentNode, 'MBTI type (optional)');
   html(q('#birthForm .hint'), 'Enter the clock time where you were born. The app converts it with that city\'s time zone (daylight saving included) and its longitude to find your hour pillar. Choose the nearest listed city in the same time zone.');
   html(q('#birthForm button.primary'), 'See my chart');
-  const nav = { saju: 'Saju', tarot: 'Tarot', match: 'Match', face: 'Face', reading: 'Combined' };
+  const nav = { saju: 'Saju', tarot: 'Tarot', match: 'Match', face: 'Face', astro: 'Stars', reading: 'Combo' };
   document.querySelectorAll('nav a[data-v]').forEach(a => { if (nav[a.dataset.v]) a.textContent = nav[a.dataset.v]; });
-  html(q('.wrap > p.note'), 'Saju, tarot, compatibility and face readings are for entertainment and reference only. Do not use them as a basis for health, legal or investment decisions.');
+  html(q('.wrap > p.note'), 'Saju, tarot, compatibility, face and astrology readings are for entertainment and reference only. Do not use them as a basis for health, legal or investment decisions.');
   html(id('guideBtn'), 'How it works · Pricing'); html(id('resetBtn'), 'Erase all saved data'); html(id('codeBtn'), 'Access code');
 
   html(q('#guideDlg h2'), 'How it works');
   html(q('#guideDlg ol.guide'),
     '<li><b>Enter your details</b> Your birth date (solar or lunar) and birth time. Add the city nearest your birthplace. If you don\'t know the time, tick "I don\'t know the hour".</li>' +
     '<li><b>Saju</b> Tap "See today\'s fortune" at the top; it opens after one ad. Pick a year to read that year\'s fortune. The overall summary is at the bottom. Tap the ? next to a heading for a plain explanation of the term.</li>' +
-    '<li><b>Tarot</b> Tap the cards to flip them yourself. The daily card is one card a day and flips after an ad.</li>' +
+    '<li><b>Tarot</b> Today\'s fortune tarot. After one ad, flip three cards yourself: today overall, love and people, money and work.</li>' +
+    '<li><b>Stars</b> Western astrology from the sky at your birth: Sun, Moon and Rising, the planets by sign, and today\'s transits, opened with one ad.</li>' +
     '<li><b>Match</b> Enter the other person\'s birth date to see your scores and reading as a pair.</li>' +
     '<li><b>Face</b> Take or choose a front-facing photo. The app measures facial proportions and reads them together with your saju. The photo is not saved.</li>' +
-    '<li><b>Combined</b> Reads your saju and the cards you drew together.</li>');
+    '<li><b>Combo</b> Reads your saju and the cards you drew together.</li>');
   html(q('#guideDlg h3'), 'What is free and what is paid');
   html(q('#guideDlg table.tiers'),
     '<tr><th><span class="tier free" style="margin:0">Free</span></th><td>Your saju chart, five-element and ten-gods summary, this year\'s overall fortune, compatibility total score, face type and total score, glossary</td></tr>' +
-    '<tr><th><span class="tier ad" style="margin:0">Watch an ad</span></th><td>Daily fortune (score, money, work and love luck, opportunities and cautions, lucky color and number, yesterday and tomorrow) and the daily tarot card. One ad opens them for the day</td></tr>' +
-    '<tr><th><span class="tier paid" style="margin:0">Paid <span class="pp">₩990</span></span></th><td><b>One person\'s saju</b>: the full detailed reading (monthly flow and year-by-year fortune included), detailed face reading, the three-card tarot spread and the combined reading, with no ads<br><b>One couple\'s match</b>: the reading for each part and the overall summary</td></tr>');
+    '<tr><th><span class="tier ad" style="margin:0">Watch an ad</span></th><td>Daily fortune (score, money, work and love luck, opportunities and cautions, lucky color and number, yesterday and tomorrow), today\'s fortune tarot (three cards), and your astrology chart with today\'s transits. One ad opens each for the day</td></tr>' +
+    '<tr><th><span class="tier paid" style="margin:0">Paid <span class="pp">₩990</span></span></th><td><b>One person\'s saju</b>: the full detailed reading (monthly flow and year-by-year fortune included), detailed face reading and the combined reading. Daily fortune, tarot and astrology open without ads<br><b>One couple\'s match</b>: the reading for each part and the overall summary</td></tr>');
   html(q('#guideDlg p.note'), 'Nothing renews automatically. Locked content opens for <span class="pp">₩990</span> per person\'s saju or per couple. What you enter is stored on this device only, and you can erase it all from the bottom of the screen. Readings are for entertainment and reference.');
   html(id('guideStart'), 'Enter my details and start'); html(id('guideClose'), 'Look around the example first');
 
@@ -67,7 +68,7 @@ function setLang(l) { try { localStorage.setItem('mw-lang', l); } catch (e) {} l
   html(id('payPerk'),
     '<li>Reading for each of the ten gods and how they act on each other</li><li>Lifetime fortune graph, your golden period and best year</li>' +
     '<li>Year-by-year fortune for any year you pick, with its twelve months</li><li>Your innate type and stars, and readings by area (temperament, work, money, partner)</li>' +
-    '<li>Past, present and upcoming luck cycles, and the overall summary</li><li>Three-card tarot spread and the combined reading</li>' +
+    '<li>Past, present and upcoming luck cycles, and the overall summary</li><li>The combined reading of your saju and today\'s tarot</li>' +
     '<li>Face reading by feature, changes that improve it, the age positions and a summary</li>');
   html(id('payPerkMatch'), '<li>Reading for each part of the outer, inner and daily-life match</li><li>An overall summary for the two of you</li>');
   html(id('payDemo'), 'Prototype mode. No real payment is made; the button only unlocks the content on this device.');

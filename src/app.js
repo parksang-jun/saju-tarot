@@ -167,8 +167,7 @@ function readItem(pick, pos) {
   return '<div class="it"><b class="c' + pick.c.el + '">' + (pos ? pos + ' · ' : '') + esc(pick.c.name) + '</b>' + dirTag(pick.rev) + '<p>' + (pick.rev ? pick.c.rev : pick.c.up) + '</p><p class="note">' + l.txt + T(' 닿는 영역은 ' + l.dom + '입니다.', ' It touches ' + l.dom + '.') + '</p></div>';
 }
 function currentCards() {
-  if (S.picks.length === 3) return S.picks.map((i, k) => Object.assign({ pos: POS[k] }, S.deck[i]));
-  return [Object.assign({ pos: T('오늘의 카드', 'Today\'s card') }, todayCard())];
+  return todaySpread();   // 통합 리딩은 오늘의 운세 타로 세 장을 쓴다
 }
 function renderReading() {
   const sj = S.saju, cards = currentCards();
@@ -176,7 +175,7 @@ function renderReading() {
   const yNow = new Date().getFullYear(), yp = yearPillar(yNow + 1, sj.P.day.s);
   const inner = '<div class="panel"><h3>' + TOPICS[S.topic] + T(' · 한 줄 결론', ' · in one line') + '</h3><p class="kv" style="font-size:18px"><b>' + (EN ? tn[0].charAt(0).toUpperCase() + tn[0].slice(1) : tn[0]) + '</b></p><p>' + tn[1] + '</p></div>' +
     '<div class="block"><h3>' + T('명리가 말하는 바탕', 'What your saju says') + '</h3><div class="panel"><p>' + T(elSpan(sj.P.day.sEl, sj.P.day.stemH) + ' 일간, ' + (sj.strong ? '신강' : '신약') + '. 보완할 기운은 ' + elSpan(sj.need, EL[sj.need]) + '입니다. ' + (yNow + 1) + '년은 ' + yp.sGod + '의 해입니다. ', 'Day Master ' + elSpan(sj.P.day.sEl, sj.P.day.stemH) + ', a ' + (sj.strong ? 'strong' : 'weak') + ' chart. The energy to add is ' + elSpan(sj.need, EL[sj.need]) + '. ' + (yNow + 1) + ' is a ' + G(yp.sGod) + ' year. ') + GOD_YEAR[yp.sGod] + '</p></div></div>' +
-    '<div class="block"><h3>' + T('카드가 말하는 지금', 'What the cards say now') + (cards.length === 1 ? T(' · 3장 스프레드를 뽑으면 더 자세해집니다', ' · draw the three-card spread for more detail') : '') + '</h3><div class="read">' + cards.map(c => readItem(c, c.pos)).join('') + '</div></div>' +
+    '<div class="block"><h3>' + T('오늘의 타로가 말하는 지금', 'What today\'s tarot says') + '</h3><div class="read">' + cards.map(c => readItem(c, c.pos)).join('') + '</div></div>' +
     '<div class="block"><h3>' + T('종합의견', 'Overall') + '</h3><div class="panel block sum"><p>' + T('사주의 바탕과 뽑은 카드를 겹쳐 보면 지금은 <b>' + tn[0] + '</b>입니다. ', 'Reading your saju and the cards together, this is <b>' + tn[0] + '</b>. ') + tn[1] + '</p><p><b>' + T('정리하면, 나에게 필요한 ' + EL[sj.need] + ' 기운을 채우는 쪽으로 움직이세요. ', 'In short, move toward filling up the ' + EL[sj.need] + ' energy you need. ') + EL_TIP[sj.need][1] + '</b></p></div></div>' +
     '<div class="block needs-ai" id="aiBox"' + (S.ai ? '' : ' hidden') + '><h3>' + T('AI 상담', 'Ask the AI') + '</h3><div class="panel block"><label for="aiQ">' + T('내 사주와 뽑은 카드를 바탕으로 묻고 싶은 것', 'What you want to ask, based on your saju and cards') + '</label><textarea id="aiQ" maxlength="300" placeholder="' + T('예: 내년에 이직해도 될까요?', 'e.g. Should I change jobs next year?') + '"></textarea><button type="button" class="primary" id="aiGo">' + T('상담 받기', 'Ask') + '</button><div class="ai-out" id="aiOut" aria-live="polite"></div></div></div>';
   $('v-reading').innerHTML = '<div class="block"><h2>' + T('통합 리딩', 'Combined reading') + TIER.paid + '</h2><h3>' + T('사주의 바탕 위에 카드를 겹쳐 읽습니다', 'The cards read on top of your saju') + '</h3></div>' + lockWrap(inner, T('통합 리딩은 이 사주를 열면 함께 열립니다', 'The combined reading opens when you open this saju'));

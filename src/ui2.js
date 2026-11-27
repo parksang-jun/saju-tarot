@@ -144,38 +144,36 @@ $('birthForm').addEventListener('submit', e => {
   $('birthForm').hidden = true; shuffle(); renderAll(); location.hash = 'saju'; route(); scrollTo(0, 0); celebrate();
 });
 
-/* ===== 타로: 직접 뒤집기 ===== */
-function todayCard() {
-  const u = S.user, r = rng(hash32(todayStr() + '|' + [u.cal, u.y, u.m, u.d, siOf(u), u.gender].join('-')));
-  return { c: DECK[Math.floor(r() * 78)], rev: r() < 0.3 };
+/* ===== 타로: 오늘의 운세 타로 (카드 세 장, 광고 보고 보기) ===== */
+const T3_POS = T(['오늘의 총운', '애정·관계', '재물·일'], ['Today overall', 'Love · people', 'Money · work']);
+function todaySpread() {
+  const u = S.user, r = rng(hash32(todayStr() + '|t3|' + [u.cal, u.y, u.m, u.d, siOf(u), u.gender].join('-'))), ix = [];
+  while (ix.length < 3) { const i = Math.floor(r() * 78); if (!ix.includes(i)) ix.push(i); }
+  return ix.map((i, k) => ({ c: DECK[i], rev: r() < 0.3, pos: T3_POS[k] }));
 }
-function spreadReadHTML() {
-  const ps = S.picks.map(i => S.deck[i]), n = S.rev.filter(Boolean).length;
-  return ps.map((p, k) => S.rev[k] ? readItem(p, POS[k]) : '').join('') + (n < 3 ? '<p class="kv">' + T('카드를 눌러 한 장씩 뒤집으세요.', 'Tap the cards to flip them one at a time.') + ' <b>' + n + ' / 3</b></p>' : '<div class="row"><button type="button" class="ghost" data-reshuffle>' + T('다시 섞기', 'Shuffle again') + '</button><a class="goldbtn pulse" href="#reading" style="text-align:center;text-decoration:none">' + T('사주와 겹쳐 읽기', 'Read with my saju') + '</a></div>');
+function todayCard() { return todaySpread()[0]; }
+function t3Open() { const s = store.get('mw-tarot3'); return s && s.d === todayStr() && s.k === profileKey(S.user) ? s.o : [false, false, false]; }
+function t3ReadHTML() {
+  const sp = todaySpread(), o = t3Open(), n = o.filter(Boolean).length;
+  let h = sp.map((p, k) => o[k] ? readItem(p, p.pos) : '').join('');
+  if (n < 3) return h + '<p class="kv">' + T('카드를 눌러 한 장씩 뒤집으세요.', 'Tap the cards to flip them one at a time.') + ' <b>' + n + ' / 3</b></p>';
+  const tn = tone(sp.reduce((a, p) => a + link(p.c, p.rev).score, 0)), rv = sp.filter(p => p.rev).length;
+  return h + '<div class="panel block sum"><p>' + T('오늘은 <b>' + tn[0] + '</b>입니다. ', 'Today is <b>' + tn[0] + '</b>. ') + tn[1] + (rv >= 2 ? T(' 역방향 카드가 많으니 서두르지 말고 한 번 더 확인하세요.', ' Several cards are reversed, so do not rush and check once more.') : '') + '</p></div>' +
+    '<p class="note">' + T('카드는 자정에 바뀝니다.', 'The cards change at midnight.') + '</p><a class="goldbtn" href="#reading" style="display:block;text-align:center;text-decoration:none">' + T('사주와 겹쳐 읽기', 'Read with my saju') + '</a>';
 }
 function renderTarot() {
-  const t = todayCard(), open = S.todayOpen;
-  const today = '<div class="block"><h2>' + T('오늘의 카드', 'Today\'s card') + TIER.ad + '</h2><div class="panel today"><div>' + cardHTML(t, open, open ? 'tabindex="-1"' : 'data-today') + '</div><div class="read" id="todayRead">' + (open ? readItem(t) : '<p class="kv">' + T('오늘 하루를 떠올리고 카드를 눌러 뒤집으세요.', 'Think of your day and tap the card to flip it.') + '</p>' + (Ads.unlocked('tarot') ? '' : '<p class="note">' + T('카드를 누르면 광고가 한 번 나온 뒤 뒤집힙니다. 사주를 연 분은 광고 없이 봅니다.', 'Tapping the card plays one ad and then flips it. If you have opened your saju, there is no ad.') + '</p>') + '<p class="note">' + T('카드는 자정에 바뀝니다.', 'The card changes at midnight.') + '</p>') + '</div></div></div>';
-  const done = S.picks.length === 3;
-  const chips = '<div class="chips">' + Object.keys(TOPICS).map(k => '<button type="button" class="chip' + (S.topic === k ? ' on' : '') + '" data-topic="' + k + '">' + TOPICS[k] + '</button>').join('') + '</div>';
-  const body = !done
-    ? '<p class="kv">' + T('질문을 떠올리고 카드 3장을 고르세요.', 'Think of your question and choose three cards.') + ' <b>' + S.picks.length + ' / 3</b></p><div class="deck">' + S.deck.map((p, i) => cardHTML(p, false, 'data-pick="' + i + '"', S.picks.includes(i))).join('') + '</div>'
-    : '<div class="spread">' + S.picks.map((i, k) => '<div><div class="pos">' + POS[k] + '</div>' + cardHTML(S.deck[i], S.rev[k], 'data-rev="' + k + '"') + '</div>').join('') + '</div><div class="read" id="spreadRead">' + spreadReadHTML() + '</div>';
-  $('v-tarot').innerHTML = today + '<div class="block"><h2>' + T('3장 스프레드', 'Three-card spread') + TIER.paid + '</h2><h3>' + T('주제: ', 'Topic: ') + TOPICS[S.topic] + (S.premium ? '' : T(' · 사주를 열면 사용', ' · available once you open your saju')) + '</h3>' + chips + body + '</div>';
+  const head = '<div class="block"><h2>' + T('오늘의 운세 타로', 'Today\'s fortune tarot') + TIER.ad + '</h2><h3>' + T('하루 세 장으로 오늘의 총운, 애정·관계, 재물·일을 봅니다', 'Three cards a day: today overall, love and people, money and work') + '</h3></div>';
+  if (!Ads.unlocked('tarot')) { $('v-tarot').innerHTML = head + '<div class="block"><button type="button" class="fbanner" data-tarot-ad><span class="fb-t">' + T('오늘의 카드 세 장 뽑기', 'Draw today\'s three cards') + '</span><span class="fb-l">' + T('오늘의 총운 카드 · 애정·관계 카드 · 재물·일 카드 · 카드마다 내 사주에 필요한 기운과 겹친 풀이 · 오늘의 한 줄 결론', 'Today\'s overall card · love and people card · money and work card · each read against the energy your saju needs · today in one line') + '</span><span class="fb-c">' + TIER.ad + T(' 광고 한 번에 오늘 하루', ' One ad opens it for today') + '</span></button>' + (Ads.msg ? '<p class="note warn">' + Ads.msg + '</p>' : '') + '</div>'; return; }
+  const sp = todaySpread(), o = t3Open();
+  $('v-tarot').innerHTML = head + '<div class="block"><div class="spread">' + sp.map((p, k) => '<div><div class="pos">' + p.pos + '</div>' + cardHTML(p, o[k], o[k] ? 'tabindex="-1"' : 'data-t3="' + k + '"') + '</div>').join('') + '</div><div class="read" id="t3Read">' + t3ReadHTML() + '</div></div>';
 }
 document.addEventListener('click', e => {
   const t = e.target.closest('button'); if (!t) return;
-  if (t.hasAttribute('data-today') && !S.todayOpen) {
-    const flip = () => {
-      S.todayOpen = true; store.set('mw-today', todayStr()); t.classList.add('open'); t.removeAttribute('data-today'); fx.burst(t);
-      setTimeout(() => { const r = $('todayRead'); if (r) r.innerHTML = readItem(todayCard()) + (Ads.msg ? '<p class="note">' + Ads.msg + '</p>' : ''); }, 450);
-    };
-    if (Ads.unlocked('tarot')) flip();
-    else Ads.watch('tarot').then(ok => { if (ok) flip(); else { const r = $('todayRead'); if (r) r.insertAdjacentHTML('beforeend', '<p class="note warn">' + Ads.msg + '</p>'); } });
-  }
-  if (t.dataset.rev !== undefined && !S.rev[+t.dataset.rev]) {
-    S.rev[+t.dataset.rev] = true; t.classList.add('open'); fx.burst(t, S.rev.every(Boolean) ? 80 : 36);
-    setTimeout(() => { const r = $('spreadRead'); if (r) r.innerHTML = spreadReadHTML(); }, 450);
+  if (t.hasAttribute('data-tarot-ad')) { t.disabled = true; Ads.watch('tarot').then(() => renderTarot()); return; }
+  if (t.dataset.t3 !== undefined) {
+    const o = t3Open(), k = +t.dataset.t3; if (o[k]) return;
+    o[k] = true; store.set('mw-tarot3', { d: todayStr(), k: profileKey(S.user), o }); t.classList.add('open'); t.removeAttribute('data-t3'); fx.burst(t, o.every(Boolean) ? 80 : 36);
+    setTimeout(() => { const r = $('t3Read'); if (r) r.innerHTML = t3ReadHTML(); }, 450);
   }
 });
 (function streak() {
@@ -232,7 +230,7 @@ if (!store.get('mw-guide')) setTimeout(openGuide, 400);
 $('resetBtn').onclick = () => { const d = $('resetDlg'); if (d.showModal) d.showModal(); else d.setAttribute('open', ''); };
 $('resetCancel').onclick = () => $('resetDlg').close();
 $('resetGo').onclick = () => {
-  ['mw-user', 'mw-user2', 'mw-partner', 'mw-premium', 'mw-streak', 'mw-today', 'mw-guide'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
+  ['mw-user', 'mw-user2', 'mw-partner', 'mw-premium', 'mw-streak', 'mw-today', 'mw-tarot3', 'mw-guide'].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} });
   Object.assign(S, { user: Object.assign({}, EXAMPLE), partner: Object.assign({}, PARTNER_EXAMPLE), selYear: 0, topic: 'all', rel: 'love', why: false, pEdit: false, deepText: '', matchText: '', todayOpen: false, streak: 1, plan: 1 });
   store.set('mw-streak', { last: todayStr(), n: 1 });
   $('resetDlg').close(); $('birthForm').hidden = true; $('f-msg').textContent = '';

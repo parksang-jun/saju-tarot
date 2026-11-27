@@ -46,5 +46,6 @@ async def main():
         await shot('7-face', '#fStage', -52)
         await shot('8-face-parts', '#v-face .lock', 4)
         await pg.click('nav a[data-v=astro]'); await pg.wait_for_timeout(400); await shot('9-astro', '#v-astro h2', -12)
+        await pg.click('nav a[data-v=saju]'); await pg.wait_for_timeout(300); await shot('10-doc', '#s-doc', -260)
         print('errors', errs); await b.close()
 asyncio.run(main())

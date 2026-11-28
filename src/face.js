@@ -318,7 +318,7 @@ function draw(src, P, m, r) {
   const t0 = performance.now(), dur = (typeof reduceMotion !== 'undefined' && reduceMotion) ? 0 : 1300;
   function frame(now) {
     const f = dur ? Math.min(1, (now - t0) / dur) : 1;
-    ctx.fillStyle = '#12152a'; ctx.fillRect(0, 0, cv.width, cv.height); ctx.drawImage(src, sx, sy, sw, sh, 0, 0, cv.width, cv.height);
+    ctx.fillStyle = '#171513'; ctx.fillRect(0, 0, cv.width, cv.height); ctx.drawImage(src, sx, sy, sw, sh, 0, 0, cv.width, cv.height);
     ctx.fillStyle = 'rgba(12,14,32,.34)'; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.strokeStyle = '#e9cd8c'; ctx.setLineDash([]);
     polys.forEach(([a, b, close], pi) => {

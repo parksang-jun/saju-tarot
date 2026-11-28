@@ -3,9 +3,9 @@
   "appName": "등불사주",
   "webDir": "dist",
   "android": {
-    "backgroundColor": "#12152a"
+    "backgroundColor": "#171513"
   },
   "ios": {
-    "backgroundColor": "#12152a"
+    "backgroundColor": "#171513"
   }
 }

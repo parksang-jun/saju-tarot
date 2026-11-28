@@ -15,7 +15,7 @@ FACE_JS = r'''
 (P) => {
   /* 얼굴 사진이나 그림 없이, 어두운 바탕에 측정 윤곽선만 보이게 한다 */
   const c = document.createElement('canvas'); c.width = 1000; c.height = 1000; const x = c.getContext('2d');
-  const g = x.createRadialGradient(500, 520, 60, 500, 520, 620); g.addColorStop(0, '#2f3560'); g.addColorStop(1, '#161a33'); x.fillStyle = g; x.fillRect(0, 0, 1000, 1000);
+  const g = x.createRadialGradient(500, 520, 60, 500, 520, 620); g.addColorStop(0, '#3a332b'); g.addColorStop(1, '#1b1815'); x.fillStyle = g; x.fillRect(0, 0, 1000, 1000);
   FaceRead.show(P.map(q => ({ x: q[0], y: q[1] })), c);
 }
 '''
